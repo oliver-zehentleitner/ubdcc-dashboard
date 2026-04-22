@@ -17,6 +17,7 @@ wheelhouse/
 # Sphinx build artifacts (docs/ is the published output; the build dir is transient)
 dev/sphinx/build/
 dev/set_version.log
+docs/.buildinfo.bak
 
 # Environments
 .env
