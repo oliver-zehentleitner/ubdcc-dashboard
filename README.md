@@ -131,7 +131,6 @@ REST API.
 
 ## Related Articles
 - [UNICORN Binance Suite Article Series](https://blog.technopathy.club/series/unicorn-binance-suite)
-- [The UNICORN Binance DepthCache Cluster project](https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster) — the server side the dashboard talks to.
 
 ## Project Homepage
 [https://github.com/oliver-zehentleitner/ubdcc-dashboard](https://github.com/oliver-zehentleitner/ubdcc-dashboard)
