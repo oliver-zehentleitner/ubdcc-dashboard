@@ -7,10 +7,10 @@ on:
 
 jobs:
   build:
-    name: Build sdist and wheel
+    name: Build sdist and noarch wheel
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: GitHub Checkout
         uses: actions/checkout@v6
 
       - name: Set up Python
@@ -34,6 +34,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
+      contents: write
+      discussions: write
       id-token: write
     steps:
       - name: Download Artifacts
@@ -42,8 +44,25 @@ jobs:
           name: artifact
           path: dist
 
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: |
+            Please read the [CHANGELOG](https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/CHANGELOG.md) for further information.
+          discussion_category_name: releases
+          draft: false
+          files: |
+            dist/*.tar.gz
+            dist/*.whl
+          generate_release_notes: true
+          name: ubdcc-dashboard
+          prerelease: false
+          tag_name: 0.1.1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create PyPi Release
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          packages-dir: dist
           verbose: true
           print-hash: true

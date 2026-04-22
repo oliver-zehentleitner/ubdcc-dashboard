@@ -4,7 +4,7 @@
 > Monitor every depth cache in your cluster at a glance, spot out-of-sync caches, add or remove caches on the fly.
 > Part of [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unicorn-binance-suite).
 
-Version: 0.1.0.dev. Python 3.9 – 3.14.
+Version: 0.1.1. Python 3.9 – 3.14.
 
 ## Authorship & License
 
