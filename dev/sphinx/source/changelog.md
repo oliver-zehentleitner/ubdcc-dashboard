@@ -9,9 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 [How to upgrade to the latest version!](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#installation-and-upgrade)
 
-## 0.1.0.dev (development stage/unreleased/unstable)
-
-## 0.1.0
+## 0.1.1
 ### Added
 - Initial release.
 - Single-file vanilla-JS dashboard with compact mini-orderbook tiles per DepthCache,

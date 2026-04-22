@@ -16,7 +16,7 @@ as a pip-installable CLI (`ubdcc-dashboard start`) for the
 [UNICORN Binance DepthCache Cluster (UBDCC)](https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster).
 
 **Abbreviation:** ubdcc-dashboard
-**Current Version:** 0.1.0.dev
+**Current Version:** 0.1.1
 **Author:** Oliver Zehentleitner
 **Python:** 3.9-3.14 on Linux, macOS, Windows
 **Dependencies:** none (stdlib only)

@@ -1,6 +1,5 @@
 files:
 - .github/workflows/build_wheels.yml
-- .github/workflows/gh_release.yml
 - CHANGELOG.md
 - dev/sphinx/source/conf.py
 - llms.txt
@@ -9,4 +8,4 @@ files:
 - ubdcc_dashboard/__init__.py
 - AGENTS.md
 - README.md
-version: 0.1.0.dev
+version: 0.1.1
