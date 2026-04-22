@@ -1,10 +1,21 @@
 # UBDCC Dashboard
 
-[![GitHub Release](https://img.shields.io/github/v/release/oliver-zehentleitner/ubdcc-dashboard.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/releases)
-[![PyPI Version](https://img.shields.io/pypi/v/ubdcc-dashboard.svg)](https://pypi.org/project/ubdcc-dashboard/)
+[![GitHub Release](https://img.shields.io/github/release/oliver-zehentleitner/ubdcc-dashboard.svg?label=github&color=blue)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/oliver-zehentleitner/ubdcc-dashboard/total?color=blue)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/releases)
+[![PyPi Release](https://img.shields.io/pypi/v/ubdcc-dashboard?color=blue)](https://pypi.org/project/ubdcc-dashboard/)
+[![PyPi Downloads](https://pepy.tech/badge/ubdcc-dashboard)](https://pepy.tech/project/ubdcc-dashboard)
+[![License](https://img.shields.io/badge/license-MIT-blue)](https://oliver-zehentleitner.github.io/ubdcc-dashboard/license.html)
+[![Supported Python Version](https://img.shields.io/pypi/pyversions/ubdcc-dashboard.svg?logo=python)](https://www.python.org/downloads/)
 [![PyPI - Status](https://img.shields.io/pypi/status/ubdcc-dashboard.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ubdcc-dashboard.svg?logo=python)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/github/license/oliver-zehentleitner/ubdcc-dashboard.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/LICENSE)
+[![CodeQL](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/codeql.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/codeql.yml)
+[![Unit Tests](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/unit-tests.yml)
+[![Build and Publish PyPi (ubdcc-dashboard)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/build_wheels.yml)
+[![Create GitHub Release](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/gh_release.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/gh_release.yml)
+[![Read the Docs](https://img.shields.io/badge/read-%20docs-yellow)](https://oliver-zehentleitner.github.io/ubdcc-dashboard/)
+[![Read How To`s](https://img.shields.io/badge/read-%20howto-yellow)](https://blog.technopathy.club/series/unicorn-binance-suite)
+[![Github](https://img.shields.io/badge/source-github-cbc2c8)](https://github.com/oliver-zehentleitner/ubdcc-dashboard)
+[![Telegram](https://img.shields.io/badge/community-telegram-41ab8c)](https://t.me/unicorndevs)
+[![UBS-Banner](https://raw.githubusercontent.com/oliver-zehentleitner/unicorn-binance-suite/master/images/logo/UBS-Banner-Readme.png)](https://github.com/oliver-zehentleitner/unicorn-binance-suite)
 
 Browser-based live dashboard for the [UNICORN Binance DepthCache Cluster (UBDCC)](https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster) —
 monitor every depth cache in your cluster at a glance, spot out-of-sync caches
