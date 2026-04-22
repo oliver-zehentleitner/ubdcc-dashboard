@@ -9,7 +9,7 @@
 [![PyPI - Status](https://img.shields.io/pypi/status/ubdcc-dashboard.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues)
 [![CodeQL](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/codeql.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/codeql.yml)
 [![Unit Tests](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/unit-tests.yml)
-[![Build and Publish PyPi (ubdcc-dashboard)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/build_wheels.yml)
+[![Build and Publish GH+PyPi](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/build_wheels.yml)
 [![Create GitHub Release](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/gh_release.yml/badge.svg)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/gh_release.yml)
 [![Read the Docs](https://img.shields.io/badge/read-%20docs-yellow)](https://oliver-zehentleitner.github.io/ubdcc-dashboard/)
 [![Read How To`s](https://img.shields.io/badge/read-%20howto-yellow)](https://blog.technopathy.club/series/unicorn-binance-suite)
