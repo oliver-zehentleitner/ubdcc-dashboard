@@ -1,0 +1,79 @@
+name: Bug report
+description: Report a bug with the UBDCC Dashboard.
+labels: bug
+assignees:
+  - oliver-zehentleitner
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please post here only issues concerning this repository and follow the [Issue-Guidelines](https://github.com/oliver-zehentleitner/unicorn-binance-suite/wiki/Issue-Guidelines).
+
+        Most of these fields are not mandatory, but please provide as much information as possible.
+
+  - type: checkboxes
+    id: Confirmation
+    attributes:
+      label: Solution to Issue cannot be found in the documentation or other Issues and also occurs in the latest version of the UBDCC Dashboard.
+      description: |
+        I have searched for other Issues with the same problem or similar feature requests and have looked in the documentation. This issue also affects the latest version of this dashboard.
+      options:
+        - label: I checked the documentation and other Issues. I am using the latest version of the UBDCC Dashboard.
+          required: true
+
+  - type: textarea
+    id: Version
+    attributes:
+      label: Used version
+      description: |
+        Output of `ubdcc-dashboard --version`.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: Python
+    attributes:
+      label: Python version?
+      description: |
+        In which Python version is the dashboard running?
+      options:
+        - Python3.14
+        - Python3.13
+        - Python3.12
+        - Python3.11
+        - Python3.10
+        - Python3.9
+    validations:
+      required: true
+
+  - type: dropdown
+    id: Browser
+    attributes:
+      label: Browser?
+      description: |
+        Which browser are you using?
+      options:
+        - Chromium-based (Chrome, Edge, Brave, Opera, …)
+        - Firefox
+        - Safari
+        - other
+    validations:
+      required: true
+
+  - type: input
+    id: UbdccVersion
+    attributes:
+      label: UBDCC cluster version
+      description: |
+        Version of the UBDCC cluster the dashboard is connected to.
+    validations:
+      required: false
+
+  - type: textarea
+    id: Issue
+    attributes:
+      label: Issue
+      description: |
+        Please describe the issue you are experiencing. Include CLI output, browser console errors and steps to reproduce.
+    validations:
+      required: true

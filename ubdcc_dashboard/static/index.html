@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UBDCC Live Dashboard</title>
+<style>
+  :root {
+    --bg: #0b0d11;
+    --panel: #14171e;
+    --panel-2: #1a1e27;
+    --border: #242933;
+    --text: #e6e8ec;
+    --muted: #8a92a1;
+    --accent: #7dd3fc;
+    --green: #34d399;
+    --green-dim: #065f46;
+    --red: #f87171;
+    --red-dim: #7f1d1d;
+    --yellow: #fbbf24;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    font-size: 13px; }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: linear-gradient(180deg, #0b0d11 0%, rgba(11,13,17,0.95) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px;
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  }
+  header h1 {
+    margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--accent);
+  }
+  header .sep { width: 1px; height: 22px; background: var(--border); }
+  .hint { color: var(--muted); font-size: 10px; font-style: italic; }
+  input, button, select {
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 9px; font-size: 12px; font-family: inherit;
+    outline: none;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+  button { cursor: pointer; background: var(--panel-2); }
+  button.primary { background: #1e40af; border-color: #1e40af; color: #fff; }
+  button.primary:hover { background: #1d4ed8; }
+  button.arm { background: var(--red); border-color: var(--red); color: #fff;
+    box-shadow: 0 0 0 2px rgba(248,113,113,0.35); }
+  button.arm:hover { background: #dc2626; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  label { color: var(--muted); font-size: 11px; display: inline-flex; align-items: center; gap: 5px; }
+
+  #stats { color: var(--muted); font-size: 11px; margin-left: auto; font-variant-numeric: tabular-nums; }
+  #stats .ok { color: var(--green); }
+  #stats .bad { color: var(--red); }
+
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .tile {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 5px 7px;
+    font-size: 11px;
+    display: flex; flex-direction: column; gap: 2px;
+    min-height: 100px;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .tile.desync { border-color: var(--red); background: #1a0e10; }
+  .tile.err { border-color: var(--yellow); }
+  .tile.loading { opacity: 0.55; }
+
+  .tile .hdr {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 6px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    margin-bottom: 2px;
+  }
+  .tile .market { font-weight: 600; color: var(--text); font-size: 12px; letter-spacing: 0.3px; }
+  .tile .exch { color: var(--muted); font-size: 9px; text-transform: uppercase; }
+  .tile .book { display: grid; grid-template-columns: 1fr; gap: 1px; }
+  .row {
+    display: grid;
+    grid-template-columns: 58px 1fr 40px;
+    gap: 4px; align-items: center;
+    font-variant-numeric: tabular-nums;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10px;
+    height: 11px;
+  }
+  .row .price { text-align: left; }
+  .row .qty { text-align: right; color: var(--muted); font-size: 9px; }
+  .row .bar {
+    position: relative; height: 8px; border-radius: 1px;
+    background: transparent; overflow: hidden;
+  }
+  .row .bar::after {
+    content: ""; position: absolute; top: 0; left: 0; bottom: 0;
+    width: var(--w, 0%);
+    transition: width 0.3s ease-out;
+  }
+  .row.ask .price { color: var(--red); }
+  .row.ask .bar::after { background: linear-gradient(90deg, rgba(248,113,113,0.15), rgba(248,113,113,0.65)); }
+  .row.bid .price { color: var(--green); }
+  .row.bid .bar::after { background: linear-gradient(90deg, rgba(52,211,153,0.15), rgba(52,211,153,0.65)); }
+
+  .spread {
+    text-align: center;
+    color: var(--muted);
+    font-size: 9px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    padding: 1px 0;
+    border-top: 1px dashed var(--border);
+    border-bottom: 1px dashed var(--border);
+    margin: 1px 0;
+  }
+
+  .tile .msg {
+    color: var(--red);
+    font-size: 10px;
+    padding: 10px 4px;
+    text-align: center;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    word-break: break-word;
+  }
+  .tile .status-dot {
+    position: absolute; top: 5px; right: 6px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--muted);
+  }
+  .tile.ok .status-dot { background: var(--green); }
+  .tile.desync .status-dot { background: var(--red); }
+  .tile.err .status-dot { background: var(--yellow); }
+
+  #empty {
+    text-align: center; color: var(--muted); padding: 60px 20px;
+  }
+  code { color: var(--accent); background: var(--panel-2); padding: 1px 5px; border-radius: 3px; }
+
+  /* filter controls */
+  #filter { width: 150px; }
+
+  /* tile actions */
+  .tile .close {
+    position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; border-radius: 3px;
+    background: rgba(0,0,0,0.35); color: var(--muted);
+    border: 1px solid var(--border); padding: 0;
+    font-size: 15px; line-height: 15px;
+    cursor: pointer;
+    opacity: 0.45;
+    font-family: sans-serif;
+    transition: opacity 0.1s, color 0.1s, background 0.1s;
+  }
+  .tile:hover .close { opacity: 1; }
+  .tile .close:hover { color: #fff; background: var(--red); border-color: var(--red); }
+  .tile.arm-remove { border-color: var(--red); box-shadow: 0 0 0 2px rgba(248,113,113,0.35); }
+  .tile.arm-remove .close {
+    opacity: 1; width: auto; padding: 0 6px;
+    background: var(--red); color: #fff; border-color: var(--red);
+    font-family: inherit; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* modal */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: none; z-index: 100;
+    align-items: flex-start; justify-content: center;
+    padding-top: 60px;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px;
+    width: 560px; max-width: 95vw; max-height: 85vh;
+    display: flex; flex-direction: column; gap: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    overflow: hidden;  /* children handle their own scroll */
+  }
+  .modal > *:not(.mkt-box) { flex-shrink: 0; }
+  .modal h2 { margin: 0 0 4px 0; font-size: 14px; color: var(--accent); font-weight: 600; }
+  .modal .row2 { display: flex; gap: 8px; align-items: center; }
+  .modal .row2 > * { flex: 1; }
+  .modal label { flex: 0 0 110px; color: var(--muted); font-size: 11px; }
+  .modal input, .modal select { width: 100%; }
+
+  .mkt-box {
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 5px;
+    flex: 1 1 auto;
+    min-height: 200px;
+    overflow-y: scroll;  /* always show so user sees it's scrollable */
+    overscroll-behavior: contain;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-auto-rows: min-content;
+    gap: 3px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    font-size: 13px;
+    line-height: 1;
+  }
+  .mkt-box::-webkit-scrollbar { width: 10px; }
+  .mkt-box::-webkit-scrollbar-track { background: var(--bg); border-radius: 4px; }
+  .mkt-box::-webkit-scrollbar-thumb { background: #3a4150; border-radius: 4px; border: 2px solid var(--bg); }
+  .mkt-box::-webkit-scrollbar-thumb:hover { background: #4a5160; }
+  .mkt-box { scrollbar-color: #3a4150 var(--bg); scrollbar-width: thin; }
+  .mkt-item {
+    padding: 5px 7px; border-radius: 3px; cursor: pointer;
+    color: #f1f3f5 !important;
+    background: #262b36;
+    border: 1px solid #2f3542;
+    user-select: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-weight: 500;
+  }
+  .mkt-item:hover { background: #323847; border-color: var(--accent); }
+  .mkt-item.sel { background: #1e40af; border-color: #3b82f6; color: #fff; }
+  .mkt-item.sel:hover { background: #1d4ed8; }
+  .mkt-item.exists { color: #8a92a1 !important; background: #1a1d24; border-style: dashed; cursor: not-allowed; }
+  .mkt-item.exists::after { content: " •"; color: var(--green); }
+
+  .modal footer {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    border-top: 1px solid var(--border); padding-top: 10px; margin-top: 4px;
+  }
+  .modal .selcount { color: var(--muted); font-size: 11px; }
+  .modal .err-msg { color: var(--red); font-size: 11px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>UBDCC LIVE</h1>
+  <div class="sep"></div>
+  <label>DCC URL
+    <input id="dccUrl" type="text" value="http://192.168.0.30:42081" size="26" />
+  </label>
+  <button id="connectBtn" class="primary">Connect</button>
+  <button id="disconnectBtn" disabled title="Stop polling and clear view">Disconnect</button>
+  <button id="addBtn" disabled>+ Add DC</button>
+  <button id="rmFilteredBtn" disabled title="Remove all currently filtered DepthCaches">× Remove filtered</button>
+  <div class="sep"></div>
+  <label>Min gap
+    <select id="refresh">
+      <option value="0">max</option>
+      <option value="100">100 ms</option>
+      <option value="250">250 ms</option>
+      <option value="500">500 ms</option>
+      <option value="1000">1 s</option>
+      <option value="2000" selected>2 s</option>
+    </select>
+  </label>
+  <label>Filter
+    <input id="filter" placeholder="e.g. USDT" />
+  </label>
+  <label>Exchange
+    <select id="exchFilter"><option value="">all</option></select>
+  </label>
+  <label><input type="checkbox" id="onlyProblems" /> problems only</label>
+  <div id="stats"></div>
+</header>
+
+<div id="grid"></div>
+<div id="empty">Enter the URL of your UBDCC MGMT node above and hit <code>Connect</code>.</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h2>Add DepthCaches</h2>
+    <div class="row2">
+      <label>Exchange</label>
+      <select id="m_exchange">
+        <option value="binance.com">binance.com (spot)</option>
+        <option value="binance.com-margin">binance.com-margin</option>
+        <option value="binance.com-isolated_margin">binance.com-isolated_margin</option>
+        <option value="binance.com-futures">binance.com-futures</option>
+        <option value="binance.com-vanilla-options">binance.com-vanilla-options</option>
+        <option value="binance.com-testnet">binance.com-testnet</option>
+        <option value="binance.com-futures-testnet">binance.com-futures-testnet</option>
+        <option value="binance.com-vanilla-options-testnet">binance.com-vanilla-options-testnet</option>
+        <option value="binance.us">binance.us</option>
+        <option value="trbinance.com">trbinance.com</option>
+      </select>
+    </div>
+    <div class="row2">
+      <label>Markets</label>
+      <input id="m_filter" placeholder="filter (e.g. USDT, BTC)" />
+    </div>
+    <div id="m_markets" class="mkt-box"><div style="padding:10px;color:var(--muted);grid-column:1/-1">loading…</div></div>
+    <div class="row2">
+      <label>Update interval</label>
+      <input id="m_update" type="number" min="100" step="100" placeholder="ms (blank = default)" />
+      <label>Refresh interval</label>
+      <input id="m_refresh" type="number" min="3600" step="3600" placeholder="sec — leave blank!" />
+    </div>
+    <div class="row2">
+      <label></label>
+      <span class="hint" style="color:var(--yellow)">⚠ refresh_interval triggers a full REST re-init. Leave blank for normal use. Only set for very long-running caches (e.g. 14400 = 4h).</span>
+    </div>
+    <div class="row2">
+      <label>Replicas</label>
+      <input id="m_replicas" type="number" min="1" max="20" value="1" />
+      <span class="hint">desired_quantity = number of DCN pods holding this DC</span>
+    </div>
+    <footer>
+      <div>
+        <span class="selcount" id="m_count">0 selected</span>
+        <span class="err-msg" id="m_err"></span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button id="m_cancel">Cancel</button>
+        <button id="m_submit" class="primary">Create</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script>
+const PROXY_BASE = ""; // same origin (this server)
+
+const state = {
+  dccUrl: "",
+  dcs: [],                    // [{exchange, market}]
+  tiles: new Map(),           // "exchange|market" -> tile DOM
+  visible: new Set(),         // keys currently in viewport
+  filterAllow: new Set(),     // keys passing filter
+  running: false,
+  lastOk: 0,
+  lastBad: 0,
+  lastCycleMs: 0,
+  observer: null,
+};
+
+const el = (tag, attrs = {}, children = []) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k === "style") n.style.cssText = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v);
+  }
+  for (const c of children) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+  return n;
+};
+
+async function proxyGet(url) {
+  const r = await fetch(`${PROXY_BASE}/proxy?url=${encodeURIComponent(url)}`);
+  return r.json();
+}
+
+async function proxyBatch(base, requests) {
+  const r = await fetch(`${PROXY_BASE}/proxy_batch`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ base, requests }),
+  });
+  return r.json();
+}
+
+function dcKey(exchange, market) { return `${exchange}|${market}`; }
+
+function fmtPrice(p) {
+  if (p == null) return "";
+  const n = Number(p);
+  if (!isFinite(n)) return String(p);
+  if (n >= 1000) return n.toFixed(2);
+  if (n >= 1) return n.toFixed(4);
+  if (n >= 0.01) return n.toFixed(5);
+  return n.toPrecision(6);
+}
+function fmtQty(q) {
+  if (q == null) return "";
+  const n = Number(q);
+  if (!isFinite(n)) return "";
+  if (n >= 1000) return (n / 1000).toFixed(1) + "k";
+  if (n >= 10) return n.toFixed(1);
+  if (n >= 1) return n.toFixed(2);
+  return n.toFixed(3);
+}
+
+function buildTile(exchange, market) {
+  const hdr = el("div", { class: "hdr" }, [
+    el("span", { class: "market" }, [market]),
+    el("span", { class: "exch" }, [exchange.replace("binance.com", "bnb")]),
+  ]);
+  const dot = el("div", { class: "status-dot" });
+  const close = el("button", {
+    class: "close", title: "click to arm, click again to stop",
+    onclick: (e) => { e.stopPropagation(); armOrStop(tile, exchange, market); },
+  }, ["×"]);
+  const body = el("div", { class: "body" });
+  const tile = el("div", { class: "tile loading" }, [close, hdr, dot, body]);
+  tile.dataset.exchange = exchange;
+  tile.dataset.market = market;
+  return tile;
+}
+
+let armedTile = null;
+let armedTimer = null;
+let rmArmed = false;
+let rmArmedTimer = null;
+let rmInFlight = false;
+
+function disarmTile(tile) {
+  if (!tile) return;
+  tile.classList.remove("arm-remove");
+  const btn = tile.querySelector(".close");
+  if (btn) btn.textContent = "×";
+  if (armedTile === tile) { armedTile = null; armedTimer = null; }
+}
+
+function armOrStop(tile, exchange, market) {
+  if (armedTile === tile) {
+    clearTimeout(armedTimer);
+    disarmTile(tile);
+    doStopDc(tile, exchange, market);
+    return;
+  }
+  if (armedTile) { clearTimeout(armedTimer); disarmTile(armedTile); }
+  armedTile = tile;
+  tile.classList.add("arm-remove");
+  const btn = tile.querySelector(".close");
+  if (btn) btn.textContent = "STOP";
+  armedTimer = setTimeout(() => disarmTile(tile), 3000);
+}
+
+function isFilterActive() {
+  return !!document.getElementById("filter").value.trim() ||
+         !!document.getElementById("exchFilter").value ||
+         document.getElementById("onlyProblems").checked;
+}
+
+function updateRmBtn() {
+  const btn = document.getElementById("rmFilteredBtn");
+  if (!btn) return;
+  const n = state.filterAllow.size;
+  const total = state.tiles.size;
+  const canRemove = isFilterActive() && n > 0 && n < total && !rmInFlight;
+  if (!canRemove && rmArmed) { rmArmed = false; if (rmArmedTimer) clearTimeout(rmArmedTimer); }
+  btn.disabled = !canRemove;
+  if (rmInFlight) {
+    btn.textContent = "Stopping…";
+    btn.classList.remove("arm");
+  } else if (rmArmed) {
+    btn.textContent = `Confirm remove ${n}`;
+    btn.classList.add("arm");
+  } else {
+    btn.textContent = n > 0 && isFilterActive() ? `× Remove filtered (${n})` : "× Remove filtered";
+    btn.classList.remove("arm");
+  }
+}
+
+function disarmRm() {
+  if (!rmArmed && !rmArmedTimer) return;
+  rmArmed = false;
+  if (rmArmedTimer) { clearTimeout(rmArmedTimer); rmArmedTimer = null; }
+  updateRmBtn();
+}
+
+function armRm() {
+  rmArmed = true;
+  if (rmArmedTimer) clearTimeout(rmArmedTimer);
+  rmArmedTimer = setTimeout(disarmRm, 3000);
+  updateRmBtn();
+}
+
+async function doRemoveFiltered() {
+  if (rmInFlight) return;
+  const keys = [...state.filterAllow];
+  if (keys.length === 0) return;
+  if (armedTile) { clearTimeout(armedTimer); disarmTile(armedTile); }
+  rmArmed = false;
+  if (rmArmedTimer) { clearTimeout(rmArmedTimer); rmArmedTimer = null; }
+  rmInFlight = true;
+  updateRmBtn();
+  for (const key of keys) {
+    const t = state.tiles.get(key);
+    if (t) t.classList.add("loading");
+  }
+  const requests = keys.map(k => {
+    const [exchange, market] = k.split("|");
+    return { id: k, path: "/stop_depthcache", params: { exchange, market } };
+  });
+  const failed = [];
+  try {
+    const res = await proxyBatch(state.dccUrl, requests);
+    const results = (res && res.results) || {};
+    for (const k of keys) {
+      const r = results[k];
+      const bodyErr = r && r.body && r.body.result === "ERROR";
+      const statusErr = r && typeof r.status === "number" && r.status >= 400;
+      if (!r || bodyErr || statusErr) {
+        const msg = (r && r.body && (r.body.message || r.body.error_id)) || `status ${r && r.status}`;
+        failed.push({ k, msg });
+      }
+    }
+  } catch (e) {
+    alert(`Bulk stop failed: ${e.message}`);
+  }
+  rmInFlight = false;
+  if (failed.length) {
+    const head = failed.slice(0, 5).map(f => `• ${f.k}: ${f.msg}`).join("\n");
+    const tail = failed.length > 5 ? `\n…+${failed.length - 5} more` : "";
+    alert(`${failed.length}/${keys.length} failed to stop:\n${head}${tail}`);
+  }
+  await reloadDcs();
+  updateRmBtn();
+}
+
+async function doStopDc(tile, exchange, market) {
+  tile && tile.classList.add("loading");
+  const url = `${state.dccUrl}/stop_depthcache?exchange=${encodeURIComponent(exchange)}&market=${encodeURIComponent(market)}`;
+  try {
+    const res = await proxyGet(url);
+    if (res && res.result === "ERROR") {
+      alert(`Stop failed: ${res.error_id || ""} ${res.message || ""}`);
+      tile && tile.classList.remove("loading");
+      return;
+    }
+  } catch (e) {
+    alert(`Stop failed: ${e.message}`);
+    tile && tile.classList.remove("loading");
+    return;
+  }
+  await reloadDcs();
+}
+
+function rebuildExchangeFilter() {
+  const sel = document.getElementById("exchFilter");
+  if (!sel) return;
+  const prev = sel.value;
+  const exchanges = new Set(state.dcs.map(dc => dc.exchange));
+  sel.innerHTML = '<option value="">all</option>';
+  for (const e of [...exchanges].sort()) {
+    sel.appendChild(el("option", { value: e }, [e]));
+  }
+  if (prev && exchanges.has(prev)) sel.value = prev;
+}
+
+async function reloadDcs() {
+  const info = await proxyGet(`${state.dccUrl}/get_depthcache_list`);
+  if (!info || !info.depthcache_list) return;
+  const fresh = new Map();
+  for (const [exchange, markets] of Object.entries(info.depthcache_list)) {
+    for (const market of Object.keys(markets)) {
+      fresh.set(dcKey(exchange, market), { exchange, market });
+    }
+  }
+  // remove disappeared
+  for (const [key, tile] of [...state.tiles]) {
+    if (!fresh.has(key)) {
+      state.observer && state.observer.unobserve(tile);
+      tile.remove();
+      state.tiles.delete(key);
+      state.visible.delete(key);
+      state.filterAllow.delete(key);
+    }
+  }
+  // add new
+  const grid = document.getElementById("grid");
+  const newDcs = [...fresh.values()];
+  newDcs.sort((a, b) => a.exchange.localeCompare(b.exchange) || a.market.localeCompare(b.market));
+  state.dcs = newDcs;
+  // rebuild DOM in sorted order (simple: clear and re-append)
+  for (const dc of newDcs) {
+    const key = dcKey(dc.exchange, dc.market);
+    let tile = state.tiles.get(key);
+    if (!tile) {
+      tile = buildTile(dc.exchange, dc.market);
+      state.tiles.set(key, tile);
+      state.observer && state.observer.observe(tile);
+    }
+    grid.appendChild(tile); // re-append keeps ordering
+  }
+  rebuildExchangeFilter();
+  applyFilter();
+}
+
+function renderBook(body, asks, bids) {
+  body.innerHTML = "";
+  const top3Asks = (asks || []).slice(0, 3); // lowest 3 asks
+  const top3Bids = (bids || []).slice(0, 3); // highest 3 bids
+  const maxQty = Math.max(
+    ...top3Asks.map(a => Number(a[1]) || 0),
+    ...top3Bids.map(b => Number(b[1]) || 0),
+    0.000001
+  );
+
+  const book = el("div", { class: "book" });
+
+  // asks top-down: ask3, ask2, ask1 (closest to spread at bottom)
+  for (let i = top3Asks.length - 1; i >= 0; i--) {
+    const [p, q] = top3Asks[i];
+    const w = ((Number(q) || 0) / maxQty) * 100;
+    book.appendChild(el("div", { class: "row ask" }, [
+      el("span", { class: "price" }, [fmtPrice(p)]),
+      el("span", { class: "bar", style: `--w:${w}%` }),
+      el("span", { class: "qty" }, [fmtQty(q)]),
+    ]));
+  }
+
+  if (top3Asks.length && top3Bids.length) {
+    const ask1 = Number(top3Asks[0][0]);
+    const bid1 = Number(top3Bids[0][0]);
+    const mid = (ask1 + bid1) / 2;
+    const spread = ((ask1 - bid1) / mid) * 10000; // bps
+    book.appendChild(el("div", { class: "spread" }, [
+      `${fmtPrice(mid)}  •  ${spread.toFixed(1)} bps`
+    ]));
+  }
+
+  for (const [p, q] of top3Bids) {
+    const w = ((Number(q) || 0) / maxQty) * 100;
+    book.appendChild(el("div", { class: "row bid" }, [
+      el("span", { class: "price" }, [fmtPrice(p)]),
+      el("span", { class: "bar", style: `--w:${w}%` }),
+      el("span", { class: "qty" }, [fmtQty(q)]),
+    ]));
+  }
+
+  body.appendChild(book);
+}
+
+function renderError(body, msg) {
+  body.innerHTML = "";
+  body.appendChild(el("div", { class: "msg" }, [msg || "unknown error"]));
+}
+
+function applyFilter() {
+  const needle = document.getElementById("filter").value.trim().toUpperCase();
+  const exch = document.getElementById("exchFilter").value;
+  const problemsOnly = document.getElementById("onlyProblems").checked;
+  state.filterAllow.clear();
+  let shown = 0;
+  for (const [key, tile] of state.tiles) {
+    const m = tile.dataset.market.toUpperCase();
+    const e = tile.dataset.exchange;
+    const isProblem = tile.classList.contains("desync") || tile.classList.contains("err");
+    const ok = (!needle || m.includes(needle)) &&
+               (!exch || e === exch) &&
+               (!problemsOnly || isProblem);
+    tile.style.display = ok ? "" : "none";
+    if (ok) { state.filterAllow.add(key); shown++; }
+  }
+  updateRmBtn();
+  return shown;
+}
+
+function updateStats(total, ok, bad, shown) {
+  const cycle = state.lastCycleMs ? `${state.lastCycleMs} ms` : "–";
+  const rate = state.lastCycleMs ? `${(1000 / state.lastCycleMs).toFixed(1)} Hz` : "–";
+  document.getElementById("stats").innerHTML =
+    `${shown}/${total} shown  •  <span class="ok">${ok} ok</span>  •  <span class="bad">${bad} issues</span>  •  cycle ${cycle} (${rate})`;
+}
+
+async function connect() {
+  const url = document.getElementById("dccUrl").value.trim().replace(/\/$/, "");
+  if (!url) return;
+  state.dccUrl = url;
+
+  const btn = document.getElementById("connectBtn");
+  btn.disabled = true;
+  btn.textContent = "Loading…";
+
+  const info = await proxyGet(`${url}/get_depthcache_list`);
+  btn.disabled = false;
+  btn.textContent = "Reconnect";
+
+  if (!info || !info.depthcache_list) {
+    alert("Could not fetch depthcache_list: " + JSON.stringify(info).slice(0, 200));
+    return;
+  }
+
+  // reset DOM
+  document.getElementById("grid").innerHTML = "";
+  state.tiles.clear();
+  state.visible.clear();
+  state.filterAllow.clear();
+
+  // Viewport visibility tracking
+  if (state.observer) state.observer.disconnect();
+  state.observer = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const key = dcKey(e.target.dataset.exchange, e.target.dataset.market);
+      if (e.isIntersecting) state.visible.add(key);
+      else state.visible.delete(key);
+    }
+  }, { rootMargin: "200px" });
+
+  await reloadDcs();
+  document.getElementById("empty").style.display = state.dcs.length ? "none" : "";
+  document.getElementById("addBtn").disabled = false;
+  document.getElementById("disconnectBtn").disabled = false;
+
+  startLoop();
+}
+
+function disconnect() {
+  stopLoop();
+  if (state.observer) { state.observer.disconnect(); state.observer = null; }
+  // cancel any armed states
+  if (armedTile) { clearTimeout(armedTimer); disarmTile(armedTile); }
+  disarmRm();
+  rmInFlight = false;
+  // clear DOM + state
+  document.getElementById("grid").innerHTML = "";
+  state.tiles.clear();
+  state.visible.clear();
+  state.filterAllow.clear();
+  state.dcs = [];
+  state.lastOk = 0;
+  state.lastBad = 0;
+  state.lastCycleMs = 0;
+  // reset exchange dropdown
+  const sel = document.getElementById("exchFilter");
+  sel.innerHTML = '<option value="">all</option>';
+  sel.value = "";
+  // UI state
+  document.getElementById("addBtn").disabled = true;
+  document.getElementById("disconnectBtn").disabled = true;
+  updateRmBtn();
+  document.getElementById("connectBtn").textContent = "Connect";
+  document.getElementById("empty").style.display = "";
+  document.getElementById("stats").innerHTML = "";
+}
+
+function stopLoop() { state.running = false; }
+
+function startLoop() {
+  if (state.running) return;
+  state.running = true;
+  loop();
+}
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function loop() {
+  while (state.running) {
+    const minGap = Number(document.getElementById("refresh").value) || 0;
+    const t0 = performance.now();
+    try {
+      await refreshOnce();
+    } catch (e) {
+      console.error("loop error", e);
+      await sleep(500);
+    }
+    const dt = performance.now() - t0;
+    state.lastCycleMs = Math.round(dt);
+    if (minGap > 0 && dt < minGap) await sleep(minGap - dt);
+  }
+}
+
+async function refreshOnce() {
+  if (!state.dccUrl || state.dcs.length === 0) { await sleep(200); return; }
+
+  // Build request list: only visible AND filter-allowed tiles
+  const targets = [];
+  for (const dc of state.dcs) {
+    const key = dcKey(dc.exchange, dc.market);
+    if (!state.filterAllow.has(key)) continue;
+    if (!state.visible.has(key)) continue;
+    targets.push(dc);
+  }
+  if (targets.length === 0) { await sleep(150); return; }
+
+  const requests = [];
+  for (const dc of targets) {
+    const params = { exchange: dc.exchange, market: dc.market };
+    requests.push({ id: `a|${dc.exchange}|${dc.market}`, path: "/get_asks", params });
+    requests.push({ id: `b|${dc.exchange}|${dc.market}`, path: "/get_bids", params });
+  }
+  const res = await proxyBatch(state.dccUrl, requests);
+  const results = (res && res.results) || {};
+
+  let ok = 0, bad = 0;
+  for (const dc of targets) {
+    const tile = state.tiles.get(dcKey(dc.exchange, dc.market));
+    if (!tile) continue;
+    const a = results[`a|${dc.exchange}|${dc.market}`];
+    const b = results[`b|${dc.exchange}|${dc.market}`];
+    tile.classList.remove("loading", "desync", "err", "ok");
+
+    const body = tile.querySelector(".body");
+    const errBody = (a && a.body && a.body.result === "ERROR") ? a.body :
+                    (b && b.body && b.body.result === "ERROR") ? b.body : null;
+
+    if (errBody) {
+      if (errBody.error_id === "#6000") {
+        tile.classList.add("desync");
+        renderError(body, "OUT OF SYNC");
+      } else {
+        tile.classList.add("err");
+        const short = (errBody.message || "error").replace(/^DepthCache .* (is|for) /, "");
+        renderError(body, `${errBody.error_id || ""} ${short}`.trim());
+      }
+      bad++;
+    } else if (a && a.body && b && b.body) {
+      tile.classList.add("ok");
+      renderBook(body, a.body.asks, b.body.bids);
+      ok++;
+    } else {
+      tile.classList.add("err");
+      renderError(body, "no data");
+      bad++;
+    }
+  }
+  state.lastOk = ok; state.lastBad = bad;
+  // Re-apply filter AFTER render so "problems only" picks up new desync/err classes
+  const shown = applyFilter();
+  updateStats(state.dcs.length, ok, bad, shown);
+}
+
+// ------- Add DC modal -------
+
+const modal = {
+  selected: new Set(),
+  markets: [],        // [{symbol, exists}]
+  cached: {},         // exchange -> {markets, ts}
+  mode: "list",       // "list" | "freetext"
+};
+
+const EXCHANGE_INFO_URL = {
+  "binance.com":                         "https://api.binance.com/api/v3/exchangeInfo",
+  "binance.com-margin":                  "https://api.binance.com/api/v3/exchangeInfo",
+  "binance.com-isolated_margin":         "https://api.binance.com/api/v3/exchangeInfo",
+  "binance.com-futures":                 "https://fapi.binance.com/fapi/v1/exchangeInfo",
+  "binance.com-vanilla-options":         "https://eapi.binance.com/eapi/v1/exchangeInfo",
+  "binance.com-testnet":                 "https://testnet.binance.vision/api/v3/exchangeInfo",
+  "binance.com-futures-testnet":         "https://testnet.binancefuture.com/fapi/v1/exchangeInfo",
+  "binance.com-vanilla-options-testnet": null,
+  "binance.us":                          "https://api.binance.us/api/v3/exchangeInfo",
+  "trbinance.com":                       null,
+};
+
+function extractSymbols(exchange, info) {
+  if (exchange.endsWith("vanilla-options") || exchange.endsWith("vanilla-options-testnet")) {
+    return (info.optionSymbols || [])
+      .filter(s => !s.status || s.status === "TRADING")
+      .map(s => s.symbol).filter(Boolean);
+  }
+  const syms = (info.symbols || [])
+    .filter(s => !s.status || s.status === "TRADING");
+  if (exchange === "binance.com-margin" || exchange === "binance.com-isolated_margin") {
+    return syms.filter(s => s.isMarginTradingAllowed).map(s => s.symbol);
+  }
+  // spot variants: require isSpotTradingAllowed (field missing on older payloads → treat as allowed)
+  return syms.filter(s => s.isSpotTradingAllowed !== false).map(s => s.symbol);
+}
+
+async function loadMarkets(exchange) {
+  const box = document.getElementById("m_markets");
+  box.innerHTML = '<div style="padding:10px;color:var(--muted);grid-column:1/-1">loading…</div>';
+  modal.selected.clear();
+  modal.markets = [];
+  modal.mode = "list";
+  document.getElementById("m_err").textContent = "";
+  updateSelCount();
+
+  const infoUrl = EXCHANGE_INFO_URL[exchange];
+  if (!infoUrl) {
+    modal.mode = "freetext";
+    box.innerHTML = `<div style="padding:10px;color:var(--muted);grid-column:1/-1">
+      No exchangeInfo endpoint configured for <code>${exchange}</code>.<br>
+      Type symbols above, comma-separated (e.g. <code>BTCUSDT,ETHUSDT</code>), then Create.
+    </div>`;
+    document.getElementById("m_filter").placeholder = "symbols, comma-separated";
+    return;
+  }
+  document.getElementById("m_filter").placeholder = "filter (e.g. USDT, BTC)";
+
+  const cached = modal.cached[exchange];
+  let symbols;
+  if (cached && Date.now() - cached.ts < 5 * 60_000) {
+    symbols = cached.symbols;
+  } else {
+    const info = await proxyGet(infoUrl);
+    if (!info || (info.result === "ERROR")) {
+      box.innerHTML = `<div style="padding:10px;color:var(--red);grid-column:1/-1">failed to load: ${info && info.message || "?"}</div>`;
+      return;
+    }
+    symbols = extractSymbols(exchange, info);
+    modal.cached[exchange] = { symbols, ts: Date.now() };
+  }
+
+  const existing = new Set();
+  for (const dc of state.dcs) {
+    if (dc.exchange === exchange) existing.add(dc.market);
+  }
+  modal.markets = symbols.map(s => ({ symbol: s, exists: existing.has(s) }));
+  renderMarketList();
+}
+
+function renderMarketList() {
+  const needle = document.getElementById("m_filter").value.trim().toUpperCase();
+  const cap = 2000;
+  const box = document.getElementById("m_markets");
+  box.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  let shown = 0, matched = 0;
+  for (const m of modal.markets) {
+    if (needle && !m.symbol.includes(needle)) continue;
+    matched++;
+    if (shown >= cap) continue;
+    const cls = "mkt-item" + (m.exists ? " exists" : "") + (modal.selected.has(m.symbol) ? " sel" : "");
+    const title = m.exists ? `${m.symbol} (already in cluster)` : m.symbol;
+    const item = el("div", {
+      class: cls, title,
+      onclick: () => toggleMarket(m),
+    }, [m.symbol]);
+    frag.appendChild(item);
+    shown++;
+  }
+  box.appendChild(frag);
+  if (matched === 0) {
+    box.innerHTML = '<div style="padding:10px;color:var(--muted);grid-column:1/-1">no matches</div>';
+    return;
+  }
+  if (matched > shown) {
+    box.appendChild(el("div", {
+      style: "padding:8px;color:var(--muted);grid-column:1/-1;font-size:11px;text-align:center;font-style:italic",
+    }, [`+ ${matched - shown} more — type to filter (e.g. ${needle ? "a longer prefix" : "USDT, BTC, ETH"})`]));
+  }
+}
+
+function toggleMarket(m) {
+  if (m.exists) return;
+  if (modal.selected.has(m.symbol)) modal.selected.delete(m.symbol);
+  else modal.selected.add(m.symbol);
+  renderMarketList();
+  updateSelCount();
+}
+
+function updateSelCount() {
+  document.getElementById("m_count").textContent = `${modal.selected.size} selected`;
+}
+
+function openModal() {
+  document.getElementById("modal").classList.add("show");
+  document.getElementById("m_filter").value = "";
+  document.getElementById("m_err").textContent = "";
+  loadMarkets(document.getElementById("m_exchange").value);
+}
+function closeModal() { document.getElementById("modal").classList.remove("show"); }
+
+async function submitCreate() {
+  const exchange = document.getElementById("m_exchange").value;
+  let markets;
+  if (modal.mode === "freetext") {
+    markets = document.getElementById("m_filter").value
+      .split(",").map(s => s.trim().toUpperCase()).filter(Boolean);
+  } else {
+    markets = [...modal.selected];
+  }
+  if (markets.length === 0) {
+    document.getElementById("m_err").textContent = modal.mode === "freetext"
+      ? "enter at least one symbol" : "pick at least one market";
+    return;
+  }
+  const upd = document.getElementById("m_update").value.trim();
+  const ref = document.getElementById("m_refresh").value.trim();
+  const rep = document.getElementById("m_replicas").value.trim() || "1";
+  const body = { exchange, markets, desired_quantity: Number(rep) };
+  if (upd) body.update_interval = Number(upd);
+  if (ref) body.refresh_interval = Number(ref);
+
+  const btn = document.getElementById("m_submit");
+  btn.disabled = true; btn.textContent = "Creating…";
+  const r = await fetch("/proxy", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url: `${state.dccUrl}/create_depthcaches`, body }),
+  });
+  const res = await r.json();
+  btn.disabled = false; btn.textContent = "Create";
+
+  if (res && res.result === "ERROR") {
+    document.getElementById("m_err").textContent = `${res.error_id || ""} ${res.message || ""}`;
+    return;
+  }
+  closeModal();
+  await reloadDcs();
+}
+
+// ------- wire up -------
+
+document.getElementById("connectBtn").addEventListener("click", connect);
+document.getElementById("disconnectBtn").addEventListener("click", disconnect);
+document.getElementById("dccUrl").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") connect();
+});
+// refresh gap picked up on next loop iteration — nothing to do here
+document.getElementById("addBtn").addEventListener("click", openModal);
+document.getElementById("rmFilteredBtn").addEventListener("click", () => {
+  if (rmInFlight) return;
+  if (rmArmed) { doRemoveFiltered(); return; }
+  armRm();
+});
+document.getElementById("m_cancel").addEventListener("click", closeModal);
+document.getElementById("m_submit").addEventListener("click", submitCreate);
+document.getElementById("m_exchange").addEventListener("change", (e) => loadMarkets(e.target.value));
+document.getElementById("m_filter").addEventListener("input", () => {
+  if (modal.mode === "list") renderMarketList();
+});
+document.getElementById("modal").addEventListener("click", (e) => {
+  if (e.target.id === "modal") closeModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && document.getElementById("modal").classList.contains("show")) closeModal();
+});
+for (const id of ["filter", "exchFilter", "onlyProblems"]) {
+  document.getElementById(id).addEventListener("input", () => {
+    disarmRm();
+    const v = applyFilter();
+    updateStats(state.dcs.length, state.lastOk, state.lastBad, v);
+  });
+  document.getElementById(id).addEventListener("change", () => {
+    disarmRm();
+    const v = applyFilter();
+    updateStats(state.dcs.length, state.lastOk, state.lastBad, v);
+  });
+}
+</script>
+</body>
+</html>
