@@ -1,0 +1,14 @@
+blank_issues_enabled: true
+contact_links:
+  - name: UNICORN Devs Chat
+    url: https://t.me/unicorndevs
+    about: Chat with the community about the UBDCC Dashboard and ask general questions.
+  - name: UBDCC Dashboard Discussions
+    url: https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions
+    about: Ask general questions.
+  - name: UBDCC Dashboard documentation
+    url: https://oliver-zehentleitner.github.io/ubdcc-dashboard/
+    about: The complete UBDCC Dashboard documentation.
+  - name: Get Professional and Fast Support
+    url: https://about.me/oliver-zehentleitner/get-support.html
+    about: Contact the development team.

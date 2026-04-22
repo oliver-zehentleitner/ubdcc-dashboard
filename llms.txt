@@ -1,0 +1,60 @@
+# UBDCC Dashboard
+
+> Browser-based live dashboard for the [UNICORN Binance DepthCache Cluster (UBDCC)](https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster).
+> Monitor every depth cache in your cluster at a glance, spot out-of-sync caches, add or remove caches on the fly.
+> Part of [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unicorn-binance-suite).
+
+Version: 0.1.0.dev. Python 3.9 – 3.14.
+
+## Authorship & License
+
+Author / Maintainer: Oliver Zehentleitner (https://github.com/oliver-zehentleitner)
+License: MIT — free for commercial and private use. No paid license, no subscription, no commercial tier.
+
+Install: `pip install ubdcc-dashboard`
+
+## Quick Start
+
+```sh
+pip install ubdcc-dashboard
+ubdcc-dashboard start
+```
+
+Default bind is `127.0.0.1:8080` — localhost only. Your browser opens automatically and shows the dashboard; enter the URL of your UBDCC MGMT node and click `Connect`.
+
+## CLI
+
+```
+ubdcc-dashboard start [--host HOST] [--port PORT] [--no-browser]
+                      [--proxy-timeout SECONDS] [--batch-workers N]
+```
+
+- `--host` — interface to bind. Default `127.0.0.1` (localhost only, secure). Use `--host 0.0.0.0` to expose on the network.
+- `--port` — TCP port, default `8080`.
+- `--no-browser` — do not auto-open the dashboard in a browser.
+- `--proxy-timeout` — seconds for CORS-proxy outbound fetches (default 10).
+- `--batch-workers` — worker threads for `/proxy_batch` (default 32).
+
+## Architecture
+
+Two files matter:
+
+- `ubdcc_dashboard/static/index.html` — the dashboard. Vanilla JS, no framework.
+- `ubdcc_dashboard/server.py` — stdlib HTTP server that serves the HTML and acts as a small CORS proxy so the browser can talk to any UBDCC cluster.
+
+Proxy endpoints (for agents wanting to script against the launcher):
+- `GET  /proxy?url=<encoded_url>` — single pass-through GET.
+- `POST /proxy  {url, body}` — single pass-through JSON POST.
+- `POST /proxy_batch {base, requests: [{id, path, params}, …]}` — threaded fan-out, returns `{results: {id → {status, body}}}`.
+
+## Relation to UBDCC
+
+The dashboard is a client, not part of the cluster. It talks to a running UBDCC cluster via its public REST API (typical URL: `http://<cluster-host>:42081`). See https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster for the cluster itself.
+
+## Links
+
+- GitHub:        https://github.com/oliver-zehentleitner/ubdcc-dashboard
+- PyPI:          https://pypi.org/project/ubdcc-dashboard
+- Issues:        https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues
+- Changelog:     https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/CHANGELOG.md
+- Telegram:      https://t.me/unicorndevs

@@ -1,0 +1,30 @@
+.idea
+.vscode
+.DS_Store
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+wheelhouse/
+*.egg-info/
+*.egg
+
+# Sphinx build artifacts (docs/ is the published output; the build dir is transient)
+dev/sphinx/build/
+dev/set_version.log
+
+# Environments
+.env
+.venv
+venv/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/

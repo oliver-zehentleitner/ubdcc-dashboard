@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "ubdcc-dashboard"
+version = "0.1.0.dev"
+description = "Browser-based live dashboard for the UNICORN Binance DepthCache Cluster (UBDCC) — monitor and manage depth caches in real time."
+authors = ["Oliver Zehentleitner"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/oliver-zehentleitner/ubdcc-dashboard"
+documentation = "https://oliver-zehentleitner.github.io/ubdcc-dashboard"
+repository = "https://github.com/oliver-zehentleitner/ubdcc-dashboard"
+
+[tool.poetry.urls]
+'Howto' = 'https://github.com/oliver-zehentleitner/ubdcc-dashboard#howto'
+'Documentation' = 'https://oliver-zehentleitner.github.io/ubdcc-dashboard'
+'Wiki' = 'https://github.com/oliver-zehentleitner/ubdcc-dashboard/wiki'
+'Author' = 'https://www.linkedin.com/in/oliver-zehentleitner'
+'Changes' = 'https://oliver-zehentleitner.github.io/ubdcc-dashboard/changelog.html'
+'License' = 'https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/LICENSE'
+'Issue Tracker' = 'https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues'
+'Telegram' = 'https://t.me/unicorndevs'
+
+[tool.poetry.dependencies]
+python = ">=3.9.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["setuptools", "wheel", "pip"]
+build-backend = "setuptools.build_meta"
+
+[tool.poetry.scripts]
+ubdcc-dashboard = "ubdcc_dashboard.cli:main"
