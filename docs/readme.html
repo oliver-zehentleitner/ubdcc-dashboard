@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>UBDCC Dashboard &#8212; ubdcc-dashboard 0.1.0.dev documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+    <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css?v=fdf8e9ae" />
+    
+    <script src="_static/documentation_options.js?v=6efca38a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ubdcc-dashboard Change Log" href="changelog.html" />
+    <link rel="prev" title="Welcome to ubdcc-dashboard’s documentation!" href="index.html" /><link rel="shortcut icon" type="image/png" href="_static/py.png" />
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+            <script type="text/javascript" src="_static/copybutton.js"></script>
+            <script type="text/javascript" src="_static/menu.js"></script> 
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <label for="menuToggler" class="toggler__label">
+        <span></span>
+    </label>
+    <nav class="nav-content" role="navigation">
+        <form role="search" class="search" action="search.html" method="get">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                <path fill-rule="nonzero"
+                        d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#444"></path>
+            </svg>
+            <input type="text" name="q" aria-label="Quick search"/>
+            <input type="submit" value="Go"/>
+        </form>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <p class="logo">
+                <div style="text-align: center;">
+                    <a href="https://github.com/oliver-zehentleitner/unicorn-binance-suite">
+                        <img src="https://raw.githubusercontent.com/oliver-zehentleitner/unicorn-binance-suite/refs/heads/master/images/logo/UBS-Logo.png">
+                    </a>
+                </div>
+            </p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">UBDCC Dashboard</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#authorship-license">Authorship &amp; License</a></li>
+<li><a class="reference internal" href="#installation-and-upgrade">Installation and Upgrade</a></li>
+<li><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li><a class="reference internal" href="#cli-options">CLI options</a></li>
+<li><a class="reference internal" href="#exposing-on-the-network">Exposing on the network</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-it-works">How it works</a></li>
+<li><a class="reference internal" href="#change-log">Change Log</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#related-articles">Related Articles</a></li>
+<li><a class="reference internal" href="#project-homepage">Project Homepage</a></li>
+<li><a class="reference internal" href="#wiki">Wiki</a></li>
+<li><a class="reference internal" href="#social">Social</a></li>
+<li><a class="reference internal" href="#receive-notifications">Receive Notifications</a></li>
+<li><a class="reference internal" href="#how-to-report-bugs-or-suggest-improvements">How to report Bugs or suggest Improvements?</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a><ul>
+<li><a class="reference internal" href="#contributors">Contributors</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ai-integration">AI Integration</a></li>
+<li><a class="reference internal" href="#disclaimer">Disclaimer</a><ul>
+<li><a class="reference internal" href="#if-you-intend-to-use-real-money-use-it-at-your-own-risk">If you intend to use real money, use it at your own risk!</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Welcome to ubdcc-dashboard’s documentation!</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="changelog.html"
+                          title="next chapter">ubdcc-dashboard Change Log</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/readme.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: block" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<div role="note" aria-label="source code">
+    <h3>GitHub</h3>
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard">Show Source</a></li>
+      
+<li>
+<a class="github-button" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard"
+   data-icon="octicon-star" data-show-count="true"
+   aria-label="Star oliver-zehentleitner/ubdcc-dashboard on GitHub">Star</a>
+<br />
+<a class="github-button" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/subscription"
+   data-icon="octicon-eye" data-show-count="true"
+   aria-label="Watch oliver-zehentleitner/ubdcc-dashboard on GitHub">Watch</a>
+<br />
+<a class="github-button" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/fork"
+   data-icon="octicon-repo-forked" data-show-count="true"
+   aria-label="Fork oliver-zehentleitner/ubdcc-dashboard on GitHub">Fork</a>
+<br />
+<a class="github-button" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues"
+   data-icon="octicon-issue-opened"
+   data-show-count="true" aria-label="Issue oliver-zehentleitner/ubdcc-dashboard on GitHub">Issue</a>
+    
+</li>
+
+    </ul>
+</div>
+        </nav>
+    </div>
+</div>
+  
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="changelog.html" title="ubdcc-dashboard Change Log"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ubdcc-dashboard’s documentation!"
+             accesskey="P">previous</a> |</li>
+              
+              <li><a href="https://oliver-zehentleitner.github.io/unicorn-binance-suite/docs_index.html">Docs Index</a> | </li>
+              <li><img src="_static/github-logo.png" alt="GitHub Logo" style="vertical-align: middle; margin-top: -1px"/></li>
+              <li><a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard">ubdcc-dashboard</a> &#187;</li>
+              
+              
+              <a href="index.html">Docs</a> &#187;
+              
+        <li class="nav-item nav-item-this"><a href="">UBDCC Dashboard</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Quick search" aria-label="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+                     |
+                </li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ubdcc-dashboard">
+<h1>UBDCC Dashboard<a class="headerlink" href="#ubdcc-dashboard" title="Link to this heading">¶</a></h1>
+<p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/releases"><img alt="GitHub Release" src="https://img.shields.io/github/release/oliver-zehentleitner/ubdcc-dashboard.svg?label=github&amp;color=blue" /></a>
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/oliver-zehentleitner/ubdcc-dashboard/total?color=blue" /></a>
+<a class="reference external" href="https://pypi.org/project/ubdcc-dashboard/"><img alt="PyPi Release" src="https://img.shields.io/pypi/v/ubdcc-dashboard?color=blue" /></a>
+<a class="reference external" href="https://pepy.tech/project/ubdcc-dashboard"><img alt="PyPi Downloads" src="https://pepy.tech/badge/ubdcc-dashboard" /></a>
+<a class="reference external" href="https://oliver-zehentleitner.github.io/ubdcc-dashboard/license.html"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue" /></a>
+<a class="reference external" href="https://www.python.org/downloads/"><img alt="Supported Python Version" src="https://img.shields.io/pypi/pyversions/ubdcc-dashboard.svg?logo=python" /></a>
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues"><img alt="PyPI - Status" src="https://img.shields.io/pypi/status/ubdcc-dashboard.svg" /></a>
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/codeql.yml/badge.svg" /></a>
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/unit-tests.yml"><img alt="Unit Tests" src="https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/unit-tests.yml/badge.svg" /></a>
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/build_wheels.yml"><img alt="Build and Publish GH+PyPi" src="https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/build_wheels.yml/badge.svg" /></a>
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/gh_release.yml"><img alt="Create GitHub Release" src="https://github.com/oliver-zehentleitner/ubdcc-dashboard/actions/workflows/gh_release.yml/badge.svg" /></a>
+<a class="reference external" href="https://oliver-zehentleitner.github.io/ubdcc-dashboard/"><img alt="Read the Docs" src="https://img.shields.io/badge/read-%20docs-yellow" /></a>
+<a class="reference external" href="https://blog.technopathy.club/series/unicorn-binance-suite"><img alt="Read How To`s" src="https://img.shields.io/badge/read-%20howto-yellow" /></a>
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard"><img alt="Github" src="https://img.shields.io/badge/source-github-cbc2c8" /></a>
+<a class="reference external" href="https://t.me/unicorndevs"><img alt="Telegram" src="https://img.shields.io/badge/community-telegram-41ab8c" /></a>
+<a class="reference external" href="https://github.com/oliver-zehentleitner/unicorn-binance-suite"><img alt="UBS-Banner" src="https://raw.githubusercontent.com/oliver-zehentleitner/unicorn-binance-suite/master/images/logo/UBS-Banner-Readme.png" /></a></p>
+<p>Browser-based live dashboard for the <a class="reference external" href="https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster">UNICORN Binance DepthCache Cluster (UBDCC)</a> —
+monitor every depth cache in your cluster at a glance, spot out-of-sync caches
+instantly, and add or remove caches on the fly.</p>
+<p>Part of the <a class="reference external" href="https://github.com/oliver-zehentleitner/unicorn-binance-suite">UNICORN Binance Suite</a>.</p>
+<hr class="docutils" />
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Compact <strong>mini-orderbook tiles</strong> per depth cache — top-3 asks/bids with
+quantity bars and spread in bps.</p></li>
+<li><p><strong>Continuous, low-overhead polling</strong>: <code class="docutils literal notranslate"><span class="pre">IntersectionObserver</span></code> + filter gate
+means only on-screen, matching tiles hit the cluster.</p></li>
+<li><p><strong>Status colouring</strong> per tile: out-of-sync (<code class="docutils literal notranslate"><span class="pre">error_id</span> <span class="pre">#6000</span></code>) turns red,
+other errors yellow with a compact error message.</p></li>
+<li><p><strong>Add DepthCaches</strong> modal with live <code class="docutils literal notranslate"><span class="pre">exchangeInfo</span></code> symbol lookup for spot,
+margin, futures, options (incl. testnets). Shows only actively tradable
+symbols. Free-text fallback for exchanges without a public <code class="docutils literal notranslate"><span class="pre">exchangeInfo</span></code>.</p></li>
+<li><p><strong>Bulk <code class="docutils literal notranslate"><span class="pre">×</span> <span class="pre">Remove</span> <span class="pre">filtered</span></code></strong> with two-click confirmation — only active when a
+filter is set, so you can never accidentally remove every DC.</p></li>
+<li><p><strong>Per-tile <code class="docutils literal notranslate"><span class="pre">×</span></code></strong> remove with two-click confirmation and 3 s auto-disarm.</p></li>
+<li><p><strong>Disconnect</strong> button to stop polling and cut load on the cluster.</p></li>
+<li><p>Refresh-rate throttle from <code class="docutils literal notranslate"><span class="pre">max</span></code> down to <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">s</span></code>. Default <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">s</span></code> is polite to
+the cluster; crank it up when you need a live feel.</p></li>
+<li><p><strong>Dark theme</strong>, tabular-numeric fonts, no framework, no tracking — a single
+HTML file served by a minimal stdlib HTTP server.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="authorship-license">
+<h2>Authorship &amp; License<a class="headerlink" href="#authorship-license" title="Link to this heading">¶</a></h2>
+<p>Author / Maintainer: Oliver Zehentleitner (https://github.com/oliver-zehentleitner)
+License: <strong>MIT</strong> — free for commercial and private use. No paid license,
+no subscription, no commercial tier.</p>
+</section>
+<hr class="docutils" />
+<section id="installation-and-upgrade">
+<h2>Installation and Upgrade<a class="headerlink" href="#installation-and-upgrade" title="Link to this heading">¶</a></h2>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>ubdcc-dashboard
+</pre></div>
+</div>
+<p>Requires Python 3.9+. No external dependencies — uses only the standard
+library.</p>
+</section>
+<hr class="docutils" />
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ubdcc-dashboard<span class="w"> </span>start
+</pre></div>
+</div>
+<p>The server binds to <code class="docutils literal notranslate"><span class="pre">127.0.0.1:8080</span></code> (localhost only) by default and opens
+the dashboard in your browser. Enter the URL of your UBDCC MGMT node
+(typical: <code class="docutils literal notranslate"><span class="pre">http://&lt;cluster-host&gt;:42081</span></code>) and hit <code class="docutils literal notranslate"><span class="pre">Connect</span></code>.</p>
+<section id="cli-options">
+<h3>CLI options<a class="headerlink" href="#cli-options" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ubdcc</span><span class="o">-</span><span class="n">dashboard</span> <span class="n">start</span> <span class="p">[</span><span class="o">--</span><span class="n">host</span> <span class="n">HOST</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">port</span> <span class="n">PORT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">browser</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">proxy</span><span class="o">-</span><span class="n">timeout</span> <span class="n">SECONDS</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">batch</span><span class="o">-</span><span class="n">workers</span> <span class="n">N</span><span class="p">]</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--host</code></td>
+<td><code>127.0.0.1</code></td>
+<td>Interface to bind. <strong>Localhost only by default — secure.</strong> Use <code>--host 0.0.0.0</code> to expose the dashboard on your network.</td>
+</tr>
+<tr>
+<td><code>--port</code></td>
+<td><code>8080</code></td>
+<td>TCP port to listen on.</td>
+</tr>
+<tr>
+<td><code>--no-browser</code></td>
+<td><em>off</em></td>
+<td>Do not auto-open the browser on start.</td>
+</tr>
+<tr>
+<td><code>--proxy-timeout</code></td>
+<td><code>10.0</code></td>
+<td>Timeout (seconds) for the CORS proxy's outbound fetches.</td>
+</tr>
+<tr>
+<td><code>--batch-workers</code></td>
+<td><code>32</code></td>
+<td>Worker threads used for <code>/proxy_batch</code> fan-out.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="exposing-on-the-network">
+<h3>Exposing on the network<a class="headerlink" href="#exposing-on-the-network" title="Link to this heading">¶</a></h3>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ubdcc-dashboard<span class="w"> </span>start<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8080</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>Note:</strong> The proxy is unauthenticated. Only expose the dashboard on a
+trusted network.</p>
+</div></blockquote>
+</section>
+</section>
+<hr class="docutils" />
+<section id="how-it-works">
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Link to this heading">¶</a></h2>
+<p>The dashboard is a single <code class="docutils literal notranslate"><span class="pre">index.html</span></code> (vanilla JS, no framework) served by
+a small stdlib HTTP server. The server also acts as a tiny <strong>CORS proxy</strong> so
+the browser can query a remote UBDCC cluster that does not send
+<code class="docutils literal notranslate"><span class="pre">Access-Control-Allow-Origin</span></code> headers.</p>
+<p>Under the hood:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/proxy?url=…</span></code> — passes a single GET through.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/proxy</span> <span class="pre">{url,</span> <span class="pre">body}</span></code> — passes a single JSON POST through.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/proxy_batch</span> <span class="pre">{base,</span> <span class="pre">requests}</span></code> — fans out a list of GETs over a
+thread pool (default 32 workers) for snappy orderbook refreshes.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">unicorn-binance-depth-cache-cluster</span></code> project is the server side of this
+story — the dashboard just paints what the cluster already exposes via its
+REST API.</p>
+</section>
+<hr class="docutils" />
+<section id="change-log">
+<h2>Change Log<a class="headerlink" href="#change-log" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://oliver-zehentleitner.github.io/ubdcc-dashboard/changelog.html">https://oliver-zehentleitner.github.io/ubdcc-dashboard/changelog.html</a></p>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://oliver-zehentleitner.github.io/ubdcc-dashboard">General</a></p></li>
+<li><p><a class="reference external" href="https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#cli-options">CLI Reference</a></p></li>
+</ul>
+</section>
+<section id="related-articles">
+<h2>Related Articles<a class="headerlink" href="#related-articles" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://blog.technopathy.club/series/unicorn-binance-suite">UNICORN Binance Suite Article Series</a></p></li>
+</ul>
+</section>
+<section id="project-homepage">
+<h2>Project Homepage<a class="headerlink" href="#project-homepage" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard">https://github.com/oliver-zehentleitner/ubdcc-dashboard</a></p>
+</section>
+<section id="wiki">
+<h2>Wiki<a class="headerlink" href="#wiki" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/wiki">https://github.com/oliver-zehentleitner/ubdcc-dashboard/wiki</a></p>
+</section>
+<section id="social">
+<h2>Social<a class="headerlink" href="#social" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions">Discussions</a></p></li>
+<li><p><a class="reference external" href="https://t.me/unicorndevs">https://t.me/unicorndevs</a></p></li>
+<li><p><a class="reference external" href="https://dev.binance.vision">https://dev.binance.vision</a></p></li>
+</ul>
+</section>
+<section id="receive-notifications">
+<h2>Receive Notifications<a class="headerlink" href="#receive-notifications" title="Link to this heading">¶</a></h2>
+<p>To receive notifications on available updates you can
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/watchers">watch</a>
+the repository on <a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard">GitHub</a>, or subscribe to the
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions/categories/releases">releases discussion category</a>.</p>
+<p>To receive news (like inspection windows/maintenance) about the Binance API’s subscribe to their telegram groups:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://t.me/binance_api_announcements">https://t.me/binance_api_announcements</a></p></li>
+<li><p><a class="reference external" href="https://t.me/binance_api_english">https://t.me/binance_api_english</a></p></li>
+<li><p><a class="reference external" href="https://t.me/Binance_USA">https://t.me/Binance_USA</a></p></li>
+<li><p><a class="reference external" href="https://t.me/TRBinanceTR">https://t.me/TRBinanceTR</a></p></li>
+<li><p><a class="reference external" href="https://t.me/BinanceExchange">https://t.me/BinanceExchange</a></p></li>
+</ul>
+</section>
+<section id="how-to-report-bugs-or-suggest-improvements">
+<h2>How to report Bugs or suggest Improvements?<a class="headerlink" href="#how-to-report-bugs-or-suggest-improvements" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement">List of planned features</a> —
+give a 👍 if you need one of them, or suggest a new feature!</p>
+<p>Before you report a bug, <a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard#installation-and-upgrade">try the latest release</a>. If the issue still exists, provide the error trace, OS, Python version, browser, and explain how to reproduce the error. A minimal reproduction (commands + cluster setup) is appreciated.</p>
+<p>If you don’t find an issue related to your topic, please open a new <a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues">issue</a>!</p>
+<p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/security/policy">Report a security bug!</a></p>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard">UBDCC Dashboard</a> is an open source project which welcomes contributions which can be anything from simple documentation fixes and reporting dead links to new features. To contribute follow
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/CONTRIBUTING.md">this guide</a>.</p>
+<section id="contributors">
+<h3>Contributors<a class="headerlink" href="#contributors" title="Link to this heading">¶</a></h3>
+<p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/graphs/contributors"><img alt="Contributors" src="https://contributors-img.web.app/image?repo=oliver-zehentleitner/ubdcc-dashboard" /></a></p>
+<p>We ❤ open source!</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ai-integration">
+<h2>AI Integration<a class="headerlink" href="#ai-integration" title="Link to this heading">¶</a></h2>
+<p>This project provides a <a class="reference external" href="https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/llms.txt"><code class="docutils literal notranslate"><span class="pre">llms.txt</span></code></a> file for AI tools (ChatGPT, Claude, Copilot, etc.) with structured usage instructions, CLI reference and architecture notes.</p>
+</section>
+<hr class="docutils" />
+<section id="disclaimer">
+<h2>Disclaimer<a class="headerlink" href="#disclaimer" title="Link to this heading">¶</a></h2>
+<p>This project is for informational purposes only. You should not construe this information or any other material as legal, tax, investment, financial or other advice. Nothing contained herein constitutes a solicitation, recommendation, endorsement or offer by us or any third party provider to buy or sell any securities or other financial instruments in this or any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of such jurisdiction.</p>
+<section id="if-you-intend-to-use-real-money-use-it-at-your-own-risk">
+<h3>If you intend to use real money, use it at your own risk!<a class="headerlink" href="#if-you-intend-to-use-real-money-use-it-at-your-own-risk" title="Link to this heading">¶</a></h3>
+<p>Under no circumstances will we be responsible or liable for any claims, damages, losses, expenses, costs or liabilities of any kind, including but not limited to direct or indirect damages for loss of profits.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo">
+                <div style="text-align: center;">
+                    <a href="https://github.com/oliver-zehentleitner/unicorn-binance-suite"><img src="https://raw.githubusercontent.com/oliver-zehentleitner/unicorn-binance-suite/refs/heads/master/images/logo/UBS-Logo.png"></a><br>
+                </div>
+            </p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">UBDCC Dashboard</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#authorship-license">Authorship &amp; License</a></li>
+<li><a class="reference internal" href="#installation-and-upgrade">Installation and Upgrade</a></li>
+<li><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li><a class="reference internal" href="#cli-options">CLI options</a></li>
+<li><a class="reference internal" href="#exposing-on-the-network">Exposing on the network</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-it-works">How it works</a></li>
+<li><a class="reference internal" href="#change-log">Change Log</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#related-articles">Related Articles</a></li>
+<li><a class="reference internal" href="#project-homepage">Project Homepage</a></li>
+<li><a class="reference internal" href="#wiki">Wiki</a></li>
+<li><a class="reference internal" href="#social">Social</a></li>
+<li><a class="reference internal" href="#receive-notifications">Receive Notifications</a></li>
+<li><a class="reference internal" href="#how-to-report-bugs-or-suggest-improvements">How to report Bugs or suggest Improvements?</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a><ul>
+<li><a class="reference internal" href="#contributors">Contributors</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ai-integration">AI Integration</a></li>
+<li><a class="reference internal" href="#disclaimer">Disclaimer</a><ul>
+<li><a class="reference internal" href="#if-you-intend-to-use-real-money-use-it-at-your-own-risk">If you intend to use real money, use it at your own risk!</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Welcome to ubdcc-dashboard’s documentation!</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="changelog.html"
+                          title="next chapter">ubdcc-dashboard Change Log</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/readme.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: block" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<div role="note" aria-label="source code">
+    <h3>GitHub</h3>
+    <ul class="this-page-menu">
+      <li><a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard">Show Source</a></li>
+      
+<li>
+<a class="github-button" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard"
+   data-icon="octicon-star" data-show-count="true"
+   aria-label="Star oliver-zehentleitner/ubdcc-dashboard on GitHub">Star</a>
+<br />
+<a class="github-button" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/subscription"
+   data-icon="octicon-eye" data-show-count="true"
+   aria-label="Watch oliver-zehentleitner/ubdcc-dashboard on GitHub">Watch</a>
+<br />
+<a class="github-button" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/fork"
+   data-icon="octicon-repo-forked" data-show-count="true"
+   aria-label="Fork oliver-zehentleitner/ubdcc-dashboard on GitHub">Fork</a>
+<br />
+<a class="github-button" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues"
+   data-icon="octicon-issue-opened"
+   data-show-count="true" aria-label="Issue oliver-zehentleitner/ubdcc-dashboard on GitHub">Issue</a>
+    
+</li>
+
+    </ul>
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="changelog.html" title="ubdcc-dashboard Change Log"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ubdcc-dashboard’s documentation!"
+             >previous</a> |</li>
+              
+              <li><a href="https://oliver-zehentleitner.github.io/unicorn-binance-suite/docs_index.html">Docs Index</a> | </li>
+              <li><img src="_static/github-logo.png" alt="GitHub Logo" style="vertical-align: middle; margin-top: -1px"/></li>
+              <li><a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard">ubdcc-dashboard</a> &#187;</li>
+              
+              
+              <a href="index.html">Docs</a> &#187;
+              
+        <li class="nav-item nav-item-this"><a href="">UBDCC Dashboard</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Quick search" aria-label="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+                     |
+                </li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    <a href="https://github.com/oliver-zehentleitner/unicorn-binance-suite#documentation">Index of all docs</a><br />
+    &copy; <a href="/license.html">Copyright</a> 2026, Oliver Zehentleitner.
+    See <a href="/license.html">License</a> for more information.<br />
+    Last updated on Apr 22 2026 at 21:58 (CET).
+    <a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues/new/choose">Found a bug</a>?
+    <br />
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+        with <a href="https://github.com/oliver-zehentleitner/python-docs-theme-ubs">python-docs-theme-ubs</a>.
+    </div>
+
+  </body>
+</html>
