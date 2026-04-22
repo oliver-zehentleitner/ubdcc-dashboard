@@ -122,25 +122,72 @@ REST API.
 
 ---
 
-## Source Code
+## Change Log
+[https://oliver-zehentleitner.github.io/ubdcc-dashboard/changelog.html](https://oliver-zehentleitner.github.io/ubdcc-dashboard/changelog.html)
 
-https://github.com/oliver-zehentleitner/ubdcc-dashboard
+## Documentation
+- [General](https://oliver-zehentleitner.github.io/ubdcc-dashboard)
+- [CLI Reference](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#cli-options)
 
-## Issue tracker
+## Related Articles
+- [UNICORN Binance Suite Article Series](https://blog.technopathy.club/series/unicorn-binance-suite)
+- [The UNICORN Binance DepthCache Cluster project](https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster) — the server side the dashboard talks to.
 
-https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues
+## Project Homepage
+[https://github.com/oliver-zehentleitner/ubdcc-dashboard](https://github.com/oliver-zehentleitner/ubdcc-dashboard)
 
-## Security
+## Wiki
+[https://github.com/oliver-zehentleitner/ubdcc-dashboard/wiki](https://github.com/oliver-zehentleitner/ubdcc-dashboard/wiki)
 
-Please report security issues via [GitHub Security Advisories](https://github.com/oliver-zehentleitner/ubdcc-dashboard/security/advisories/new) — see [SECURITY.md](SECURITY.md).
+## Social
+- [Discussions](https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions)
+- [https://t.me/unicorndevs](https://t.me/unicorndevs)
+- [https://dev.binance.vision](https://dev.binance.vision)
+
+## Receive Notifications
+To receive notifications on available updates you can
+[watch](https://github.com/oliver-zehentleitner/ubdcc-dashboard/watchers)
+the repository on [GitHub](https://github.com/oliver-zehentleitner/ubdcc-dashboard), or subscribe to the
+[releases discussion category](https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions/categories/releases).
+
+To receive news (like inspection windows/maintenance) about the Binance API's subscribe to their telegram groups:
+
+- [https://t.me/binance_api_announcements](https://t.me/binance_api_announcements)
+- [https://t.me/binance_api_english](https://t.me/binance_api_english)
+- [https://t.me/Binance_USA](https://t.me/Binance_USA)
+- [https://t.me/TRBinanceTR](https://t.me/TRBinanceTR)
+- [https://t.me/BinanceExchange](https://t.me/BinanceExchange)
+
+## How to report Bugs or suggest Improvements?
+[List of planned features](https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) —
+give a 👍 if you need one of them, or suggest a new feature!
+
+Before you report a bug, [try the latest release](https://github.com/oliver-zehentleitner/ubdcc-dashboard#installation-and-upgrade). If the issue still exists, provide the error trace, OS, Python version, browser, and explain how to reproduce the error. A minimal reproduction (commands + cluster setup) is appreciated.
+
+If you don't find an issue related to your topic, please open a new [issue](https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues)!
+
+[Report a security bug!](https://github.com/oliver-zehentleitner/ubdcc-dashboard/security/policy)
 
 ## Contributing
+[UBDCC Dashboard](https://github.com/oliver-zehentleitner/ubdcc-dashboard) is an open source project which welcomes contributions which can be anything from simple documentation fixes and reporting dead links to new features. To contribute follow
+[this guide](https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/CONTRIBUTING.md).
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md).
+### Contributors
+[![Contributors](https://contributors-img.web.app/image?repo=oliver-zehentleitner/ubdcc-dashboard)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/graphs/contributors)
 
-## Changelog
+We ❤ open source!
 
-See [CHANGELOG.md](CHANGELOG.md).
+---
 
-## Get a Developer Chat
-Join our [Telegram group](https://t.me/unicorndevs) and come chat with us!
+## AI Integration
+
+This project provides a [`llms.txt`](https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/llms.txt) file for AI tools (ChatGPT, Claude, Copilot, etc.) with structured usage instructions, CLI reference and architecture notes.
+
+---
+
+## Disclaimer
+This project is for informational purposes only. You should not construe this information or any other material as legal, tax, investment, financial or other advice. Nothing contained herein constitutes a solicitation, recommendation, endorsement or offer by us or any third party provider to buy or sell any securities or other financial instruments in this or any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of such jurisdiction.
+
+### If you intend to use real money, use it at your own risk!
+
+Under no circumstances will we be responsible or liable for any claims, damages, losses, expenses, costs or liabilities of any kind, including but not limited to direct or indirect damages for loss of profits.
