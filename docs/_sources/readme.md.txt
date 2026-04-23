@@ -1,4 +1,5 @@
-# UBDCC Dashboard
+> ⚠️ Security Warning: There are currently fraudulent repositories (e.g., under the user gesine1541ro7) impersonating this project to distribute malware. Please ensure you are only using the official source: oliver-zehentleitner/unicorn-binance-websocket-api.
+[Read the full technical analysis and campaign details here!](https://blog.technopathy.club/security-warning-fraudulent-github-repository-impersonating-unicorn-binance-websocket-api)
 
 [![GitHub Release](https://img.shields.io/github/release/oliver-zehentleitner/ubdcc-dashboard.svg?label=github&color=blue)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/releases)
 [![GitHub Downloads](https://img.shields.io/github/downloads/oliver-zehentleitner/ubdcc-dashboard/total?color=blue)](https://github.com/oliver-zehentleitner/ubdcc-dashboard/releases)
@@ -15,6 +16,8 @@
 [![Github](https://img.shields.io/badge/source-github-cbc2c8)](https://github.com/oliver-zehentleitner/ubdcc-dashboard)
 [![Telegram](https://img.shields.io/badge/community-telegram-41ab8c)](https://t.me/unicorndevs)
 [![UBS-Banner](https://raw.githubusercontent.com/oliver-zehentleitner/unicorn-binance-suite/master/images/logo/UBS-Banner-Readme.png)](https://github.com/oliver-zehentleitner/unicorn-binance-suite)
+
+# UBDCC Dashboard
 
 Browser-based live dashboard for the [UNICORN Binance DepthCache Cluster (UBDCC)](https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster) —
 monitor every depth cache in your cluster at a glance, spot out-of-sync caches
