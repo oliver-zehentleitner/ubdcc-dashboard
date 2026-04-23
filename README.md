@@ -44,7 +44,10 @@ Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unic
 - **Dark theme**, tabular-numeric fonts, no framework, no tracking — a single
   HTML file served by a minimal stdlib HTTP server.
 
----
+## Screenshot
+The dashboard provides a compact live view of your UBDCC cluster in the browser: mini-orderbook tiles, sync/error state 
+visibility, and quick DepthCache management in one place.
+![UBDCC Dashboard Screenshot](https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.jpeg)
 
 ## Authorship & License
 
