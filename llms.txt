@@ -54,6 +54,7 @@ The dashboard is a client, not part of the cluster. It talks to a running UBDCC 
 ## Links
 
 - GitHub:        https://github.com/oliver-zehentleitner/ubdcc-dashboard
+- Docs:          https://oliver-zehentleitner.github.io/ubdcc-dashboard
 - PyPI:          https://pypi.org/project/ubdcc-dashboard
 - Issues:        https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues
 - Changelog:     https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/CHANGELOG.md
