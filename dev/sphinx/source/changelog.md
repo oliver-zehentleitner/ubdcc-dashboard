@@ -9,6 +9,113 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 [How to upgrade to the latest version!](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#installation-and-upgrade)
 
+## 0.2.1.dev (development stage/unreleased/unstable)
+
+## 0.2.0
+### Added
+- **Version badge** next to the header title: shows the installed
+  dashboard version, queries PyPI once on load, turns into an animated
+  rainbow gradient when a newer release is available (with a `pip install -U`
+  hint in the hover tooltip) and stays in the accent colour when up to date.
+- Server endpoint **`/version`** on the launcher HTTP server returns
+  `{"version": "..."}` from `ubdcc_dashboard.__version__` — used by the
+  badge and available for external health checks.
+- Min-gap dropdown now offers **`5 s`** and **`10 s`** in addition to the
+  existing presets — gentler polling for lightly-used clusters.
+- **Cluster Status** header button with a live health dot
+  (green / yellow / red) driven by a 30 s `/get_cluster_info` poll.
+  Click opens a modal with:
+  - Top strip: `HEALTHY` / `DEGRADED` / `ERROR`, pod count, DC count,
+    mgmt version, DB-sync age
+  - Pods grouped by role (MGMT / REST API / DCN) with per-pod status
+    pill, node, IP:port, version, `UBLDC_VERSION` (DCNs), `last seen Xs ago`
+  - Node topology grid (how many mgmt / rest / dcn pods per node)
+  - DepthCaches list with a replica donut (running / desired) and
+    optional sync-state label (`in sync` / `out of sync` / `error`)
+    sourced from the main grid's already-polled tiles, plus a restart
+    counter when restarts > 0
+  - Credentials summary grouped by account_group
+  - Live-ticking `updated Xs ago`, manual `Refresh` button, modal
+    cleanly stops its tick timer on close.
+- **Credentials** header button + manager modal: add / remove / list
+  Binance API key pairs on a running cluster. Secrets masked in the list,
+  `api_secret` input is `type=password`, two-click confirm on remove with
+  3 s auto-disarm, inline error feedback, footer hint about proxy trust.
+- **API Builder** header button + modal — onboarding helper for devs.
+  Generates ready-to-paste REST-API calls in **eight languages**:
+  - `curl` (POSIX-safe quoting, heredoc bodies)
+  - `HTTPie` (`==` for query, `=` / `:=` for body)
+  - `Python` — uses the official UBLDC cluster client
+    (`BinanceLocalDepthCacheManager` context manager + `ubldc.cluster.*`),
+    matching the pattern in UBLDC's `examples/` folder
+  - `JavaScript` (`fetch` + `URLSearchParams`, async/await)
+  - `Go` (`net/http`, no external deps)
+  - `C#` (`HttpClient`, top-level .NET 6+)
+  - `Java` (`java.net.http.HttpClient`, JDK 11+, no external deps)
+  - `Rust` (`reqwest::blocking`, raw-string JSON bodies with auto-bumped
+    hash count so devs don't have to think about escaping)
+
+  Eleven tasks in four groups — Credentials (add / remove / list),
+  DepthCaches (create / create-bulk / stop / info / list), Order Book
+  (asks / bids), Cluster (info). Editable Base URL, method-coloured
+  badge, `Try it →` button for safe GET + DC-create/stop tasks, Copy
+  button, link to the cluster's OpenAPI (`/docs`) in the footer.
+- **Margin / isolated_margin (+ testnet)** exchange strings added to
+  the Add-DC exchange dropdown and the `exchangeInfo` URL map.
+  Requires UBLDC ≥ 2.14.0 + UBDCC ≥ 0.7.0.
+### Changed
+- Header title: `UBDCC LIVE` → `UBDCC DASHBOARD` (full caps, matches
+  the other header buttons).
+- Empty-state message is now context-sensitive: "Enter the URL…"
+  when disconnected, "No DepthCaches configured yet — click
+  DepthCaches to add one." when connected with 0 DCs, hidden when DCs
+  are present. Wording corrected from "MGMT node" to "REST API node"
+  — users connect to restapi on `:42081`, not mgmt on `:42080`.
+- Internal `fetch("/proxy", POST)` duplicates consolidated into a
+  `proxyPost(url, body)` helper symmetric with the existing `proxyGet`
+  / `proxyBatch`.
+- Header: `+ Add DC` renamed to `DepthCaches` and `DCC URL` label
+  renamed to `UBDCC URL` — one consistent noun style across
+  `Cluster ● · Credentials · DepthCaches · API Builder`.
+- Default UBDCC URL in the connect field is now `http://127.0.0.1:42081`
+  (the standard local-install port) instead of a baked-in LAN IP.
+- Credential endpoint paths used across the dashboard match the renamed
+  UBDCC REST API — `/add_credentials`, `/remove_credentials`,
+  `/get_credentials_list`. Requires **UBDCC ≥ 0.7.0**.
+- Cluster-info DC cards use the label `X/Y replicas` (distribution
+  count) instead of `running` — distribution STATUS only means
+  "pod process started", not "cache synchronised". The sync state is
+  shown as a separate `in sync` / `out of sync` meta entry when the
+  main grid has already polled that DC.
+### Fixed
+- Main polling loop no longer blocks the first data fetch behind the
+  min-gap wait. With the new 5 s / 10 s options the viewport-visibility
+  detection would otherwise delay the initial render by a full gap
+  cycle. The loop now only throttles after cycles that actually
+  fetched.
+- API Builder Copy button keeps its "Copied" confirmation through form
+  edits — the state now only resets when the generated snippet text
+  actually changes.
+- HTTPie snippet generator emits bare numeric/boolean query values
+  (`debug==true`) instead of wrapping them in single quotes.
+- Cluster-info poll is paused while the browser tab is hidden AND the
+  modal is closed; refreshes once on `visibilitychange` when the tab
+  becomes visible again — avoids overnight chatter against the mgmt
+  node.
+- Credentials modal surfaces network errors inline in red instead of
+  silently rendering "no credentials configured".
+- Minor XSS hardening: the Add-DepthCache modal's `exchangeInfo`-failed
+  error path now builds the error element via `el()` instead of
+  interpolating the API-returned message into `innerHTML`.
+- `stopClusterPoll` also clears the 1 s `tickTimer` as a belt-and-
+  suspenders cleanup on disconnect.
+- API Builder Copy button now works over plain HTTP on a LAN IP
+  (`navigator.clipboard` is only available in a secure context;
+  fall back to `document.execCommand('copy')` via a hidden textarea).
+- Cluster Info modal: fixed scroll so Close / Refresh stay reachable
+  when many DCs are configured (flex sizing was blocking the inner
+  scroller from shrinking below content size).
+
 ## 0.1.1
 ### Added
 - Initial release.

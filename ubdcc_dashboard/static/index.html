@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>UBDCC Live Dashboard</title>
+<title>UBDCC Dashboard</title>
 <style>
   :root {
     --bg: #0b0d11;
@@ -33,6 +33,26 @@
   header h1 {
     margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.5px;
     color: var(--accent);
+  }
+  header h1 .dash-version {
+    color: var(--accent); font-size: 14px; font-weight: 600;
+    margin-left: 8px; letter-spacing: 0.5px;
+  }
+  header h1 .dash-version.uptodate { cursor: help; }
+  header h1 .dash-version.outdated {
+    cursor: help;
+    background: linear-gradient(90deg,
+      #f87171, #fbbf24, #34d399, #7dd3fc, #a78bfa, #f472b6, #f87171);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: rainbow-shift 3s linear infinite;
+  }
+  @keyframes rainbow-shift {
+    from { background-position: 0% 0; }
+    to   { background-position: -200% 0; }
   }
   header .sep { width: 1px; height: 22px; background: var(--border); }
   .hint { color: var(--muted); font-size: 10px; font-style: italic; }
@@ -171,6 +191,302 @@
     letter-spacing: 0.5px;
   }
 
+  /* cluster status button */
+  .cluster-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 9px 4px 8px;
+  }
+  .cluster-status .cs-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--muted);
+    box-shadow: 0 0 0 0 rgba(0,0,0,0);
+    transition: background 0.25s, box-shadow 0.25s;
+  }
+  .cluster-status[data-health="ok"]      .cs-dot { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.7); }
+  .cluster-status[data-health="warn"]    .cs-dot { background: var(--yellow); box-shadow: 0 0 6px rgba(251,191,36,0.7); }
+  .cluster-status[data-health="err"]     .cs-dot { background: var(--red); box-shadow: 0 0 6px rgba(248,113,113,0.8); animation: cs-pulse 1.4s ease-in-out infinite; }
+  .cluster-status[data-health="unknown"] .cs-dot { background: var(--muted); }
+  .cluster-status .cs-label { font-size: 11px; color: var(--muted); letter-spacing: 0.3px; }
+  @keyframes cs-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  /* cluster info modal */
+  .modal.cluster {
+    width: 820px;
+  }
+  .modal.cluster .ci-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 14px;
+    padding-right: 4px;
+  }
+  .modal.cluster .ci-scroll::-webkit-scrollbar { width: 10px; }
+  .modal.cluster .ci-scroll::-webkit-scrollbar-track { background: var(--bg); border-radius: 4px; }
+  .modal.cluster .ci-scroll::-webkit-scrollbar-thumb { background: #3a4150; border-radius: 4px; border: 2px solid var(--bg); }
+  .modal.cluster .ci-scroll::-webkit-scrollbar-thumb:hover { background: #4a5160; }
+  .modal.cluster .ci-scroll { scrollbar-color: #3a4150 var(--bg); scrollbar-width: thin; }
+  .ci-top {
+    display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center;
+    padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--panel-2);
+  }
+  .ci-top .ci-health {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 13px; letter-spacing: 0.4px;
+  }
+  .ci-top .ci-health .cs-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .ci-top[data-health="ok"]   .ci-health { color: var(--green); }
+  .ci-top[data-health="warn"] .ci-health { color: var(--yellow); }
+  .ci-top[data-health="err"]  .ci-health { color: var(--red); }
+  .ci-top[data-health="unknown"] .ci-health { color: var(--muted); }
+  .ci-top[data-health="ok"]   .ci-health .cs-dot { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.7); }
+  .ci-top[data-health="warn"] .ci-health .cs-dot { background: var(--yellow); box-shadow: 0 0 6px rgba(251,191,36,0.7); }
+  .ci-top[data-health="err"]  .ci-health .cs-dot { background: var(--red); box-shadow: 0 0 6px rgba(248,113,113,0.8); }
+  .ci-top[data-health="unknown"] .ci-health .cs-dot { background: var(--muted); }
+  .ci-top .ci-stat { color: var(--muted); font-size: 11px; }
+  .ci-top .ci-stat b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .ci-section h3 {
+    margin: 0 0 6px 0; font-size: 11px; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase;
+  }
+  .ci-role-group { margin-bottom: 10px; }
+  .ci-role-group .role-hdr {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 5px;
+    font-size: 11px; color: var(--accent); font-weight: 600; letter-spacing: 0.4px;
+  }
+  .ci-pods {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 6px;
+  }
+  .ci-pod {
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 5px; padding: 7px 9px;
+    font-size: 11px; display: flex; flex-direction: column; gap: 2px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  .ci-pod .p-name { color: var(--text); font-weight: 600; display: flex; justify-content: space-between; gap: 6px; align-items: center; }
+  .ci-pod .p-meta { color: var(--muted); font-size: 10px; }
+  .ci-pod .p-pill {
+    font-size: 9px; font-family: inherit; padding: 1px 6px; border-radius: 8px;
+    letter-spacing: 0.4px; text-transform: uppercase; border: 1px solid var(--border);
+  }
+  .p-pill.running   { color: var(--green); border-color: var(--green-dim); background: rgba(52,211,153,0.08); }
+  .p-pill.starting  { color: var(--yellow); border-color: #a16207; background: rgba(251,191,36,0.08); }
+  .p-pill.stale     { color: var(--yellow); border-color: #a16207; background: rgba(251,191,36,0.08); }
+  .p-pill.other     { color: var(--red); border-color: var(--red-dim); background: rgba(248,113,113,0.08); }
+
+  .ci-nodes {
+    display: grid; gap: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+  }
+  .ci-node-row {
+    display: grid; grid-template-columns: 1fr auto auto auto;
+    gap: 10px; padding: 5px 9px;
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px;
+    align-items: center;
+  }
+  .ci-node-row .n-name { color: var(--text); }
+  .ci-node-row .n-count { color: var(--muted); font-size: 10px; }
+  .ci-node-row .n-count b { color: var(--accent); }
+
+  .ci-dcs {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 6px;
+  }
+  .ci-dc {
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 5px; padding: 7px 9px;
+    display: flex; gap: 10px; align-items: center;
+    font-size: 11px;
+  }
+  .ci-dc .donut { flex: 0 0 auto; }
+  .ci-dc .dc-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .ci-dc .dc-market { color: var(--text); font-weight: 600; font-family: "SF Mono", Menlo, Consolas, monospace; }
+  .ci-dc .dc-exch { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .ci-dc .dc-meta { color: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 8px; }
+  .ci-dc .dc-meta .k { color: var(--text); }
+  .ci-dc .dc-meta .restart { color: var(--yellow); }
+  .ci-dc .dc-meta .sync.ok  { color: var(--green); }
+  .ci-dc .dc-meta .sync.warn { color: var(--yellow); }
+  .ci-dc .dc-meta .sync.err { color: var(--red); font-weight: 600; }
+  .ci-dc[data-health="err"]  { border-color: var(--red-dim); background: #1a0e10; }
+  .ci-dc[data-health="warn"] { border-color: #a16207; }
+
+  .ci-creds { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 6px; }
+  .ci-cred {
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 5px; padding: 6px 9px; font-size: 11px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .ci-cred .cr-grp { color: var(--accent); font-size: 10px; letter-spacing: 0.4px; }
+  .ci-cred .cr-meta { color: var(--muted); font-size: 10px; }
+
+  .ci-empty { color: var(--muted); font-size: 11px; font-style: italic; padding: 6px 0; }
+
+  /* api builder modal */
+  .modal.builder { width: 960px; max-width: 98vw; }
+  .modal.builder h2 .sub { color: var(--muted); font-weight: 400; font-size: 11px; letter-spacing: 0; }
+  .bd-body {
+    flex: 1 1 auto; min-height: 0;
+    display: grid; grid-template-columns: 200px 1fr; gap: 12px;
+  }
+  .bd-tasks {
+    overflow-y: auto;
+    border: 1px solid var(--border); border-radius: 5px;
+    background: var(--bg);
+    padding: 6px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .bd-tasks::-webkit-scrollbar { width: 8px; }
+  .bd-tasks::-webkit-scrollbar-thumb { background: #3a4150; border-radius: 4px; }
+  .bd-group-hdr {
+    padding: 7px 6px 3px 6px;
+    color: var(--muted); font-size: 9px; font-weight: 600;
+    letter-spacing: 0.8px; text-transform: uppercase;
+  }
+  .bd-task-item {
+    padding: 5px 8px; border-radius: 3px; cursor: pointer;
+    font-size: 11px; color: var(--text);
+    border: 1px solid transparent;
+    user-select: none;
+  }
+  .bd-task-item:hover { background: var(--panel-2); border-color: var(--border); }
+  .bd-task-item.active { background: #1e40af; border-color: #3b82f6; color: #fff; }
+  .bd-task-item .bd-task-method {
+    display: inline-block; width: 38px; font-size: 9px; font-weight: 700;
+    color: var(--accent); margin-right: 4px; font-family: "SF Mono", monospace;
+  }
+  .bd-task-item.active .bd-task-method { color: #bae6fd; }
+
+  .bd-main {
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 10px;
+    padding-right: 4px;
+  }
+  .bd-main::-webkit-scrollbar { width: 10px; }
+  .bd-main::-webkit-scrollbar-thumb { background: #3a4150; border-radius: 4px; }
+
+  .bd-task-head h3 { margin: 0 0 4px 0; color: var(--accent); font-size: 14px; font-weight: 600; }
+  .bd-method-row { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+  .bd-method {
+    font-family: "SF Mono", monospace; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 3px; letter-spacing: 0.5px;
+    background: #14532d; color: var(--green); border: 1px solid var(--green-dim);
+  }
+  .bd-method[data-m="POST"] { background: #1e3a8a; color: #93c5fd; border-color: #1e40af; }
+  .bd-method[data-m="DELETE"] { background: #7f1d1d; color: var(--red); border-color: var(--red-dim); }
+  .bd-path { color: var(--text); font-size: 11px; background: var(--panel-2); padding: 2px 6px; border-radius: 3px; }
+  .bd-task-desc { margin: 4px 0 0 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
+
+  .bd-section {
+    padding-top: 8px; border-top: 1px solid var(--border);
+  }
+  .bd-label { display: block; color: var(--muted); font-size: 10px; letter-spacing: 0.4px; margin-bottom: 3px; text-transform: uppercase; font-weight: 600; }
+  .bd-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+  .bd-fields.single { grid-template-columns: 1fr; }
+  .bd-field label { display: flex; flex-direction: column; gap: 3px; color: var(--muted); font-size: 11px; }
+  .bd-field label .fld-name { color: var(--text); font-size: 11px; font-weight: 500; }
+  .bd-field label .fld-name .req { color: var(--red); margin-left: 3px; }
+  .bd-field label .fld-name .opt { color: var(--muted); font-weight: 400; font-size: 10px; margin-left: 4px; }
+  .bd-field input, .bd-field select, .bd-field textarea { width: 100%; font-family: "SF Mono", monospace; font-size: 11px; }
+  .bd-field textarea { min-height: 52px; resize: vertical; }
+  .bd-field .fld-hint { color: var(--muted); font-size: 10px; font-style: italic; }
+  .bd-field .fld-secret-warn { color: var(--yellow); font-size: 10px; }
+
+  .bd-lang-tabs { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
+  .bd-lang-tab {
+    padding: 4px 10px; border: 1px solid var(--border); background: var(--panel-2);
+    color: var(--muted); border-radius: 4px 4px 0 0; cursor: pointer;
+    font-size: 11px; font-family: inherit;
+    border-bottom: 2px solid transparent;
+  }
+  .bd-lang-tab:hover { color: var(--text); }
+  .bd-lang-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg); }
+
+  .bd-snippet-wrap { position: relative; }
+  .bd-snippet {
+    margin: 0;
+    background: #06080c;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    color: #e6e8ec;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+    max-height: 260px;
+  }
+  .bd-copy {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(255,255,255,0.05); color: var(--muted);
+    border: 1px solid var(--border); border-radius: 3px;
+    padding: 3px 8px; font-size: 10px; cursor: pointer;
+  }
+  .bd-copy:hover { color: var(--text); background: rgba(255,255,255,0.1); }
+  .bd-copy.ok { color: var(--green); border-color: var(--green-dim); }
+
+  .bd-tryit-row { display: flex; gap: 10px; align-items: center; }
+  .bd-tryit-hint { color: var(--muted); font-size: 11px; font-style: italic; }
+  .bd-response {
+    margin: 8px 0 0 0;
+    background: #06080c;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    color: #cbd5e1;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    max-height: 260px; overflow: auto;
+    white-space: pre-wrap;
+  }
+  .bd-response.err { border-color: var(--red-dim); color: var(--red); }
+  .bd-response.ok { border-color: var(--green-dim); }
+
+  /* credentials modal */
+  .modal.credentials { width: 620px; }
+  .modal.credentials .cr-list {
+    flex: 1 1 auto;
+    min-height: 80px;
+    max-height: 46vh;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 5px;
+    padding: 6px; border: 1px solid var(--border); border-radius: 5px;
+    background: var(--bg);
+  }
+  .modal.credentials .cr-list::-webkit-scrollbar { width: 10px; }
+  .modal.credentials .cr-list::-webkit-scrollbar-track { background: var(--bg); border-radius: 4px; }
+  .modal.credentials .cr-list::-webkit-scrollbar-thumb { background: #3a4150; border-radius: 4px; border: 2px solid var(--bg); }
+  .modal.credentials .cr-list { scrollbar-color: #3a4150 var(--bg); scrollbar-width: thin; }
+
+  .cr-item {
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 7px 9px;
+    display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center;
+    font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11px;
+  }
+  .cr-item .cr-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .cr-item .cr-head { display: flex; gap: 10px; align-items: baseline; }
+  .cr-item .cr-grp { color: var(--accent); font-weight: 600; letter-spacing: 0.3px; }
+  .cr-item .cr-key { color: var(--text); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cr-item .cr-meta { color: var(--muted); font-size: 10px; }
+  .cr-item .cr-rm {
+    background: var(--panel); color: var(--muted); border: 1px solid var(--border);
+    border-radius: 3px; padding: 3px 8px; font-size: 10px; cursor: pointer;
+    font-family: inherit; letter-spacing: 0.3px;
+  }
+  .cr-item .cr-rm:hover { color: #fff; background: var(--red); border-color: var(--red); }
+  .cr-item.arm-remove { border-color: var(--red); box-shadow: 0 0 0 2px rgba(248,113,113,0.3); }
+  .cr-item.arm-remove .cr-rm { background: var(--red); border-color: var(--red); color: #fff; font-weight: 700; }
+
+  .cr-add { border-top: 1px solid var(--border); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .cr-add .row2 { gap: 8px; }
+  .cr-add .role-hdr { color: var(--muted); font-size: 10px; letter-spacing: 0.8px; }
+
   /* modal */
   .modal-bg {
     position: fixed; inset: 0; background: rgba(0,0,0,0.7);
@@ -187,7 +503,7 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     overflow: hidden;  /* children handle their own scroll */
   }
-  .modal > *:not(.mkt-box) { flex-shrink: 0; }
+  .modal > *:not(.mkt-box):not(.ci-scroll) { flex-shrink: 0; }
   .modal h2 { margin: 0 0 4px 0; font-size: 14px; color: var(--accent); font-weight: 600; }
   .modal .row2 { display: flex; gap: 8px; align-items: center; }
   .modal .row2 > * { flex: 1; }
@@ -237,14 +553,18 @@
 </head>
 <body>
 <header>
-  <h1>UBDCC LIVE</h1>
+  <h1>UBDCC DASHBOARD<span id="dashVersion" class="dash-version" title=""></span></h1>
   <div class="sep"></div>
-  <label>DCC URL
-    <input id="dccUrl" type="text" value="http://192.168.0.30:42081" size="26" />
+  <label>UBDCC URL
+    <input id="dccUrl" type="text" value="http://127.0.0.1:42081" size="26" />
   </label>
   <button id="connectBtn" class="primary">Connect</button>
   <button id="disconnectBtn" disabled title="Stop polling and clear view">Disconnect</button>
-  <button id="addBtn" disabled>+ Add DC</button>
+  <button id="clusterStatusBtn" class="cluster-status" data-health="unknown" disabled
+          title="Cluster status — click for details"><span class="cs-dot"></span><span class="cs-label">Cluster</span></button>
+  <button id="credentialsBtn" disabled title="Manage API credentials">Credentials</button>
+  <button id="addBtn" disabled>DepthCaches</button>
+  <button id="builderBtn" disabled title="Generate REST API calls in curl / Python / JS / Go / HTTPie">API Builder</button>
   <button id="rmFilteredBtn" disabled title="Remove all currently filtered DepthCaches">× Remove filtered</button>
   <div class="sep"></div>
   <label>Min gap
@@ -255,6 +575,8 @@
       <option value="500">500 ms</option>
       <option value="1000">1 s</option>
       <option value="2000" selected>2 s</option>
+      <option value="5000">5 s</option>
+      <option value="10000">10 s</option>
     </select>
   </label>
   <label>Filter
@@ -268,7 +590,7 @@
 </header>
 
 <div id="grid"></div>
-<div id="empty">Enter the URL of your UBDCC MGMT node above and hit <code>Connect</code>.</div>
+<div id="empty">Enter the URL of your UBDCC REST API node above and hit <code>Connect</code>.</div>
 
 <div class="modal-bg" id="modal">
   <div class="modal">
@@ -282,6 +604,8 @@
         <option value="binance.com-futures">binance.com-futures</option>
         <option value="binance.com-vanilla-options">binance.com-vanilla-options</option>
         <option value="binance.com-testnet">binance.com-testnet</option>
+        <option value="binance.com-margin-testnet">binance.com-margin-testnet</option>
+        <option value="binance.com-isolated_margin-testnet">binance.com-isolated_margin-testnet</option>
         <option value="binance.com-futures-testnet">binance.com-futures-testnet</option>
         <option value="binance.com-vanilla-options-testnet">binance.com-vanilla-options-testnet</option>
         <option value="binance.us">binance.us</option>
@@ -316,6 +640,108 @@
       <div style="display:flex;gap:8px">
         <button id="m_cancel">Cancel</button>
         <button id="m_submit" class="primary">Create</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<div class="modal-bg" id="clusterModal">
+  <div class="modal cluster">
+    <h2>Cluster Status</h2>
+    <div class="ci-scroll" id="ci_body">
+      <div class="ci-empty">loading…</div>
+    </div>
+    <footer>
+      <div>
+        <span class="selcount" id="ci_updated"></span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button id="ci_refresh">Refresh</button>
+        <button id="ci_close" class="primary">Close</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<div class="modal-bg" id="builderModal">
+  <div class="modal builder">
+    <h2>API Builder <span class="sub">— generate calls for your own code</span></h2>
+    <div class="bd-body">
+      <aside class="bd-tasks" id="bd_tasks"></aside>
+      <section class="bd-main">
+        <div class="bd-task-head">
+          <h3 id="bd_task_label">—</h3>
+          <div class="bd-method-row">
+            <span class="bd-method" id="bd_task_method">GET</span>
+            <code class="bd-path" id="bd_task_path">/</code>
+          </div>
+          <p class="bd-task-desc" id="bd_task_desc"></p>
+        </div>
+
+        <div class="bd-section">
+          <label class="bd-label">Base URL</label>
+          <input id="bd_base_url" type="text" />
+          <div class="hint">Defaults to the connected cluster. Change to generate snippets for another deployment.</div>
+        </div>
+
+        <div class="bd-section">
+          <div class="bd-fields" id="bd_fields"></div>
+        </div>
+
+        <div class="bd-section">
+          <div class="bd-lang-tabs" id="bd_lang_tabs"></div>
+          <div class="bd-snippet-wrap">
+            <pre class="bd-snippet" id="bd_snippet"></pre>
+            <button id="bd_copy" class="bd-copy">Copy</button>
+          </div>
+        </div>
+
+        <div class="bd-section bd-tryit" id="bd_tryit_wrap">
+          <div class="bd-tryit-row">
+            <button id="bd_tryit" class="primary">Try it →</button>
+            <span class="bd-tryit-hint" id="bd_tryit_hint"></span>
+          </div>
+          <pre class="bd-response" id="bd_response" style="display:none"></pre>
+        </div>
+      </section>
+    </div>
+    <footer>
+      <div class="hint" style="flex:1">
+        Full reference: <a id="bd_swagger_link" href="#" target="_blank">OpenAPI at <code>/docs</code></a>
+      </div>
+      <div><button id="bd_close" class="primary">Close</button></div>
+    </footer>
+  </div>
+</div>
+
+<div class="modal-bg" id="credsModal">
+  <div class="modal credentials">
+    <h2>Credentials</h2>
+    <div class="cr-list" id="cr_list"><div class="ci-empty">loading…</div></div>
+    <div class="cr-add">
+      <div class="role-hdr" style="margin-bottom:6px">ADD CREDENTIAL</div>
+      <div class="row2">
+        <label>Account group</label>
+        <select id="cr_group"></select>
+      </div>
+      <div class="row2">
+        <label>API key</label>
+        <input id="cr_key" type="text" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="row2">
+        <label>API secret</label>
+        <input id="cr_secret" type="password" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="err-msg" id="cr_err"></div>
+    </div>
+    <footer>
+      <div class="hint" style="flex:1;max-width:420px">
+        Keys flow via this dashboard's proxy to the UBDCC cluster — keep the
+        dashboard on a trusted network.
+      </div>
+      <div style="display:flex;gap:8px">
+        <button id="cr_close">Close</button>
+        <button id="cr_submit" class="primary">Add</button>
       </div>
     </footer>
   </div>
@@ -359,6 +785,15 @@ async function proxyBatch(base, requests) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ base, requests }),
+  });
+  return r.json();
+}
+
+async function proxyPost(url, body) {
+  const r = await fetch(`${PROXY_BASE}/proxy`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url, body }),
   });
   return r.json();
 }
@@ -694,15 +1129,35 @@ async function connect() {
   }, { rootMargin: "200px" });
 
   await reloadDcs();
-  document.getElementById("empty").style.display = state.dcs.length ? "none" : "";
+  const emptyEl = document.getElementById("empty");
+  if (state.dcs.length) {
+    emptyEl.style.display = "none";
+  } else {
+    emptyEl.innerHTML = 'No DepthCaches configured yet — click <code>DepthCaches</code> to add one.';
+    emptyEl.style.display = "";
+  }
   document.getElementById("addBtn").disabled = false;
   document.getElementById("disconnectBtn").disabled = false;
+  document.getElementById("clusterStatusBtn").disabled = false;
+  document.getElementById("credentialsBtn").disabled = false;
+  document.getElementById("builderBtn").disabled = false;
 
+  startClusterPoll();
   startLoop();
 }
 
 function disconnect() {
   stopLoop();
+  stopClusterPoll();
+  clusterState.info = null;
+  clusterState.lastError = null;
+  clusterState.lastFetchTs = 0;
+  setHealth("unknown");
+  closeClusterModal();
+  closeCredsModal();
+  credsState.list = [];
+  disarmCred();
+  closeBuilderModal();
   if (state.observer) { state.observer.disconnect(); state.observer = null; }
   // cancel any armed states
   if (armedTile) { clearTimeout(armedTimer); disarmTile(armedTile); }
@@ -724,9 +1179,14 @@ function disconnect() {
   // UI state
   document.getElementById("addBtn").disabled = true;
   document.getElementById("disconnectBtn").disabled = true;
+  document.getElementById("clusterStatusBtn").disabled = true;
+  document.getElementById("credentialsBtn").disabled = true;
+  document.getElementById("builderBtn").disabled = true;
   updateRmBtn();
   document.getElementById("connectBtn").textContent = "Connect";
-  document.getElementById("empty").style.display = "";
+  const emptyEl = document.getElementById("empty");
+  emptyEl.innerHTML = 'Enter the URL of your UBDCC REST API node above and hit <code>Connect</code>.';
+  emptyEl.style.display = "";
   document.getElementById("stats").innerHTML = "";
 }
 
@@ -744,20 +1204,24 @@ async function loop() {
   while (state.running) {
     const minGap = Number(document.getElementById("refresh").value) || 0;
     const t0 = performance.now();
+    let didFetch = false;
     try {
-      await refreshOnce();
+      didFetch = await refreshOnce();
     } catch (e) {
       console.error("loop error", e);
       await sleep(500);
     }
     const dt = performance.now() - t0;
     state.lastCycleMs = Math.round(dt);
-    if (minGap > 0 && dt < minGap) await sleep(minGap - dt);
+    // Only apply the min-gap throttle when we actually fetched — otherwise a
+    // long gap (e.g. 10 s) would block the very first data load while we wait
+    // for IntersectionObserver to report tile visibility.
+    if (didFetch && minGap > 0 && dt < minGap) await sleep(minGap - dt);
   }
 }
 
 async function refreshOnce() {
-  if (!state.dccUrl || state.dcs.length === 0) { await sleep(200); return; }
+  if (!state.dccUrl || state.dcs.length === 0) { await sleep(200); return false; }
 
   // Build request list: only visible AND filter-allowed tiles
   const targets = [];
@@ -767,7 +1231,7 @@ async function refreshOnce() {
     if (!state.visible.has(key)) continue;
     targets.push(dc);
   }
-  if (targets.length === 0) { await sleep(150); return; }
+  if (targets.length === 0) { await sleep(150); return false; }
 
   const requests = [];
   for (const dc of targets) {
@@ -814,6 +1278,7 @@ async function refreshOnce() {
   // Re-apply filter AFTER render so "problems only" picks up new desync/err classes
   const shown = applyFilter();
   updateStats(state.dcs.length, ok, bad, shown);
+  return true;
 }
 
 // ------- Add DC modal -------
@@ -832,6 +1297,8 @@ const EXCHANGE_INFO_URL = {
   "binance.com-futures":                 "https://fapi.binance.com/fapi/v1/exchangeInfo",
   "binance.com-vanilla-options":         "https://eapi.binance.com/eapi/v1/exchangeInfo",
   "binance.com-testnet":                 "https://testnet.binance.vision/api/v3/exchangeInfo",
+  "binance.com-margin-testnet":          "https://testnet.binance.vision/api/v3/exchangeInfo",
+  "binance.com-isolated_margin-testnet": "https://testnet.binance.vision/api/v3/exchangeInfo",
   "binance.com-futures-testnet":         "https://testnet.binancefuture.com/fapi/v1/exchangeInfo",
   "binance.com-vanilla-options-testnet": null,
   "binance.us":                          "https://api.binance.us/api/v3/exchangeInfo",
@@ -846,7 +1313,8 @@ function extractSymbols(exchange, info) {
   }
   const syms = (info.symbols || [])
     .filter(s => !s.status || s.status === "TRADING");
-  if (exchange === "binance.com-margin" || exchange === "binance.com-isolated_margin") {
+  if (exchange === "binance.com-margin" || exchange === "binance.com-isolated_margin"
+      || exchange === "binance.com-margin-testnet" || exchange === "binance.com-isolated_margin-testnet") {
     return syms.filter(s => s.isMarginTradingAllowed).map(s => s.symbol);
   }
   // spot variants: require isSpotTradingAllowed (field missing on older payloads → treat as allowed)
@@ -881,7 +1349,10 @@ async function loadMarkets(exchange) {
   } else {
     const info = await proxyGet(infoUrl);
     if (!info || (info.result === "ERROR")) {
-      box.innerHTML = `<div style="padding:10px;color:var(--red);grid-column:1/-1">failed to load: ${info && info.message || "?"}</div>`;
+      box.innerHTML = "";
+      box.appendChild(el("div", {
+        style: "padding:10px;color:var(--red);grid-column:1/-1",
+      }, [`failed to load: ${info && info.message || "?"}`]));
       return;
     }
     symbols = extractSymbols(exchange, info);
@@ -971,12 +1442,7 @@ async function submitCreate() {
 
   const btn = document.getElementById("m_submit");
   btn.disabled = true; btn.textContent = "Creating…";
-  const r = await fetch("/proxy", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url: `${state.dccUrl}/create_depthcaches`, body }),
-  });
-  const res = await r.json();
+  const res = await proxyPost(`${state.dccUrl}/create_depthcaches`, body);
   btn.disabled = false; btn.textContent = "Create";
 
   if (res && res.result === "ERROR") {
@@ -985,6 +1451,1171 @@ async function submitCreate() {
   }
   closeModal();
   await reloadDcs();
+}
+
+// ------- Cluster Status -------
+
+const CLUSTER_POLL_MS = 30_000;
+const POD_STALE_SEC = 30;
+const clusterState = {
+  info: null,
+  lastFetchTs: 0,
+  lastError: null,
+  pollTimer: null,
+  tickTimer: null,
+  health: "unknown",
+  fetching: false,
+};
+
+function setHealth(h) {
+  clusterState.health = h;
+  const btn = document.getElementById("clusterStatusBtn");
+  if (btn) btn.setAttribute("data-health", h);
+}
+
+function computeHealth(info, hadError) {
+  if (hadError || !info || info.result === "ERROR") return "err";
+  const db = info.db || {};
+  const pods = db.pods || {};
+  const depthcaches = db.depthcaches || {};
+  const podList = Object.values(pods);
+  const hasDcn  = podList.some(p => p.ROLE === "ubdcc-dcn");
+
+  const now = db.timestamp ? Number(db.timestamp) : (Date.now() / 1000);
+  let warn = false;
+  for (const p of podList) {
+    if (p.STATUS && p.STATUS !== "running") warn = true;
+    const age = now - (Number(p.LAST_SEEN) || 0);
+    if (age > POD_STALE_SEC) warn = true;
+  }
+  const dcKeys = [];
+  for (const [ex, mkts] of Object.entries(depthcaches)) {
+    for (const [mk, dc] of Object.entries(mkts || {})) {
+      dcKeys.push({ ex, mk, dc });
+    }
+  }
+  if (dcKeys.length > 0 && !hasDcn) return "err";
+  for (const { dc } of dcKeys) {
+    const desired = Number(dc.DESIRED_QUANTITY) || 0;
+    const dist = dc.DISTRIBUTION || {};
+    const distVals = Object.values(dist);
+    if (desired > 0 && distVals.length < desired) warn = true;
+    for (const d of distVals) {
+      if (d.STATUS && d.STATUS !== "running") warn = true;
+    }
+  }
+  return warn ? "warn" : "ok";
+}
+
+async function fetchClusterInfo({ manual = false } = {}) {
+  if (!state.dccUrl) return;
+  // Skip scheduled polls when tab is hidden — don't hammer mgmt overnight.
+  // Manual Refresh clicks and open-modal polls always run.
+  if (!manual && document.visibilityState === "hidden"
+      && !document.getElementById("clusterModal").classList.contains("show")) return;
+  if (clusterState.fetching) return;
+  clusterState.fetching = true;
+  const refreshBtn = document.getElementById("ci_refresh");
+  if (manual && refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = "Refreshing…"; }
+  try {
+    const res = await proxyGet(`${state.dccUrl}/get_cluster_info`);
+    const hadError = !res || res.result === "ERROR";
+    clusterState.info = hadError ? null : res;
+    clusterState.lastError = hadError ? (res && (res.message || res.error_id) || "unreachable") : null;
+    clusterState.lastFetchTs = Date.now();
+    setHealth(computeHealth(res, hadError));
+    if (document.getElementById("clusterModal").classList.contains("show")) {
+      renderClusterModal();
+    }
+  } catch (e) {
+    clusterState.info = null;
+    clusterState.lastError = e.message || "fetch error";
+    clusterState.lastFetchTs = Date.now();
+    setHealth("err");
+    if (document.getElementById("clusterModal").classList.contains("show")) {
+      renderClusterModal();
+    }
+  } finally {
+    clusterState.fetching = false;
+    if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = "Refresh"; }
+  }
+}
+
+function tickClusterUpdated() {
+  const updated = document.getElementById("ci_updated");
+  if (!updated) return;
+  if (!clusterState.lastFetchTs) { updated.textContent = ""; return; }
+  updated.textContent = `updated ${ago(clusterState.lastFetchTs / 1000)}`;
+}
+
+function startClusterPoll() {
+  stopClusterPoll();
+  fetchClusterInfo();
+  clusterState.pollTimer = setInterval(fetchClusterInfo, CLUSTER_POLL_MS);
+}
+
+function stopClusterPoll() {
+  if (clusterState.pollTimer) clearInterval(clusterState.pollTimer);
+  clusterState.pollTimer = null;
+  if (clusterState.tickTimer) clearInterval(clusterState.tickTimer);
+  clusterState.tickTimer = null;
+}
+
+function ago(tsSec) {
+  if (!tsSec) return "—";
+  const d = Math.max(0, Math.floor(Date.now() / 1000 - Number(tsSec)));
+  if (d < 60) return `${d}s ago`;
+  if (d < 3600) return `${Math.floor(d / 60)}m ago`;
+  return `${Math.floor(d / 3600)}h ago`;
+}
+
+function podPillClass(status, lastSeenAgeSec) {
+  if (lastSeenAgeSec > POD_STALE_SEC) return "stale";
+  if (status === "running") return "running";
+  if (status === "starting") return "starting";
+  return "other";
+}
+
+function donut(running, desired) {
+  const size = 38, stroke = 5, r = (size - stroke) / 2, c = 2 * Math.PI * r;
+  const pct = desired > 0 ? Math.min(1, running / desired) : 0;
+  const dash = `${(pct * c).toFixed(2)} ${(c - pct * c).toFixed(2)}`;
+  const color = pct >= 1 ? "var(--green)" : pct > 0 ? "var(--yellow)" : "var(--red)";
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "donut");
+  svg.setAttribute("width", size); svg.setAttribute("height", size);
+  svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+  const bg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  bg.setAttribute("cx", size/2); bg.setAttribute("cy", size/2); bg.setAttribute("r", r);
+  bg.setAttribute("fill", "none"); bg.setAttribute("stroke", "var(--border)"); bg.setAttribute("stroke-width", stroke);
+  svg.appendChild(bg);
+  const fg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  fg.setAttribute("cx", size/2); fg.setAttribute("cy", size/2); fg.setAttribute("r", r);
+  fg.setAttribute("fill", "none"); fg.setAttribute("stroke", color); fg.setAttribute("stroke-width", stroke);
+  fg.setAttribute("stroke-dasharray", dash); fg.setAttribute("stroke-linecap", "round");
+  fg.setAttribute("transform", `rotate(-90 ${size/2} ${size/2})`);
+  svg.appendChild(fg);
+  const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  txt.setAttribute("x", size/2); txt.setAttribute("y", size/2 + 3);
+  txt.setAttribute("text-anchor", "middle");
+  txt.setAttribute("font-size", "10"); txt.setAttribute("font-family", "SF Mono, Menlo, monospace");
+  txt.setAttribute("fill", "var(--text)");
+  txt.textContent = `${running}/${desired}`;
+  svg.appendChild(txt);
+  return svg;
+}
+
+function renderClusterModal() {
+  const body = document.getElementById("ci_body");
+  body.innerHTML = "";
+  const updated = document.getElementById("ci_updated");
+  if (clusterState.lastError && !clusterState.info) {
+    const top = el("div", { class: "ci-top", "data-health": "err" }, []);
+    top.appendChild(el("div", { class: "ci-health" }, [el("span", { class: "cs-dot" }), "ERROR"]));
+    top.appendChild(el("div", { class: "ci-stat" }, [clusterState.lastError]));
+    body.appendChild(top);
+    updated.textContent = clusterState.lastFetchTs
+      ? `last attempt: ${ago(clusterState.lastFetchTs / 1000)}`
+      : "";
+    return;
+  }
+  const info = clusterState.info;
+  if (!info) {
+    body.appendChild(el("div", { class: "ci-empty" }, ["no data yet"]));
+    updated.textContent = "";
+    return;
+  }
+  const db = info.db || {};
+  const pods = Object.values(db.pods || {});
+  const depthcaches = db.depthcaches || {};
+  const creds = db.credentials || [];
+  const now = Number(db.timestamp) || (Date.now() / 1000);
+
+  const dcEntries = [];
+  for (const [ex, mkts] of Object.entries(depthcaches)) {
+    for (const [mk, dc] of Object.entries(mkts || {})) {
+      dcEntries.push({ ex, mk, dc });
+    }
+  }
+
+  // Top strip
+  const health = clusterState.health;
+  const healthLabel = health === "ok" ? "HEALTHY" : health === "warn" ? "DEGRADED" : health === "err" ? "ERROR" : "UNKNOWN";
+  const top = el("div", { class: "ci-top", "data-health": health }, []);
+  top.appendChild(el("div", { class: "ci-health" }, [el("span", { class: "cs-dot" }), healthLabel]));
+  top.appendChild(el("div", { class: "ci-stat" }, [`Pods: `, el("b", {}, [String(pods.length)])]));
+  top.appendChild(el("div", { class: "ci-stat" }, [`DepthCaches: `, el("b", {}, [String(dcEntries.length)])]));
+  if (info.version) top.appendChild(el("div", { class: "ci-stat" }, [`mgmt: `, el("b", {}, [info.version])]));
+  if (db.timestamp) top.appendChild(el("div", { class: "ci-stat" }, [`db sync: `, el("b", {}, [ago(db.timestamp)])]));
+  body.appendChild(top);
+
+  // Pods by role
+  const roleOrder = ["ubdcc-mgmt", "ubdcc-restapi", "ubdcc-dcn"];
+  const roleLabel = { "ubdcc-mgmt": "MGMT", "ubdcc-restapi": "REST API", "ubdcc-dcn": "DCN" };
+  const byRole = {};
+  for (const p of pods) { (byRole[p.ROLE] = byRole[p.ROLE] || []).push(p); }
+  const rolesSeen = [...roleOrder.filter(r => byRole[r]), ...Object.keys(byRole).filter(r => !roleOrder.includes(r))];
+
+  const podsSec = el("div", { class: "ci-section" }, [el("h3", {}, ["Pods by Role"])]);
+  if (rolesSeen.length === 0) {
+    podsSec.appendChild(el("div", { class: "ci-empty" }, ["no pods registered"]));
+  } else {
+    for (const role of rolesSeen) {
+      const list = byRole[role].slice().sort((a, b) => (a.NAME || "").localeCompare(b.NAME || ""));
+      const grp = el("div", { class: "ci-role-group" }, [
+        el("div", { class: "role-hdr" }, [`${roleLabel[role] || role}`, el("span", { style: "color:var(--muted);font-weight:400" }, [` · ${list.length} pod${list.length === 1 ? "" : "s"}`])]),
+      ]);
+      const grid = el("div", { class: "ci-pods" });
+      for (const p of list) {
+        const age = now - (Number(p.LAST_SEEN) || 0);
+        const pillCls = podPillClass(p.STATUS, age);
+        const pillLabel = pillCls === "stale" ? "stale" : (p.STATUS || "—");
+        const pod = el("div", { class: "ci-pod" }, [
+          el("div", { class: "p-name" }, [
+            el("span", {}, [p.NAME || p.UID || "?"]),
+            el("span", { class: `p-pill ${pillCls}` }, [pillLabel]),
+          ]),
+          el("div", { class: "p-meta" }, [`node: ${p.NODE || "—"}`]),
+          el("div", { class: "p-meta" }, [`${p.IP || "?"}:${p.API_PORT_REST ?? "?"}`]),
+          el("div", { class: "p-meta" }, [
+            `v${p.VERSION || "?"}`,
+            ...(p.UBLDC_VERSION ? [` · ubldc ${p.UBLDC_VERSION}`] : []),
+            ` · seen ${Math.round(age)}s ago`,
+          ]),
+        ]);
+        grid.appendChild(pod);
+      }
+      grp.appendChild(grid);
+      podsSec.appendChild(grp);
+    }
+  }
+  body.appendChild(podsSec);
+
+  // Node topology
+  if (db.nodes && Object.keys(db.nodes).length > 0) {
+    const nodesSec = el("div", { class: "ci-section" }, [el("h3", {}, ["Nodes"])]);
+    const nodeRows = el("div", { class: "ci-nodes" });
+    const nodeMap = {};
+    for (const p of pods) {
+      const n = p.NODE || "—";
+      if (!nodeMap[n]) nodeMap[n] = { mgmt: 0, restapi: 0, dcn: 0, other: 0 };
+      if (p.ROLE === "ubdcc-mgmt") nodeMap[n].mgmt++;
+      else if (p.ROLE === "ubdcc-restapi") nodeMap[n].restapi++;
+      else if (p.ROLE === "ubdcc-dcn") nodeMap[n].dcn++;
+      else nodeMap[n].other++;
+    }
+    for (const n of Object.keys(nodeMap).sort()) {
+      const c = nodeMap[n];
+      nodeRows.appendChild(el("div", { class: "ci-node-row" }, [
+        el("span", { class: "n-name" }, [n]),
+        el("span", { class: "n-count" }, [`mgmt `, el("b", {}, [String(c.mgmt)])]),
+        el("span", { class: "n-count" }, [`rest `, el("b", {}, [String(c.restapi)])]),
+        el("span", { class: "n-count" }, [`dcn `, el("b", {}, [String(c.dcn)])]),
+      ]));
+    }
+    nodesSec.appendChild(nodeRows);
+    body.appendChild(nodesSec);
+  }
+
+  // DepthCaches
+  const dcsSec = el("div", { class: "ci-section" }, [el("h3", {}, [`DepthCaches (${dcEntries.length})`])]);
+  if (dcEntries.length === 0) {
+    dcsSec.appendChild(el("div", { class: "ci-empty" }, ["no depthcaches configured"]));
+  } else {
+    const grid = el("div", { class: "ci-dcs" });
+    dcEntries.sort((a, b) => a.ex.localeCompare(b.ex) || a.mk.localeCompare(b.mk));
+    for (const { ex, mk, dc } of dcEntries) {
+      const desired = Number(dc.DESIRED_QUANTITY) || 0;
+      const dist = Object.values(dc.DISTRIBUTION || {});
+      const running = dist.filter(d => d.STATUS === "running").length;
+      const starting = dist.filter(d => d.STATUS === "starting").length;
+      const restartsTotal = dist.reduce((s, d) => s + (Number(d.RESTARTS) || 0), 0);
+      // sync state from main grid tile (if we've polled it at least once)
+      const tile = state.tiles.get(dcKey(ex, mk));
+      let syncLabel = null, syncCls = null;
+      if (tile) {
+        if (tile.classList.contains("desync")) { syncLabel = "out of sync"; syncCls = "err"; }
+        else if (tile.classList.contains("err")) { syncLabel = "error"; syncCls = "warn"; }
+        else if (tile.classList.contains("ok"))  { syncLabel = "in sync"; syncCls = "ok"; }
+      }
+      let hstate = "ok";
+      if (running < desired || dist.some(d => d.STATUS && d.STATUS !== "running")) hstate = "warn";
+      if (desired > 0 && dist.length === 0) hstate = "err";
+      if (syncCls === "err") hstate = "err";
+      else if (syncCls === "warn" && hstate === "ok") hstate = "warn";
+      const metaParts = [el("span", { class: "k" }, [`${running}/${desired} replicas`])];
+      if (starting > 0) metaParts.push(el("span", {}, [`${starting} starting`]));
+      if (syncLabel) metaParts.push(el("span", { class: `sync ${syncCls}` }, [syncLabel]));
+      if (restartsTotal > 0) metaParts.push(el("span", { class: "restart" }, [`⟳ ${restartsTotal} restarts`]));
+      if (dc.LAST_DISTRIBUTION_CHANGE) metaParts.push(el("span", {}, [`changed ${ago(dc.LAST_DISTRIBUTION_CHANGE)}`]));
+      const card = el("div", { class: "ci-dc", "data-health": hstate }, [
+        donut(running, desired),
+        el("div", { class: "dc-body" }, [
+          el("div", { class: "dc-market" }, [mk]),
+          el("div", { class: "dc-exch" }, [ex]),
+          el("div", { class: "dc-meta" }, metaParts),
+        ]),
+      ]);
+      grid.appendChild(card);
+    }
+    dcsSec.appendChild(grid);
+  }
+  body.appendChild(dcsSec);
+
+  // Credentials
+  if (creds && creds.length > 0) {
+    const credsSec = el("div", { class: "ci-section" }, [el("h3", {}, [`Credentials (${creds.length})`])]);
+    const byGrp = {};
+    for (const c of creds) {
+      (byGrp[c.account_group] = byGrp[c.account_group] || []).push(c);
+    }
+    const grid = el("div", { class: "ci-creds" });
+    for (const g of Object.keys(byGrp).sort()) {
+      const list = byGrp[g];
+      const dcnsTotal = list.reduce((s, c) => s + (c.assigned_dcns ? c.assigned_dcns.length : 0), 0);
+      grid.appendChild(el("div", { class: "ci-cred" }, [
+        el("div", { class: "cr-grp" }, [g]),
+        el("div", { class: "cr-meta" }, [`${list.length} key${list.length === 1 ? "" : "s"} · ${dcnsTotal} DCN assignment${dcnsTotal === 1 ? "" : "s"}`]),
+      ]));
+    }
+    credsSec.appendChild(grid);
+    body.appendChild(credsSec);
+  }
+
+  updated.textContent = `updated ${ago(clusterState.lastFetchTs / 1000)}`;
+}
+
+// ------- API Builder -------
+
+const ACCOUNT_GROUPS = ["binance.com", "binance.com-testnet", "binance.com-futures-testnet", "binance.us", "binance.tr"];
+
+const BUILDER_EXCHANGES = [
+  "binance.com", "binance.com-testnet",
+  "binance.com-margin", "binance.com-margin-testnet",
+  "binance.com-isolated_margin", "binance.com-isolated_margin-testnet",
+  "binance.com-futures", "binance.com-futures-testnet",
+  "binance.com-vanilla-options", "binance.com-vanilla-options-testnet",
+  "binance.us", "trbinance.com",
+];
+
+const BUILDER_TASKS = [
+  {
+    group: "Credentials", id: "add_credentials", label: "Add credentials",
+    method: "POST", path: "/add_credentials", body: true,
+    description: "Store a Binance API key pair for one account group. Mgmt load-balances keys across DCN pods.",
+    fields: [
+      { name: "account_group", label: "Account group", widget: "select", options: ACCOUNT_GROUPS, required: true },
+      { name: "api_key", label: "API key", widget: "text", required: true },
+      { name: "api_secret", label: "API secret", widget: "password", required: true, secret: true, hint: "snippet will contain this in cleartext" },
+    ],
+    client_method: "add_credentials",
+    tryable: false,
+  },
+  {
+    group: "Credentials", id: "remove_credentials", label: "Remove credentials",
+    method: "POST", path: "/remove_credentials", body: true,
+    description: "Remove a stored credential by its UUID. Affected DCNs re-balance automatically.",
+    fields: [
+      { name: "id", label: "Credential ID (UUID)", widget: "text", required: true, hint: "see Credentials modal or /get_credentials_list" },
+    ],
+    client_method: "remove_credentials",
+    client_argmap: { id: "credential_id" },
+    tryable: false,
+  },
+  {
+    group: "Credentials", id: "get_credentials_list", label: "List credentials",
+    method: "GET", path: "/get_credentials_list", body: false,
+    description: "Return all stored credentials with masked API key preview and assigned DCN uids.",
+    fields: [],
+    client_method: "get_credentials_list",
+    tryable: true,
+  },
+  {
+    group: "DepthCaches", id: "create_depthcache", label: "Create DepthCache",
+    method: "GET", path: "/create_depthcache", body: false,
+    description: "Start a single DepthCache. Shortcut for 1 market.",
+    fields: [
+      { name: "exchange", label: "Exchange", widget: "exchange", required: true, default: "binance.com" },
+      { name: "market", label: "Market (symbol)", widget: "market", required: true, placeholder: "BTCUSDT" },
+      { name: "desired_quantity", label: "Replicas (desired_quantity)", widget: "number", default: 1 },
+      { name: "update_interval", label: "Update interval (ms)", widget: "number", optional: true, placeholder: "blank = default" },
+      { name: "refresh_interval", label: "Refresh interval (s)", widget: "number", optional: true, placeholder: "blank — see hint", hint: "⚠ forces a full REST re-init; only for very long-running caches" },
+    ],
+    client_method: "create_depthcache",
+    tryable: true,
+  },
+  {
+    group: "DepthCaches", id: "create_depthcaches", label: "Create DepthCaches (bulk)",
+    method: "POST", path: "/create_depthcaches", body: true,
+    description: "Start many DepthCaches in one call. Body is JSON with a markets array.",
+    fields: [
+      { name: "exchange", label: "Exchange", widget: "exchange", required: true, default: "binance.com" },
+      { name: "markets", label: "Markets", widget: "markets-array", required: true, placeholder: "BTCUSDT, ETHUSDT, BNBUSDT", hint: "comma-separated (auto-converted to JSON array)" },
+      { name: "desired_quantity", label: "Replicas (desired_quantity)", widget: "number", default: 1 },
+      { name: "update_interval", label: "Update interval (ms)", widget: "number", optional: true },
+      { name: "refresh_interval", label: "Refresh interval (s)", widget: "number", optional: true },
+    ],
+    client_method: "create_depthcaches",
+    tryable: true,
+  },
+  {
+    group: "DepthCaches", id: "stop_depthcache", label: "Stop DepthCache",
+    method: "GET", path: "/stop_depthcache", body: false,
+    description: "Remove a DepthCache from the cluster.",
+    fields: [
+      { name: "exchange", label: "Exchange", widget: "exchange", required: true, default: "binance.com" },
+      { name: "market", label: "Market", widget: "market", required: true, placeholder: "BTCUSDT" },
+    ],
+    client_method: "stop_depthcache",
+    tryable: true,
+  },
+  {
+    group: "DepthCaches", id: "get_depthcache_info", label: "Get DepthCache info",
+    method: "GET", path: "/get_depthcache_info", body: false,
+    description: "Return detailed state of one DepthCache — distribution, sync, last update.",
+    fields: [
+      { name: "exchange", label: "Exchange", widget: "exchange", required: true, default: "binance.com" },
+      { name: "market", label: "Market", widget: "market", required: true, placeholder: "BTCUSDT" },
+    ],
+    client_method: "get_depthcache_info",
+    tryable: true,
+  },
+  {
+    group: "DepthCaches", id: "get_depthcache_list", label: "List DepthCaches",
+    method: "GET", path: "/get_depthcache_list", body: false,
+    description: "Return all configured DepthCaches grouped by exchange.",
+    fields: [],
+    client_method: "get_depthcache_list",
+    tryable: true,
+  },
+  {
+    group: "Order Book", id: "get_asks", label: "Get asks",
+    method: "GET", path: "/get_asks", body: false,
+    description: "Return current ask levels for a DepthCache. Lowest price first.",
+    fields: [
+      { name: "exchange", label: "Exchange", widget: "exchange", required: true, default: "binance.com" },
+      { name: "market", label: "Market", widget: "market", required: true, placeholder: "BTCUSDT" },
+      { name: "limit_count", label: "Limit count", widget: "number", optional: true, placeholder: "e.g. 3" },
+      { name: "threshold_volume", label: "Threshold volume", widget: "number", optional: true, placeholder: "e.g. 100000" },
+      { name: "debug", label: "Debug", widget: "checkbox", optional: true },
+    ],
+    client_method: "get_asks",
+    tryable: true,
+  },
+  {
+    group: "Order Book", id: "get_bids", label: "Get bids",
+    method: "GET", path: "/get_bids", body: false,
+    description: "Return current bid levels. Highest price first.",
+    fields: [
+      { name: "exchange", label: "Exchange", widget: "exchange", required: true, default: "binance.com" },
+      { name: "market", label: "Market", widget: "market", required: true, placeholder: "BTCUSDT" },
+      { name: "limit_count", label: "Limit count", widget: "number", optional: true },
+      { name: "threshold_volume", label: "Threshold volume", widget: "number", optional: true },
+      { name: "debug", label: "Debug", widget: "checkbox", optional: true },
+    ],
+    client_method: "get_bids",
+    tryable: true,
+  },
+  {
+    group: "Cluster", id: "get_cluster_info", label: "Get cluster info",
+    method: "GET", path: "/get_cluster_info", body: false,
+    description: "Full cluster topology — pods, nodes, depthcaches, credentials.",
+    fields: [],
+    client_method: "get_cluster_info",
+    tryable: true,
+  },
+];
+
+const BUILDER_LANGS = ["curl", "HTTPie", "Python", "JavaScript", "Go", "C#", "Java", "Rust"];
+const builderState = {
+  taskId: BUILDER_TASKS[0].id,
+  lang: "curl",
+};
+
+function shQuote(s) {
+  // POSIX-safe single-quote
+  return `'${String(s).replace(/'/g, `'\\''`)}'`;
+}
+function pyRepr(v) {
+  if (v === null || v === undefined) return "None";
+  if (typeof v === "boolean") return v ? "True" : "False";
+  if (typeof v === "number") return String(v);
+  if (Array.isArray(v)) return "[" + v.map(pyRepr).join(", ") + "]";
+  if (typeof v === "object") return "{" + Object.entries(v).map(([k, x]) => `${pyRepr(k)}: ${pyRepr(x)}`).join(", ") + "}";
+  return `"${String(v).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+function jsRepr(v) {
+  if (v === null || v === undefined) return "null";
+  if (typeof v === "boolean" || typeof v === "number") return String(v);
+  if (Array.isArray(v)) return "[" + v.map(jsRepr).join(", ") + "]";
+  if (typeof v === "object") return "{ " + Object.entries(v).map(([k, x]) => `${k.match(/^[a-z_][a-z0-9_]*$/i) ? k : JSON.stringify(k)}: ${jsRepr(x)}`).join(", ") + " }";
+  return JSON.stringify(v);
+}
+
+function getBuilderTask(id) { return BUILDER_TASKS.find(t => t.id === id); }
+
+function collectBuilderValues(task) {
+  const out = {};
+  for (const f of task.fields) {
+    const elf = document.getElementById(`bd_f_${f.name}`);
+    if (!elf) continue;
+    let raw;
+    if (f.widget === "checkbox") raw = elf.checked ? true : (f.optional ? undefined : false);
+    else raw = elf.value;
+    if (raw === undefined) continue;
+    if (typeof raw === "string") raw = raw.trim();
+    if (raw === "" || raw === null) { continue; }
+    if (f.widget === "number") {
+      const n = Number(raw);
+      if (Number.isNaN(n)) continue;
+      out[f.name] = n;
+    } else if (f.widget === "markets-array") {
+      out[f.name] = String(raw).split(",").map(s => s.trim()).filter(Boolean);
+    } else if (f.widget === "checkbox") {
+      out[f.name] = raw;
+    } else {
+      out[f.name] = raw;
+    }
+  }
+  return out;
+}
+
+function buildQueryString(values) {
+  const qp = new URLSearchParams();
+  for (const [k, v] of Object.entries(values)) {
+    if (v === undefined) continue;
+    if (Array.isArray(v)) qp.set(k, v.join(","));
+    else qp.set(k, String(v));
+  }
+  const s = qp.toString();
+  return s ? `?${s}` : "";
+}
+
+function snippetCurl(task, baseUrl, values) {
+  const url = baseUrl + task.path;
+  if (task.body) {
+    const body = JSON.stringify(values);
+    return `curl -X POST ${shQuote(url)} \\
+  -H 'Content-Type: application/json' \\
+  -d ${shQuote(body)}`;
+  }
+  const qs = buildQueryString(values);
+  return `curl ${shQuote(url + qs)}`;
+}
+
+function snippetHTTPie(task, baseUrl, values) {
+  const url = baseUrl + task.path;
+  if (task.body) {
+    const body = Object.entries(values).map(([k, v]) => {
+      if (Array.isArray(v)) return `${k}:=${JSON.stringify(v)}`;
+      if (typeof v === "number" || typeof v === "boolean") return `${k}:=${JSON.stringify(v)}`;
+      return `${k}=${shQuote(v)}`;
+    }).join(" ");
+    return `http POST ${shQuote(url)}${body ? " " + body : ""}`;
+  }
+  const parts = Object.entries(values).map(([k, v]) => {
+    if (typeof v === "number" || typeof v === "boolean") return `${k}==${v}`;
+    const val = Array.isArray(v) ? v.join(",") : String(v);
+    return `${k}==${shQuote(val)}`;
+  });
+  return `http GET ${shQuote(url)}${parts.length ? " " + parts.join(" ") : ""}`;
+}
+
+function parseBaseToAddrPort(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname || "127.0.0.1";
+    let port;
+    if (u.port) port = Number(u.port);
+    else port = (u.protocol === "https:") ? 443 : 80;
+    return { address: host, port };
+  } catch {
+    return { address: "127.0.0.1", port: 42081 };
+  }
+}
+
+function snippetPython(task, baseUrl, values) {
+  // Idiomatic UBLDC example style: BinanceLocalDepthCacheManager as context manager,
+  // cluster calls via ubldc.cluster.<method>(), DepthCacheClusterNotReachableError catch.
+  const { address, port } = parseBaseToAddrPort(baseUrl);
+  const method = task.client_method;
+  const argmap = task.client_argmap || {};
+  // Manager needs an exchange — use the task's exchange value if any, else a neutral default.
+  const managerExchange = (values.exchange && typeof values.exchange === "string") ? values.exchange : "binance.com";
+
+  const argLines = [];
+  for (const f of task.fields) {
+    if (!(f.name in values)) continue;
+    const kw = argmap[f.name] || f.name;
+    argLines.push(`            ${kw}=${pyRepr(values[f.name])},`);
+  }
+  const call = argLines.length
+    ? `ubldc.cluster.${method}(\n${argLines.join("\n")}\n        )`
+    : `ubldc.cluster.${method}()`;
+  return `# pip install unicorn-binance-local-depth-cache
+from pprint import pprint
+from unicorn_binance_local_depth_cache import (
+    BinanceLocalDepthCacheManager,
+    DepthCacheClusterNotReachableError,
+)
+
+try:
+    with BinanceLocalDepthCacheManager(
+            exchange=${pyRepr(managerExchange)},
+            ubdcc_address=${pyRepr(address)},
+            ubdcc_port=${port}) as ubldc:
+        result = ${call}
+        pprint(result)
+except DepthCacheClusterNotReachableError as error_msg:
+    print(f"ERROR: {error_msg}")`;
+}
+
+function snippetJavaScript(task, baseUrl, values) {
+  const url = baseUrl + task.path;
+  if (task.body) {
+    return `const res = await fetch(${JSON.stringify(url)}, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(${jsRepr(values)}),
+});
+const data = await res.json();
+console.log(data);`;
+  }
+  const hasParams = Object.keys(values).length > 0;
+  if (!hasParams) {
+    return `const res = await fetch(${JSON.stringify(url)});
+const data = await res.json();
+console.log(data);`;
+  }
+  // URLSearchParams handles arrays by joining — we join manually for comma-separated
+  const flat = Object.fromEntries(Object.entries(values).map(([k, v]) => [k, Array.isArray(v) ? v.join(",") : String(v)]));
+  return `const params = new URLSearchParams(${jsRepr(flat)});
+const res = await fetch(${JSON.stringify(url)} + "?" + params);
+const data = await res.json();
+console.log(data);`;
+}
+
+function snippetGo(task, baseUrl, values) {
+  const url = baseUrl + task.path;
+  if (task.body) {
+    const jsonLit = JSON.stringify(values);
+    return `package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+)
+
+func main() {
+    payload := []byte(${JSON.stringify(jsonLit)})
+    req, _ := http.NewRequest("POST", ${JSON.stringify(url)}, bytes.NewReader(payload))
+    req.Header.Set("Content-Type", "application/json")
+    resp, err := http.DefaultClient.Do(req)
+    if err != nil { panic(err) }
+    defer resp.Body.Close()
+    body, _ := io.ReadAll(resp.Body)
+    var out map[string]any
+    _ = json.Unmarshal(body, &out)
+    fmt.Println(out)
+}`;
+  }
+  const qs = buildQueryString(values);
+  const full = url + qs;
+  return `package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "io"
+    "net/http"
+)
+
+func main() {
+    resp, err := http.Get(${JSON.stringify(full)})
+    if err != nil { panic(err) }
+    defer resp.Body.Close()
+    body, _ := io.ReadAll(resp.Body)
+    var out map[string]any
+    _ = json.Unmarshal(body, &out)
+    fmt.Println(out)
+}`;
+}
+
+function escStrBackslash(s) {
+  // shared double-quote string literal escape for C# / Java
+  return String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+}
+
+function snippetCSharp(task, baseUrl, values) {
+  const url = baseUrl + task.path;
+  if (task.body) {
+    const json = JSON.stringify(values);
+    return `using System.Net.Http;
+using System.Text;
+
+using var client = new HttpClient();
+var json = "${escStrBackslash(json)}";
+var content = new StringContent(json, Encoding.UTF8, "application/json");
+var response = await client.PostAsync("${escStrBackslash(url)}", content);
+var body = await response.Content.ReadAsStringAsync();
+Console.WriteLine(body);`;
+  }
+  const full = url + buildQueryString(values);
+  return `using System.Net.Http;
+
+using var client = new HttpClient();
+var response = await client.GetAsync("${escStrBackslash(full)}");
+var body = await response.Content.ReadAsStringAsync();
+Console.WriteLine(body);`;
+}
+
+function snippetJava(task, baseUrl, values) {
+  const url = baseUrl + task.path;
+  if (task.body) {
+    const json = JSON.stringify(values);
+    return `import java.net.URI;
+import java.net.http.*;
+
+String json = "${escStrBackslash(json)}";
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("${escStrBackslash(url)}"))
+    .header("Content-Type", "application/json")
+    .POST(HttpRequest.BodyPublishers.ofString(json))
+    .build();
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+System.out.println(response.body());`;
+  }
+  const full = url + buildQueryString(values);
+  return `import java.net.URI;
+import java.net.http.*;
+
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("${escStrBackslash(full)}"))
+    .GET()
+    .build();
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+System.out.println(response.body());`;
+}
+
+function snippetRust(task, baseUrl, values) {
+  // Cargo.toml: reqwest = { version = "0.12", features = ["blocking", "json"] }
+  const url = baseUrl + task.path;
+  if (task.body) {
+    const json = JSON.stringify(values);
+    // choose raw-string hash count: bump if "# appears in body
+    let hashes = "#";
+    while (json.includes(`"${hashes}`)) hashes += "#";
+    return `// Cargo.toml: reqwest = { version = "0.12", features = ["blocking"] }
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = reqwest::blocking::Client::new();
+    let json = r${hashes}"${json}"${hashes};
+    let body = client
+        .post("${escStrBackslash(url)}")
+        .header("Content-Type", "application/json")
+        .body(json)
+        .send()?
+        .text()?;
+    println!("{}", body);
+    Ok(())
+}`;
+  }
+  const full = url + buildQueryString(values);
+  return `// Cargo.toml: reqwest = { version = "0.12", features = ["blocking"] }
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let body = reqwest::blocking::get("${escStrBackslash(full)}")?
+        .text()?;
+    println!("{}", body);
+    Ok(())
+}`;
+}
+
+const SNIPPET_GEN = {
+  "curl": snippetCurl,
+  "HTTPie": snippetHTTPie,
+  "Python": snippetPython,
+  "JavaScript": snippetJavaScript,
+  "Go": snippetGo,
+  "C#": snippetCSharp,
+  "Java": snippetJava,
+  "Rust": snippetRust,
+};
+
+function renderBuilderTaskList() {
+  const box = document.getElementById("bd_tasks");
+  box.innerHTML = "";
+  const groups = {};
+  for (const t of BUILDER_TASKS) { (groups[t.group] = groups[t.group] || []).push(t); }
+  for (const g of Object.keys(groups)) {
+    box.appendChild(el("div", { class: "bd-group-hdr" }, [g]));
+    for (const t of groups[g]) {
+      const item = el("div", {
+        class: "bd-task-item" + (builderState.taskId === t.id ? " active" : ""),
+        onclick: () => selectBuilderTask(t.id),
+      }, [
+        el("span", { class: "bd-task-method" }, [t.method]),
+        el("span", {}, [t.label]),
+      ]);
+      box.appendChild(item);
+    }
+  }
+}
+
+function renderBuilderFields() {
+  const task = getBuilderTask(builderState.taskId);
+  const box = document.getElementById("bd_fields");
+  box.innerHTML = "";
+  if (task.fields.length === 0) {
+    box.appendChild(el("div", { class: "bd-field", style: "grid-column: 1/-1;color:var(--muted);font-size:11px;font-style:italic" }, ["(no parameters)"]));
+    box.classList.add("single");
+    return;
+  }
+  box.classList.remove("single");
+  for (const f of task.fields) {
+    const labelEl = el("label", { style: "display:flex;flex-direction:column;gap:3px" });
+    const nameEl = el("span", { class: "fld-name" }, [f.label]);
+    if (f.required) nameEl.appendChild(el("span", { class: "req" }, ["*"]));
+    else if (f.optional) nameEl.appendChild(el("span", { class: "opt" }, ["optional"]));
+    labelEl.appendChild(nameEl);
+
+    let input;
+    const id = `bd_f_${f.name}`;
+    if (f.widget === "select") {
+      input = document.createElement("select");
+      for (const o of f.options) input.appendChild(el("option", { value: o }, [o]));
+    } else if (f.widget === "exchange") {
+      input = document.createElement("select");
+      for (const o of BUILDER_EXCHANGES) input.appendChild(el("option", { value: o }, [o]));
+    } else if (f.widget === "checkbox") {
+      input = document.createElement("input");
+      input.type = "checkbox";
+      labelEl.style.flexDirection = "row";
+      labelEl.style.alignItems = "center";
+      labelEl.style.gap = "8px";
+      labelEl.insertBefore(input, nameEl);
+    } else if (f.widget === "password") {
+      input = document.createElement("input");
+      input.type = "password";
+      input.autocomplete = "off";
+      input.spellcheck = false;
+    } else if (f.widget === "number") {
+      input = document.createElement("input");
+      input.type = "number";
+    } else if (f.widget === "markets-array") {
+      input = document.createElement("textarea");
+    } else {
+      input = document.createElement("input");
+      input.type = "text";
+      input.spellcheck = false;
+    }
+    input.id = id;
+    if (f.placeholder) input.placeholder = f.placeholder;
+    if (f.default !== undefined) {
+      if (input.type === "checkbox") input.checked = !!f.default;
+      else input.value = String(f.default);
+    }
+    input.addEventListener("input", updateBuilderSnippet);
+    input.addEventListener("change", updateBuilderSnippet);
+
+    if (f.widget !== "checkbox") labelEl.appendChild(input);
+    if (f.hint) labelEl.appendChild(el("span", { class: f.secret ? "fld-secret-warn" : "fld-hint" }, [f.hint]));
+    const wrap = el("div", { class: "bd-field" }, [labelEl]);
+    box.appendChild(wrap);
+  }
+}
+
+function renderBuilderLangTabs() {
+  const box = document.getElementById("bd_lang_tabs");
+  box.innerHTML = "";
+  for (const l of BUILDER_LANGS) {
+    const t = el("button", {
+      class: "bd-lang-tab" + (builderState.lang === l ? " active" : ""),
+      onclick: () => { builderState.lang = l; renderBuilderLangTabs(); updateBuilderSnippet(); },
+    }, [l]);
+    box.appendChild(t);
+  }
+}
+
+function currentBuilderBaseUrl() {
+  const input = document.getElementById("bd_base_url");
+  const v = (input && input.value || "").trim().replace(/\/$/, "");
+  return v || (state.dccUrl || "http://127.0.0.1:42081");
+}
+
+function updateBuilderSnippet() {
+  const task = getBuilderTask(builderState.taskId);
+  const values = collectBuilderValues(task);
+  const base = currentBuilderBaseUrl();
+  const gen = SNIPPET_GEN[builderState.lang] || snippetCurl;
+  const snippetEl = document.getElementById("bd_snippet");
+  const next = gen(task, base, values);
+  if (snippetEl.textContent === next) return;
+  snippetEl.textContent = next;
+  const copyBtn = document.getElementById("bd_copy");
+  if (copyBtn) { copyBtn.classList.remove("ok"); copyBtn.textContent = "Copy"; }
+  // Swagger link base update
+  const sw = document.getElementById("bd_swagger_link");
+  if (sw) sw.href = `${base}/docs`;
+}
+
+function selectBuilderTask(id) {
+  builderState.taskId = id;
+  const task = getBuilderTask(id);
+  document.getElementById("bd_task_label").textContent = task.label;
+  document.getElementById("bd_task_method").textContent = task.method;
+  document.getElementById("bd_task_method").setAttribute("data-m", task.method);
+  document.getElementById("bd_task_path").textContent = task.path;
+  document.getElementById("bd_task_desc").textContent = task.description;
+  document.getElementById("bd_tryit_wrap").style.display = task.tryable ? "" : "none";
+  document.getElementById("bd_tryit_hint").textContent = task.tryable
+    ? "Runs through the dashboard's proxy against the Base URL above."
+    : "";
+  document.getElementById("bd_response").style.display = "none";
+  document.getElementById("bd_response").textContent = "";
+  renderBuilderTaskList();
+  renderBuilderFields();
+  updateBuilderSnippet();
+}
+
+async function builderTryIt() {
+  const task = getBuilderTask(builderState.taskId);
+  const base = currentBuilderBaseUrl();
+  const values = collectBuilderValues(task);
+  const resEl = document.getElementById("bd_response");
+  const btn = document.getElementById("bd_tryit");
+  btn.disabled = true; btn.textContent = "Running…";
+  resEl.classList.remove("ok", "err");
+  resEl.style.display = "";
+  resEl.textContent = "…";
+  try {
+    const res = task.body
+      ? await proxyPost(base + task.path, values)
+      : await proxyGet(base + task.path + buildQueryString(values));
+    resEl.textContent = JSON.stringify(res, null, 2);
+    resEl.classList.add(res && res.result === "ERROR" ? "err" : "ok");
+  } catch (e) {
+    resEl.textContent = String(e && e.message || e);
+    resEl.classList.add("err");
+  } finally {
+    btn.disabled = false; btn.textContent = "Try it →";
+  }
+}
+
+function openBuilderModal() {
+  document.getElementById("builderModal").classList.add("show");
+  const base = document.getElementById("bd_base_url");
+  if (!base.value) base.value = state.dccUrl || "";
+  renderBuilderTaskList();
+  renderBuilderLangTabs();
+  selectBuilderTask(builderState.taskId);
+}
+function closeBuilderModal() { document.getElementById("builderModal").classList.remove("show"); }
+
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none;";
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+function copyBuilderSnippet() {
+  const text = document.getElementById("bd_snippet").textContent;
+  const btn = document.getElementById("bd_copy");
+  const showOk = () => {
+    btn.classList.add("ok"); btn.textContent = "Copied";
+    setTimeout(() => { btn.classList.remove("ok"); btn.textContent = "Copy"; }, 1200);
+  };
+  const showFail = () => {
+    btn.textContent = "Copy failed";
+    setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+  };
+  // navigator.clipboard only exists in a secure context (HTTPS or localhost).
+  // Over plain HTTP on a LAN IP it is undefined — fall back to execCommand.
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(showOk).catch(() => {
+      if (fallbackCopy(text)) showOk(); else showFail();
+    });
+  } else {
+    if (fallbackCopy(text)) showOk(); else showFail();
+  }
+}
+
+// ------- Credentials -------
+
+const credsState = {
+  list: [],
+  armedId: null,
+  armedTimer: null,
+  loading: false,
+  submitting: false,
+};
+
+async function fetchCredsList() {
+  if (!state.dccUrl) return;
+  credsState.loading = true;
+  credsState.error = null;
+  renderCredsList();
+  try {
+    const res = await proxyGet(`${state.dccUrl}/get_credentials_list`);
+    if (res && res.result === "OK") {
+      credsState.list = res.credentials || [];
+    } else {
+      credsState.list = [];
+      credsState.error = (res && (res.message || res.error_id)) || "unreachable";
+    }
+  } catch (e) {
+    credsState.list = [];
+    credsState.error = e.message || "fetch error";
+  }
+  credsState.loading = false;
+  renderCredsList();
+}
+
+function disarmCred() {
+  if (credsState.armedTimer) { clearTimeout(credsState.armedTimer); credsState.armedTimer = null; }
+  credsState.armedId = null;
+  renderCredsList();
+}
+
+function armCred(id) {
+  credsState.armedId = id;
+  if (credsState.armedTimer) clearTimeout(credsState.armedTimer);
+  credsState.armedTimer = setTimeout(disarmCred, 3000);
+  renderCredsList();
+}
+
+async function removeCred(id) {
+  disarmCred();
+  try {
+    const res = await proxyPost(`${state.dccUrl}/remove_credentials`, { id });
+    if (res && res.result === "ERROR") {
+      alert(`Remove failed: ${res.error_id || ""} ${res.message || ""}`);
+      return;
+    }
+  } catch (e) {
+    alert(`Remove failed: ${e.message}`);
+    return;
+  }
+  await fetchCredsList();
+}
+
+function renderCredsList() {
+  const box = document.getElementById("cr_list");
+  if (!box) return;
+  box.innerHTML = "";
+  if (credsState.loading) {
+    box.appendChild(el("div", { class: "ci-empty" }, ["loading…"]));
+    return;
+  }
+  if (credsState.error) {
+    box.appendChild(el("div", { class: "ci-empty", style: "color:var(--red);font-style:normal" }, [`failed to load: ${credsState.error}`]));
+    return;
+  }
+  if (credsState.list.length === 0) {
+    box.appendChild(el("div", { class: "ci-empty" }, ["no credentials configured — add one below"]));
+    return;
+  }
+  const sorted = credsState.list.slice().sort((a, b) => {
+    return (a.account_group || "").localeCompare(b.account_group || "")
+        || (Number(b.added_timestamp) || 0) - (Number(a.added_timestamp) || 0);
+  });
+  for (const c of sorted) {
+    const assigned = (c.assigned_dcns || []).length;
+    const age = c.added_timestamp ? ` · added ${ago(c.added_timestamp)}` : "";
+    const armed = credsState.armedId === c.id;
+    const item = el("div", { class: "cr-item" + (armed ? " arm-remove" : "") }, [
+      el("div", { class: "cr-main" }, [
+        el("div", { class: "cr-head" }, [
+          el("span", { class: "cr-grp" }, [c.account_group || "?"]),
+          el("span", { class: "cr-key" }, [c.api_key_preview || "—"]),
+        ]),
+        el("div", { class: "cr-meta" }, [
+          `${assigned} DCN assignment${assigned === 1 ? "" : "s"}${age}`,
+        ]),
+      ]),
+      el("button", {
+        class: "cr-rm",
+        title: "click to arm, click again to remove",
+        onclick: (e) => {
+          e.stopPropagation();
+          if (credsState.armedId === c.id) removeCred(c.id);
+          else armCred(c.id);
+        },
+      }, [armed ? "CONFIRM" : "×"]),
+    ]);
+    box.appendChild(item);
+  }
+}
+
+async function submitCred() {
+  if (credsState.submitting) return;
+  const group = document.getElementById("cr_group").value;
+  const key = document.getElementById("cr_key").value.trim();
+  const secret = document.getElementById("cr_secret").value.trim();
+  const errEl = document.getElementById("cr_err");
+  errEl.textContent = "";
+  if (!group || !key || !secret) {
+    errEl.textContent = "account group, api key and api secret are required";
+    return;
+  }
+  const btn = document.getElementById("cr_submit");
+  credsState.submitting = true;
+  btn.disabled = true; btn.textContent = "Adding…";
+  try {
+    const res = await proxyPost(`${state.dccUrl}/add_credentials`,
+      { account_group: group, api_key: key, api_secret: secret });
+    if (res && res.result === "ERROR") {
+      errEl.textContent = `${res.error_id || ""} ${res.message || "failed"}`;
+      return;
+    }
+    document.getElementById("cr_key").value = "";
+    document.getElementById("cr_secret").value = "";
+    await fetchCredsList();
+  } catch (e) {
+    errEl.textContent = e.message || "request failed";
+  } finally {
+    credsState.submitting = false;
+    btn.disabled = false; btn.textContent = "Add";
+  }
+}
+
+function openCredsModal() {
+  const sel = document.getElementById("cr_group");
+  if (sel.children.length === 0) {
+    for (const g of ACCOUNT_GROUPS) sel.appendChild(el("option", { value: g }, [g]));
+  }
+  document.getElementById("cr_err").textContent = "";
+  document.getElementById("cr_key").value = "";
+  document.getElementById("cr_secret").value = "";
+  document.getElementById("credsModal").classList.add("show");
+  fetchCredsList();
+}
+function closeCredsModal() {
+  document.getElementById("credsModal").classList.remove("show");
+  disarmCred();
+  document.getElementById("cr_secret").value = "";
+}
+
+function openClusterModal() {
+  document.getElementById("clusterModal").classList.add("show");
+  renderClusterModal();
+  if (Date.now() - clusterState.lastFetchTs > 3_000) fetchClusterInfo({ manual: true });
+  if (clusterState.tickTimer) clearInterval(clusterState.tickTimer);
+  clusterState.tickTimer = setInterval(tickClusterUpdated, 1000);
+}
+function closeClusterModal() {
+  document.getElementById("clusterModal").classList.remove("show");
+  if (clusterState.tickTimer) { clearInterval(clusterState.tickTimer); clusterState.tickTimer = null; }
 }
 
 // ------- wire up -------
@@ -1010,8 +2641,70 @@ document.getElementById("m_filter").addEventListener("input", () => {
 document.getElementById("modal").addEventListener("click", (e) => {
   if (e.target.id === "modal") closeModal();
 });
+document.getElementById("clusterStatusBtn").addEventListener("click", openClusterModal);
+document.getElementById("ci_close").addEventListener("click", closeClusterModal);
+document.getElementById("ci_refresh").addEventListener("click", () => fetchClusterInfo({ manual: true }));
+document.getElementById("clusterModal").addEventListener("click", (e) => {
+  if (e.target.id === "clusterModal") closeClusterModal();
+});
+document.getElementById("credentialsBtn").addEventListener("click", openCredsModal);
+document.getElementById("cr_close").addEventListener("click", closeCredsModal);
+document.getElementById("cr_submit").addEventListener("click", submitCred);
+document.getElementById("credsModal").addEventListener("click", (e) => {
+  if (e.target.id === "credsModal") closeCredsModal();
+});
+document.getElementById("builderBtn").addEventListener("click", openBuilderModal);
+document.getElementById("bd_close").addEventListener("click", closeBuilderModal);
+document.getElementById("bd_copy").addEventListener("click", copyBuilderSnippet);
+document.getElementById("bd_tryit").addEventListener("click", builderTryIt);
+document.getElementById("bd_base_url").addEventListener("input", updateBuilderSnippet);
+document.getElementById("builderModal").addEventListener("click", (e) => {
+  if (e.target.id === "builderModal") closeBuilderModal();
+});
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && document.getElementById("modal").classList.contains("show")) closeModal();
+  if (e.key === "Escape") {
+    if (document.getElementById("modal").classList.contains("show")) closeModal();
+    else if (document.getElementById("clusterModal").classList.contains("show")) closeClusterModal();
+    else if (document.getElementById("credsModal").classList.contains("show")) closeCredsModal();
+    else if (document.getElementById("builderModal").classList.contains("show")) closeBuilderModal();
+  }
+});
+function isVersionNewer(latest, current) {
+  // .dev suffix is stripped on both sides — in this project's convention .dev
+  // marks the working directory of the same release, not a pre-release.
+  const parse = (v) => String(v).replace(/\.dev\d*$/, "").split(".").map(n => parseInt(n, 10) || 0);
+  const a = parse(current), b = parse(latest);
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    const av = a[i] || 0, bv = b[i] || 0;
+    if (bv > av) return true;
+    if (bv < av) return false;
+  }
+  return false;
+}
+
+fetch("/version").then(r => r.json()).then(d => {
+  if (!d || !d.version) return;
+  const el = document.getElementById("dashVersion");
+  el.textContent = "v" + String(d.version).replace(/\.dev\d*$/, "");
+  // One-shot check for newer release on PyPI (via our CORS proxy).
+  proxyGet("https://pypi.org/pypi/ubdcc-dashboard/json").then(res => {
+    const latest = res && res.info && res.info.version;
+    if (!latest) return;
+    if (isVersionNewer(latest, d.version)) {
+      el.classList.add("outdated");
+      el.title = `New version available: v${latest} — run: pip install -U ubdcc-dashboard`;
+    } else {
+      el.classList.add("uptodate");
+      el.title = `Up to date (latest on PyPI: v${latest})`;
+    }
+  }).catch(() => {});
+}).catch(() => {});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && clusterState.pollTimer && state.dccUrl) {
+    // Refresh cluster health after tab becomes visible again.
+    fetchClusterInfo();
+  }
 });
 for (const id of ["filter", "exchFilter", "onlyProblems"]) {
   document.getElementById(id).addEventListener("input", () => {

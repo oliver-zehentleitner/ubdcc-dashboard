@@ -35,15 +35,37 @@ Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unic
   means only on-screen, matching tiles hit the cluster.
 - **Status colouring** per tile: out-of-sync (`error_id #6000`) turns red,
   other errors yellow with a compact error message.
+- **Cluster Status** header button with a live health dot (green /
+  yellow / red) driven by a 30 s `/get_cluster_info` poll. Click for a
+  full breakdown — pods grouped by role, node topology, per-DepthCache
+  replica donut with distribution state and (when available) sync
+  state, credentials summary.
+- **Credentials Manager** — add / remove / list Binance API key pairs
+  on a running cluster right from the dashboard. `api_secret` input is
+  masked, stored keys show only a preview, remove requires two-click
+  confirm.
+- **API Builder** — onboarding helper for developers. Pick a task
+  (create DepthCache, get asks/bids, add credentials, ...), fill in
+  the form, copy a ready-to-paste snippet in **curl, HTTPie, Python
+  (using the official UBLDC `Cluster` client), JavaScript, Go, C#,
+  Java or Rust**. "Try it" runs GET-safe tasks through the dashboard's
+  CORS proxy and shows the pretty-printed JSON response.
+- **Version badge** next to the title. On load, the dashboard asks
+  PyPI for the latest release of `ubdcc-dashboard`. Up to date →
+  badge stays in the accent colour. Outdated → animated rainbow
+  gradient with a `pip install -U` hint in the hover tooltip. Backed
+  by a local `/version` endpoint on the launcher HTTP server.
 - **Add DepthCaches** modal with live `exchangeInfo` symbol lookup for spot,
-  margin, futures, options (incl. testnets). Shows only actively tradable
-  symbols. Free-text fallback for exchanges without a public `exchangeInfo`.
+  cross / isolated margin, futures, options (incl. testnets). Shows only
+  actively tradable symbols. Free-text fallback for exchanges without a
+  public `exchangeInfo`.
 - **Bulk `× Remove filtered`** with two-click confirmation — only active when a
   filter is set, so you can never accidentally remove every DC.
 - **Per-tile `×`** remove with two-click confirmation and 3 s auto-disarm.
 - **Disconnect** button to stop polling and cut load on the cluster.
-- Refresh-rate throttle from `max` down to `2 s`. Default `2 s` is polite to
-  the cluster; crank it up when you need a live feel.
+- Refresh-rate throttle from `max` down to `10 s`. Default `2 s` is
+  polite to the cluster; crank it up to `max` for live feel, or drop
+  down to `5 s` / `10 s` for gentler polling on lightly-used clusters.
 - **Dark theme**, tabular-numeric fonts, no framework, no tracking — a single
   HTML file served by a minimal stdlib HTTP server.
 
@@ -72,6 +94,11 @@ pip install -U ubdcc-dashboard
 
 Requires Python 3.9+. No external dependencies — uses only the standard
 library.
+
+**Cluster target:** UBDCC ≥ 0.7.0 (with UBLDC ≥ 2.14.0 for margin /
+isolated-margin support). Older clusters work for the orderbook view
+but reject the renamed credential endpoints used by the Credentials
+manager and the API Builder.
 
 ---
 
@@ -124,6 +151,9 @@ Under the hood:
 - `POST /proxy {url, body}` — passes a single JSON POST through.
 - `POST /proxy_batch {base, requests}` — fans out a list of GETs over a
   thread pool (default 32 workers) for snappy orderbook refreshes.
+- `GET /version` — returns `{"version": "..."}` read from
+  `ubdcc_dashboard.__version__`. Used by the header version badge and
+  usable as a health-check target.
 
 The `unicorn-binance-depth-cache-cluster` project is the server side of this
 story — the dashboard just paints what the cluster already exposes via its

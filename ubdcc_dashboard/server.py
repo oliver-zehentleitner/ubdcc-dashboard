@@ -16,6 +16,8 @@ import urllib.parse
 import urllib.request
 from importlib import resources
 
+from . import __version__
+
 PROXY_TIMEOUT_DEFAULT = 10.0
 BATCH_WORKERS_DEFAULT = 32
 
@@ -77,6 +79,9 @@ def make_handler(proxy_timeout: float, batch_workers: int) -> type[http.server.S
 
         def do_GET(self) -> None:  # noqa: N802
             parsed = urllib.parse.urlparse(self.path)
+            if parsed.path == "/version":
+                self._json(200, {"version": __version__})
+                return
             if parsed.path == "/proxy":
                 params = urllib.parse.parse_qs(parsed.query)
                 target = (params.get("url") or [None])[0]
