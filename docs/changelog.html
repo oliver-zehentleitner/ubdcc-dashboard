@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ubdcc-dashboard Change Log &#8212; ubdcc-dashboard 0.1.1 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ubdcc-dashboard Change Log &#8212; ubdcc-dashboard 0.2.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css?v=fdf8e9ae" />
@@ -52,8 +52,15 @@
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">ubdcc-dashboard Change Log</a><ul>
-<li><a class="reference internal" href="#id1">0.1.1</a><ul>
+<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.2.1.dev (development stage/unreleased/unstable)</a></li>
+<li><a class="reference internal" href="#id1">0.2.0</a><ul>
 <li><a class="reference internal" href="#added">Added</a></li>
+<li><a class="reference internal" href="#changed">Changed</a></li>
+<li><a class="reference internal" href="#fixed">Fixed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">0.1.1</a><ul>
+<li><a class="reference internal" href="#id3">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -168,10 +175,136 @@
 <a class="reference external" href="http://semver.org/">Semantic Versioning</a>.</p>
 <p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions/categories/releases">Discussions about ubdcc-dashboard releases!</a></p>
 <p><a class="reference external" href="https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#installation-and-upgrade">How to upgrade to the latest version!</a></p>
+<section id="dev-development-stage-unreleased-unstable">
+<h2>0.2.1.dev (development stage/unreleased/unstable)<a class="headerlink" href="#dev-development-stage-unreleased-unstable" title="Link to this heading">¶</a></h2>
+</section>
 <section id="id1">
-<h2>0.1.1<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>0.2.0<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <section id="added">
 <h3>Added<a class="headerlink" href="#added" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><strong>Version badge</strong> next to the header title: shows the installed
+dashboard version, queries PyPI once on load, turns into an animated
+rainbow gradient when a newer release is available (with a <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span></code>
+hint in the hover tooltip) and stays in the accent colour when up to date.</p></li>
+<li><p>Server endpoint <strong><code class="docutils literal notranslate"><span class="pre">/version</span></code></strong> on the launcher HTTP server returns
+<code class="docutils literal notranslate"><span class="pre">{&quot;version&quot;:</span> <span class="pre">&quot;...&quot;}</span></code> from <code class="docutils literal notranslate"><span class="pre">ubdcc_dashboard.__version__</span></code> — used by the
+badge and available for external health checks.</p></li>
+<li><p>Min-gap dropdown now offers <strong><code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">s</span></code></strong> and <strong><code class="docutils literal notranslate"><span class="pre">10</span> <span class="pre">s</span></code></strong> in addition to the
+existing presets — gentler polling for lightly-used clusters.</p></li>
+<li><p><strong>Cluster Status</strong> header button with a live health dot
+(green / yellow / red) driven by a 30 s <code class="docutils literal notranslate"><span class="pre">/get_cluster_info</span></code> poll.
+Click opens a modal with:</p>
+<ul class="simple">
+<li><p>Top strip: <code class="docutils literal notranslate"><span class="pre">HEALTHY</span></code> / <code class="docutils literal notranslate"><span class="pre">DEGRADED</span></code> / <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, pod count, DC count,
+mgmt version, DB-sync age</p></li>
+<li><p>Pods grouped by role (MGMT / REST API / DCN) with per-pod status
+pill, node, IP:port, version, <code class="docutils literal notranslate"><span class="pre">UBLDC_VERSION</span></code> (DCNs), <code class="docutils literal notranslate"><span class="pre">last</span> <span class="pre">seen</span> <span class="pre">Xs</span> <span class="pre">ago</span></code></p></li>
+<li><p>Node topology grid (how many mgmt / rest / dcn pods per node)</p></li>
+<li><p>DepthCaches list with a replica donut (running / desired) and
+optional sync-state label (<code class="docutils literal notranslate"><span class="pre">in</span> <span class="pre">sync</span></code> / <code class="docutils literal notranslate"><span class="pre">out</span> <span class="pre">of</span> <span class="pre">sync</span></code> / <code class="docutils literal notranslate"><span class="pre">error</span></code>)
+sourced from the main grid’s already-polled tiles, plus a restart
+counter when restarts &gt; 0</p></li>
+<li><p>Credentials summary grouped by account_group</p></li>
+<li><p>Live-ticking <code class="docutils literal notranslate"><span class="pre">updated</span> <span class="pre">Xs</span> <span class="pre">ago</span></code>, manual <code class="docutils literal notranslate"><span class="pre">Refresh</span></code> button, modal
+cleanly stops its tick timer on close.</p></li>
+</ul>
+</li>
+<li><p><strong>Credentials</strong> header button + manager modal: add / remove / list
+Binance API key pairs on a running cluster. Secrets masked in the list,
+<code class="docutils literal notranslate"><span class="pre">api_secret</span></code> input is <code class="docutils literal notranslate"><span class="pre">type=password</span></code>, two-click confirm on remove with
+3 s auto-disarm, inline error feedback, footer hint about proxy trust.</p></li>
+<li><p><strong>API Builder</strong> header button + modal — onboarding helper for devs.
+Generates ready-to-paste REST-API calls in <strong>eight languages</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">curl</span></code> (POSIX-safe quoting, heredoc bodies)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HTTPie</span></code> (<code class="docutils literal notranslate"><span class="pre">==</span></code> for query, <code class="docutils literal notranslate"><span class="pre">=</span></code> / <code class="docutils literal notranslate"><span class="pre">:=</span></code> for body)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Python</span></code> — uses the official UBLDC cluster client
+(<code class="docutils literal notranslate"><span class="pre">BinanceLocalDepthCacheManager</span></code> context manager + <code class="docutils literal notranslate"><span class="pre">ubldc.cluster.*</span></code>),
+matching the pattern in UBLDC’s <code class="docutils literal notranslate"><span class="pre">examples/</span></code> folder</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JavaScript</span></code> (<code class="docutils literal notranslate"><span class="pre">fetch</span></code> + <code class="docutils literal notranslate"><span class="pre">URLSearchParams</span></code>, async/await)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Go</span></code> (<code class="docutils literal notranslate"><span class="pre">net/http</span></code>, no external deps)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">C#</span></code> (<code class="docutils literal notranslate"><span class="pre">HttpClient</span></code>, top-level .NET 6+)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Java</span></code> (<code class="docutils literal notranslate"><span class="pre">java.net.http.HttpClient</span></code>, JDK 11+, no external deps)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Rust</span></code> (<code class="docutils literal notranslate"><span class="pre">reqwest::blocking</span></code>, raw-string JSON bodies with auto-bumped
+hash count so devs don’t have to think about escaping)</p></li>
+</ul>
+<p>Eleven tasks in four groups — Credentials (add / remove / list),
+DepthCaches (create / create-bulk / stop / info / list), Order Book
+(asks / bids), Cluster (info). Editable Base URL, method-coloured
+badge, <code class="docutils literal notranslate"><span class="pre">Try</span> <span class="pre">it</span> <span class="pre">→</span></code> button for safe GET + DC-create/stop tasks, Copy
+button, link to the cluster’s OpenAPI (<code class="docutils literal notranslate"><span class="pre">/docs</span></code>) in the footer.</p>
+</li>
+<li><p><strong>Margin / isolated_margin (+ testnet)</strong> exchange strings added to
+the Add-DC exchange dropdown and the <code class="docutils literal notranslate"><span class="pre">exchangeInfo</span></code> URL map.
+Requires UBLDC ≥ 2.14.0 + UBDCC ≥ 0.7.0.</p></li>
+</ul>
+</section>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Header title: <code class="docutils literal notranslate"><span class="pre">UBDCC</span> <span class="pre">LIVE</span></code> → <code class="docutils literal notranslate"><span class="pre">UBDCC</span> <span class="pre">DASHBOARD</span></code> (full caps, matches
+the other header buttons).</p></li>
+<li><p>Empty-state message is now context-sensitive: “Enter the URL…”
+when disconnected, “No DepthCaches configured yet — click
+DepthCaches to add one.” when connected with 0 DCs, hidden when DCs
+are present. Wording corrected from “MGMT node” to “REST API node”
+— users connect to restapi on <code class="docutils literal notranslate"><span class="pre">:42081</span></code>, not mgmt on <code class="docutils literal notranslate"><span class="pre">:42080</span></code>.</p></li>
+<li><p>Internal <code class="docutils literal notranslate"><span class="pre">fetch(&quot;/proxy&quot;,</span> <span class="pre">POST)</span></code> duplicates consolidated into a
+<code class="docutils literal notranslate"><span class="pre">proxyPost(url,</span> <span class="pre">body)</span></code> helper symmetric with the existing <code class="docutils literal notranslate"><span class="pre">proxyGet</span></code>
+/ <code class="docutils literal notranslate"><span class="pre">proxyBatch</span></code>.</p></li>
+<li><p>Header: <code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">Add</span> <span class="pre">DC</span></code> renamed to <code class="docutils literal notranslate"><span class="pre">DepthCaches</span></code> and <code class="docutils literal notranslate"><span class="pre">DCC</span> <span class="pre">URL</span></code> label
+renamed to <code class="docutils literal notranslate"><span class="pre">UBDCC</span> <span class="pre">URL</span></code> — one consistent noun style across
+<code class="docutils literal notranslate"><span class="pre">Cluster</span> <span class="pre">●</span> <span class="pre">·</span> <span class="pre">Credentials</span> <span class="pre">·</span> <span class="pre">DepthCaches</span> <span class="pre">·</span> <span class="pre">API</span> <span class="pre">Builder</span></code>.</p></li>
+<li><p>Default UBDCC URL in the connect field is now <code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:42081</span></code>
+(the standard local-install port) instead of a baked-in LAN IP.</p></li>
+<li><p>Credential endpoint paths used across the dashboard match the renamed
+UBDCC REST API — <code class="docutils literal notranslate"><span class="pre">/add_credentials</span></code>, <code class="docutils literal notranslate"><span class="pre">/remove_credentials</span></code>,
+<code class="docutils literal notranslate"><span class="pre">/get_credentials_list</span></code>. Requires <strong>UBDCC ≥ 0.7.0</strong>.</p></li>
+<li><p>Cluster-info DC cards use the label <code class="docutils literal notranslate"><span class="pre">X/Y</span> <span class="pre">replicas</span></code> (distribution
+count) instead of <code class="docutils literal notranslate"><span class="pre">running</span></code> — distribution STATUS only means
+“pod process started”, not “cache synchronised”. The sync state is
+shown as a separate <code class="docutils literal notranslate"><span class="pre">in</span> <span class="pre">sync</span></code> / <code class="docutils literal notranslate"><span class="pre">out</span> <span class="pre">of</span> <span class="pre">sync</span></code> meta entry when the
+main grid has already polled that DC.</p></li>
+</ul>
+</section>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Main polling loop no longer blocks the first data fetch behind the
+min-gap wait. With the new 5 s / 10 s options the viewport-visibility
+detection would otherwise delay the initial render by a full gap
+cycle. The loop now only throttles after cycles that actually
+fetched.</p></li>
+<li><p>API Builder Copy button keeps its “Copied” confirmation through form
+edits — the state now only resets when the generated snippet text
+actually changes.</p></li>
+<li><p>HTTPie snippet generator emits bare numeric/boolean query values
+(<code class="docutils literal notranslate"><span class="pre">debug==true</span></code>) instead of wrapping them in single quotes.</p></li>
+<li><p>Cluster-info poll is paused while the browser tab is hidden AND the
+modal is closed; refreshes once on <code class="docutils literal notranslate"><span class="pre">visibilitychange</span></code> when the tab
+becomes visible again — avoids overnight chatter against the mgmt
+node.</p></li>
+<li><p>Credentials modal surfaces network errors inline in red instead of
+silently rendering “no credentials configured”.</p></li>
+<li><p>Minor XSS hardening: the Add-DepthCache modal’s <code class="docutils literal notranslate"><span class="pre">exchangeInfo</span></code>-failed
+error path now builds the error element via <code class="docutils literal notranslate"><span class="pre">el()</span></code> instead of
+interpolating the API-returned message into <code class="docutils literal notranslate"><span class="pre">innerHTML</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stopClusterPoll</span></code> also clears the 1 s <code class="docutils literal notranslate"><span class="pre">tickTimer</span></code> as a belt-and-
+suspenders cleanup on disconnect.</p></li>
+<li><p>API Builder Copy button now works over plain HTTP on a LAN IP
+(<code class="docutils literal notranslate"><span class="pre">navigator.clipboard</span></code> is only available in a secure context;
+fall back to <code class="docutils literal notranslate"><span class="pre">document.execCommand('copy')</span></code> via a hidden textarea).</p></li>
+<li><p>Cluster Info modal: fixed scroll so Close / Refresh stay reachable
+when many DCs are configured (flex sizing was blocking the inner
+scroller from shrinking below content size).</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>0.1.1<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h3>Added<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Initial release.</p></li>
 <li><p>Single-file vanilla-JS dashboard with compact mini-orderbook tiles per DepthCache,
@@ -213,8 +346,15 @@ prints a clickable OSC-8 terminal hyperlink. Flags: <code class="docutils litera
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">ubdcc-dashboard Change Log</a><ul>
-<li><a class="reference internal" href="#id1">0.1.1</a><ul>
+<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.2.1.dev (development stage/unreleased/unstable)</a></li>
+<li><a class="reference internal" href="#id1">0.2.0</a><ul>
 <li><a class="reference internal" href="#added">Added</a></li>
+<li><a class="reference internal" href="#changed">Changed</a></li>
+<li><a class="reference internal" href="#fixed">Fixed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">0.1.1</a><ul>
+<li><a class="reference internal" href="#id3">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -320,7 +460,7 @@ prints a clickable OSC-8 terminal hyperlink. Flags: <code class="docutils litera
     <a href="https://github.com/oliver-zehentleitner/unicorn-binance-suite#documentation">Index of all docs</a><br />
     &copy; <a href="/license.html">Copyright</a> 2026, Oliver Zehentleitner.
     See <a href="/license.html">License</a> for more information.<br />
-    Last updated on Apr 23 2026 at 22:00 (CET).
+    Last updated on Apr 24 2026 at 19:59 (CET).
     <a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues/new/choose">Found a bug</a>?
     <br />
     Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.

@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>UBDCC Dashboard &#8212; ubdcc-dashboard 0.1.1 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBDCC Dashboard &#8212; ubdcc-dashboard 0.2.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css?v=fdf8e9ae" />
@@ -219,15 +219,37 @@ quantity bars and spread in bps.</p></li>
 means only on-screen, matching tiles hit the cluster.</p></li>
 <li><p><strong>Status colouring</strong> per tile: out-of-sync (<code class="docutils literal notranslate"><span class="pre">error_id</span> <span class="pre">#6000</span></code>) turns red,
 other errors yellow with a compact error message.</p></li>
+<li><p><strong>Cluster Status</strong> header button with a live health dot (green /
+yellow / red) driven by a 30 s <code class="docutils literal notranslate"><span class="pre">/get_cluster_info</span></code> poll. Click for a
+full breakdown — pods grouped by role, node topology, per-DepthCache
+replica donut with distribution state and (when available) sync
+state, credentials summary.</p></li>
+<li><p><strong>Credentials Manager</strong> — add / remove / list Binance API key pairs
+on a running cluster right from the dashboard. <code class="docutils literal notranslate"><span class="pre">api_secret</span></code> input is
+masked, stored keys show only a preview, remove requires two-click
+confirm.</p></li>
+<li><p><strong>API Builder</strong> — onboarding helper for developers. Pick a task
+(create DepthCache, get asks/bids, add credentials, …), fill in
+the form, copy a ready-to-paste snippet in <strong>curl, HTTPie, Python
+(using the official UBLDC <code class="docutils literal notranslate"><span class="pre">Cluster</span></code> client), JavaScript, Go, C#,
+Java or Rust</strong>. “Try it” runs GET-safe tasks through the dashboard’s
+CORS proxy and shows the pretty-printed JSON response.</p></li>
+<li><p><strong>Version badge</strong> next to the title. On load, the dashboard asks
+PyPI for the latest release of <code class="docutils literal notranslate"><span class="pre">ubdcc-dashboard</span></code>. Up to date →
+badge stays in the accent colour. Outdated → animated rainbow
+gradient with a <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span></code> hint in the hover tooltip. Backed
+by a local <code class="docutils literal notranslate"><span class="pre">/version</span></code> endpoint on the launcher HTTP server.</p></li>
 <li><p><strong>Add DepthCaches</strong> modal with live <code class="docutils literal notranslate"><span class="pre">exchangeInfo</span></code> symbol lookup for spot,
-margin, futures, options (incl. testnets). Shows only actively tradable
-symbols. Free-text fallback for exchanges without a public <code class="docutils literal notranslate"><span class="pre">exchangeInfo</span></code>.</p></li>
+cross / isolated margin, futures, options (incl. testnets). Shows only
+actively tradable symbols. Free-text fallback for exchanges without a
+public <code class="docutils literal notranslate"><span class="pre">exchangeInfo</span></code>.</p></li>
 <li><p><strong>Bulk <code class="docutils literal notranslate"><span class="pre">×</span> <span class="pre">Remove</span> <span class="pre">filtered</span></code></strong> with two-click confirmation — only active when a
 filter is set, so you can never accidentally remove every DC.</p></li>
 <li><p><strong>Per-tile <code class="docutils literal notranslate"><span class="pre">×</span></code></strong> remove with two-click confirmation and 3 s auto-disarm.</p></li>
 <li><p><strong>Disconnect</strong> button to stop polling and cut load on the cluster.</p></li>
-<li><p>Refresh-rate throttle from <code class="docutils literal notranslate"><span class="pre">max</span></code> down to <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">s</span></code>. Default <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">s</span></code> is polite to
-the cluster; crank it up when you need a live feel.</p></li>
+<li><p>Refresh-rate throttle from <code class="docutils literal notranslate"><span class="pre">max</span></code> down to <code class="docutils literal notranslate"><span class="pre">10</span> <span class="pre">s</span></code>. Default <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">s</span></code> is
+polite to the cluster; crank it up to <code class="docutils literal notranslate"><span class="pre">max</span></code> for live feel, or drop
+down to <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">s</span></code> / <code class="docutils literal notranslate"><span class="pre">10</span> <span class="pre">s</span></code> for gentler polling on lightly-used clusters.</p></li>
 <li><p><strong>Dark theme</strong>, tabular-numeric fonts, no framework, no tracking — a single
 HTML file served by a minimal stdlib HTTP server.</p></li>
 </ul>
@@ -237,7 +259,7 @@ HTML file served by a minimal stdlib HTTP server.</p></li>
 <h2>Screenshot<a class="headerlink" href="#screenshot" title="Link to this heading">¶</a></h2>
 <p>The dashboard provides a compact live view of your UBDCC cluster in the browser: mini-orderbook tiles, sync/error state
 visibility, and quick DepthCache management in one place.
-<img alt="UBDCC Dashboard Screenshot" src="https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.jpeg" /></p>
+<img alt="UBDCC Dashboard Screenshot" src="https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.png" /></p>
 </section>
 <hr class="docutils" />
 <section id="authorship-license">
@@ -254,6 +276,10 @@ no subscription, no commercial tier.</p>
 </div>
 <p>Requires Python 3.9+. No external dependencies — uses only the standard
 library.</p>
+<p><strong>Cluster target:</strong> UBDCC ≥ 0.7.0 (with UBLDC ≥ 2.14.0 for margin /
+isolated-margin support). Older clusters work for the orderbook view
+but reject the renamed credential endpoints used by the Credentials
+manager and the API Builder.</p>
 </section>
 <hr class="docutils" />
 <section id="quick-start">
@@ -331,6 +357,9 @@ the browser can query a remote UBDCC cluster that does not send
 <li><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/proxy</span> <span class="pre">{url,</span> <span class="pre">body}</span></code> — passes a single JSON POST through.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/proxy_batch</span> <span class="pre">{base,</span> <span class="pre">requests}</span></code> — fans out a list of GETs over a
 thread pool (default 32 workers) for snappy orderbook refreshes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/version</span></code> — returns <code class="docutils literal notranslate"><span class="pre">{&quot;version&quot;:</span> <span class="pre">&quot;...&quot;}</span></code> read from
+<code class="docutils literal notranslate"><span class="pre">ubdcc_dashboard.__version__</span></code>. Used by the header version badge and
+usable as a health-check target.</p></li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">unicorn-binance-depth-cache-cluster</span></code> project is the server side of this
 story — the dashboard just paints what the cluster already exposes via its
@@ -565,7 +594,7 @@ give a 👍 if you need one of them, or suggest a new feature!</p>
     <a href="https://github.com/oliver-zehentleitner/unicorn-binance-suite#documentation">Index of all docs</a><br />
     &copy; <a href="/license.html">Copyright</a> 2026, Oliver Zehentleitner.
     See <a href="/license.html">License</a> for more information.<br />
-    Last updated on Apr 23 2026 at 22:00 (CET).
+    Last updated on Apr 24 2026 at 19:59 (CET).
     <a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues/new/choose">Found a bug</a>?
     <br />
     Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.

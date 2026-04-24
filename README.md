@@ -74,7 +74,7 @@ Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unic
 ## Screenshot
 The dashboard provides a compact live view of your UBDCC cluster in the browser: mini-orderbook tiles, sync/error state 
 visibility, and quick DepthCache management in one place.
-![UBDCC Dashboard Screenshot](https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.jpeg)
+![UBDCC Dashboard Screenshot](https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.png)
 
 ---
 
