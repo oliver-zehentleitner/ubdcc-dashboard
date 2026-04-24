@@ -2,9 +2,12 @@
 
 > Browser-based live dashboard for the [UNICORN Binance DepthCache Cluster (UBDCC)](https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster).
 > Monitor every depth cache in your cluster at a glance, spot out-of-sync caches, add or remove caches on the fly.
+> Inspect cluster health (pods, nodes, replica donuts) at a glance.
+> Manage Binance API credentials with a two-click-confirm UI.
+> Generate REST-API snippets for curl, HTTPie, Python (UBLDC client), JavaScript, Go, C#, Java, Rust — the API Builder.
 > Part of [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unicorn-binance-suite).
 
-Version: 0.1.1. Python 3.9 – 3.14.
+Version: 0.2.0. Python 3.9 – 3.14.
 
 ## Authorship & License
 
@@ -50,6 +53,17 @@ Proxy endpoints (for agents wanting to script against the launcher):
 ## Relation to UBDCC
 
 The dashboard is a client, not part of the cluster. It talks to a running UBDCC cluster via its public REST API (typical URL: `http://<cluster-host>:42081`). See https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster for the cluster itself.
+
+**Cluster target:** UBDCC >= 0.7.0 (and UBLDC >= 2.14.0 for margin / isolated-margin support). Older clusters render the orderbook view fine but reject the renamed credential endpoints used by the Credentials manager and the API Builder.
+
+## Feature modals
+
+The header has four connect-gated buttons besides `Disconnect`:
+
+- **Cluster ●** — live health dot (green = ok, yellow = degraded, red = unreachable / missing pods / DC slot shortfall). Backed by a 30 s `/get_cluster_info` poll. Modal shows pod-by-role groups, per-node topology, per-DC replica donut + sync state, credentials summary, mgmt version and DB-sync age. Manual `Refresh` button inside the modal.
+- **Credentials** — add / list / remove Binance API key pairs. `api_secret` input is masked; listed keys show only a preview. Remove is two-click confirm with 3 s auto-disarm.
+- **DepthCaches** — opens the Add-DepthCaches modal with live `exchangeInfo` symbol picker (spot, cross / isolated margin, futures, options — mainnet + testnets).
+- **API Builder** — 11 pre-built tasks (credentials, depthcaches, order book, cluster info) rendered as ready-to-paste REST-API calls in 8 languages. Python tab uses the official UBLDC `Cluster` client idiom (`BinanceLocalDepthCacheManager` context manager + `ubldc.cluster.<method>()`). Editable Base URL, `Try it →` for GET-safe tasks via the dashboard's CORS proxy, Copy button with secure-context + `execCommand` fallback.
 
 ## Links
 

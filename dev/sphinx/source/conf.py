@@ -15,7 +15,7 @@ author = 'Oliver Zehentleitner'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.1.1'
+release = '0.2.0'
 
 html_last_updated_fmt = "%b %d %Y at %H:%M (CET)"
 
