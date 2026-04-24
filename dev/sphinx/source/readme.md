@@ -50,6 +50,11 @@ Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unic
   (using the official UBLDC `Cluster` client), JavaScript, Go, C#,
   Java or Rust**. "Try it" runs GET-safe tasks through the dashboard's
   CORS proxy and shows the pretty-printed JSON response.
+- **Version badge** next to the title. On load, the dashboard asks
+  PyPI for the latest release of `ubdcc-dashboard`. Up to date →
+  badge stays in the accent colour. Outdated → animated rainbow
+  gradient with a `pip install -U` hint in the hover tooltip. Backed
+  by a local `/version` endpoint on the launcher HTTP server.
 - **Add DepthCaches** modal with live `exchangeInfo` symbol lookup for spot,
   cross / isolated margin, futures, options (incl. testnets). Shows only
   actively tradable symbols. Free-text fallback for exchanges without a
@@ -58,8 +63,9 @@ Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unic
   filter is set, so you can never accidentally remove every DC.
 - **Per-tile `×`** remove with two-click confirmation and 3 s auto-disarm.
 - **Disconnect** button to stop polling and cut load on the cluster.
-- Refresh-rate throttle from `max` down to `2 s`. Default `2 s` is polite to
-  the cluster; crank it up when you need a live feel.
+- Refresh-rate throttle from `max` down to `10 s`. Default `2 s` is
+  polite to the cluster; crank it up to `max` for live feel, or drop
+  down to `5 s` / `10 s` for gentler polling on lightly-used clusters.
 - **Dark theme**, tabular-numeric fonts, no framework, no tracking — a single
   HTML file served by a minimal stdlib HTTP server.
 
@@ -145,6 +151,9 @@ Under the hood:
 - `POST /proxy {url, body}` — passes a single JSON POST through.
 - `POST /proxy_batch {base, requests}` — fans out a list of GETs over a
   thread pool (default 32 workers) for snappy orderbook refreshes.
+- `GET /version` — returns `{"version": "..."}` read from
+  `ubdcc_dashboard.__version__`. Used by the header version badge and
+  usable as a health-check target.
 
 The `unicorn-binance-depth-cache-cluster` project is the server side of this
 story — the dashboard just paints what the cluster already exposes via its

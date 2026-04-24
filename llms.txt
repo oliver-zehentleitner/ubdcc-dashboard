@@ -23,7 +23,7 @@ pip install ubdcc-dashboard
 ubdcc-dashboard start
 ```
 
-Default bind is `127.0.0.1:8080` — localhost only. Your browser opens automatically and shows the dashboard; enter the URL of your UBDCC MGMT node and click `Connect`.
+Default bind is `127.0.0.1:8080` — localhost only. Your browser opens automatically and shows the dashboard; enter the URL of your UBDCC REST API node (default `http://127.0.0.1:42081`) and click `Connect`.
 
 ## CLI
 
@@ -49,6 +49,7 @@ Proxy endpoints (for agents wanting to script against the launcher):
 - `GET  /proxy?url=<encoded_url>` — single pass-through GET.
 - `POST /proxy  {url, body}` — single pass-through JSON POST.
 - `POST /proxy_batch {base, requests: [{id, path, params}, …]}` — threaded fan-out, returns `{results: {id → {status, body}}}`.
+- `GET  /version` — returns `{"version": "..."}` read from `ubdcc_dashboard.__version__`. Used by the header version badge and usable as a liveness/health-check target.
 
 ## Relation to UBDCC
 
@@ -64,6 +65,8 @@ The header has four connect-gated buttons besides `Disconnect`:
 - **Credentials** — add / list / remove Binance API key pairs. `api_secret` input is masked; listed keys show only a preview. Remove is two-click confirm with 3 s auto-disarm.
 - **DepthCaches** — opens the Add-DepthCaches modal with live `exchangeInfo` symbol picker (spot, cross / isolated margin, futures, options — mainnet + testnets).
 - **API Builder** — 11 pre-built tasks (credentials, depthcaches, order book, cluster info) rendered as ready-to-paste REST-API calls in 8 languages. Python tab uses the official UBLDC `Cluster` client idiom (`BinanceLocalDepthCacheManager` context manager + `ubldc.cluster.<method>()`). Editable Base URL, `Try it →` for GET-safe tasks via the dashboard's CORS proxy, Copy button with secure-context + `execCommand` fallback.
+
+The header title also carries a **version badge** that queries PyPI once on load. Up to date → accent colour. Outdated → animated rainbow gradient with a `pip install -U ubdcc-dashboard` hint in the hover tooltip.
 
 ## Links
 
