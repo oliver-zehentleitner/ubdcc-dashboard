@@ -10,6 +10,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 [How to upgrade to the latest version!](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#installation-and-upgrade)
 
 ## 0.2.1.dev (development stage/unreleased/unstable)
+### Added
+- API Builder: two more languages — **PHP** (built-in cURL extension,
+  no Composer required) and **C/C++** (libcurl, single template that
+  compiles with both `gcc` and `g++`). Brings the total to ten.
+- API Builder modal footer: link to
+  [Open an issue](https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues)
+  next to the OpenAPI reference, so users can flag wrong snippets and
+  we can fix the generators.
 
 ## 0.2.0
 ### Added
