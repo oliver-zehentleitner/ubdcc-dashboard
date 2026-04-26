@@ -172,6 +172,7 @@ REST API.
 - [CLI Reference](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#cli-options)
 
 ## Related Articles
+- [From `pip install` to a Redundant Binance Order Book Cluster — UBDCC + Dashboard Quickstart](https://blog.technopathy.club/from-pip-install-to-a-redundant-binance-order-book-cluster-ubdcc-dashboard-quickstart)
 - [UNICORN Binance Suite Article Series](https://blog.technopathy.club/series/unicorn-binance-suite)
 
 ## Project Homepage
