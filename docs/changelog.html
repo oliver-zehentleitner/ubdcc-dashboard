@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ubdcc-dashboard Change Log &#8212; ubdcc-dashboard 0.2.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ubdcc-dashboard Change Log &#8212; ubdcc-dashboard 0.3.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css?v=fdf8e9ae" />
@@ -52,15 +52,21 @@
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">ubdcc-dashboard Change Log</a><ul>
-<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.2.1.dev (development stage/unreleased/unstable)</a></li>
-<li><a class="reference internal" href="#id1">0.2.0</a><ul>
+<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.3.0.dev (development stage/unreleased/unstable)</a></li>
+<li><a class="reference internal" href="#id1">0.3.0</a><ul>
 <li><a class="reference internal" href="#added">Added</a></li>
 <li><a class="reference internal" href="#changed">Changed</a></li>
 <li><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">0.1.1</a><ul>
+<li><a class="reference internal" href="#id2">0.2.0</a><ul>
 <li><a class="reference internal" href="#id3">Added</a></li>
+<li><a class="reference internal" href="#id4">Changed</a></li>
+<li><a class="reference internal" href="#id5">Fixed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id6">0.1.1</a><ul>
+<li><a class="reference internal" href="#id7">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -176,12 +182,56 @@
 <p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions/categories/releases">Discussions about ubdcc-dashboard releases!</a></p>
 <p><a class="reference external" href="https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#installation-and-upgrade">How to upgrade to the latest version!</a></p>
 <section id="dev-development-stage-unreleased-unstable">
-<h2>0.2.1.dev (development stage/unreleased/unstable)<a class="headerlink" href="#dev-development-stage-unreleased-unstable" title="Link to this heading">¶</a></h2>
+<h2>0.3.0.dev (development stage/unreleased/unstable)<a class="headerlink" href="#dev-development-stage-unreleased-unstable" title="Link to this heading">¶</a></h2>
 </section>
 <section id="id1">
-<h2>0.2.0<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>0.3.0<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <section id="added">
 <h3>Added<a class="headerlink" href="#added" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Cluster Status modal: tabbed layout</strong> — split into <strong>Pods</strong>,
+<strong>DepthCaches</strong>, <strong>DCNs</strong> and <strong>Credentials</strong> tabs with live counts.
+Top strip (health + counts + mgmt version + db sync age) stays
+pinned above the tabs so the at-a-glance view is preserved.</p></li>
+<li><p><strong>Cluster Status: new DCNs tab</strong> — DCN-centric view. Each DCN pod
+shown as a card with status pill, node, version, and the list of
+DepthCaches it hosts (exchange / market / restarts / per-replica
+status). Sorted by load (most-loaded DCNs first), idle DCNs
+flagged with “no depthcaches assigned — DCN is idle”. Useful for
+spotting unbalanced distribution and idle capacity at a glance.</p></li>
+<li><p>API Builder: two more languages — <strong>PHP</strong> (built-in cURL extension,
+no Composer required) and <strong>C/C++</strong> (libcurl, single template that
+compiles with both <code class="docutils literal notranslate"><span class="pre">gcc</span></code> and <code class="docutils literal notranslate"><span class="pre">g++</span></code>). Brings the total to ten.</p></li>
+<li><p>API Builder modal footer: link to
+<a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues">Open an issue</a>
+next to the OpenAPI reference, so users can flag wrong snippets and
+we can fix the generators.</p></li>
+</ul>
+</section>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>API Builder modal footer: text bumped from <code class="docutils literal notranslate"><span class="pre">10px</span> <span class="pre">italic</span> <span class="pre">muted</span></code> to
+<code class="docutils literal notranslate"><span class="pre">12px</span> <span class="pre">text-color</span></code> and the OpenAPI / Open-an-issue links recoloured
+with <code class="docutils literal notranslate"><span class="pre">var(--accent)</span></code> + underline so they’re readable on the dark
+background.</p></li>
+</ul>
+</section>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>API Builder: the <strong>Markets</strong> textarea on
+<code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/create_depthcaches</span></code> (bulk) rendered with the browser-default
+white background. The global form-input rule in <code class="docutils literal notranslate"><span class="pre">static/index.html</span></code>
+only covered <code class="docutils literal notranslate"><span class="pre">input,</span> <span class="pre">button,</span> <span class="pre">select</span></code>; extended to include
+<code class="docutils literal notranslate"><span class="pre">textarea</span></code> so it picks up the dark theme like every other field.</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>0.2.0<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h3>Added<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <ul>
 <li><p><strong>Version badge</strong> next to the header title: shows the installed
 dashboard version, queries PyPI once on load, turns into an animated
@@ -240,8 +290,8 @@ the Add-DC exchange dropdown and the <code class="docutils literal notranslate">
 Requires UBLDC ≥ 2.14.0 + UBDCC ≥ 0.7.0.</p></li>
 </ul>
 </section>
-<section id="changed">
-<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading">¶</a></h3>
+<section id="id4">
+<h3>Changed<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Header title: <code class="docutils literal notranslate"><span class="pre">UBDCC</span> <span class="pre">LIVE</span></code> → <code class="docutils literal notranslate"><span class="pre">UBDCC</span> <span class="pre">DASHBOARD</span></code> (full caps, matches
 the other header buttons).</p></li>
@@ -268,8 +318,8 @@ shown as a separate <code class="docutils literal notranslate"><span class="pre"
 main grid has already polled that DC.</p></li>
 </ul>
 </section>
-<section id="fixed">
-<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">¶</a></h3>
+<section id="id5">
+<h3>Fixed<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Main polling loop no longer blocks the first data fetch behind the
 min-gap wait. With the new 5 s / 10 s options the viewport-visibility
@@ -301,10 +351,10 @@ scroller from shrinking below content size).</p></li>
 </ul>
 </section>
 </section>
-<section id="id2">
-<h2>0.1.1<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<section id="id3">
-<h3>Added<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h2>0.1.1<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<section id="id7">
+<h3>Added<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Initial release.</p></li>
 <li><p>Single-file vanilla-JS dashboard with compact mini-orderbook tiles per DepthCache,
@@ -346,15 +396,21 @@ prints a clickable OSC-8 terminal hyperlink. Flags: <code class="docutils litera
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">ubdcc-dashboard Change Log</a><ul>
-<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.2.1.dev (development stage/unreleased/unstable)</a></li>
-<li><a class="reference internal" href="#id1">0.2.0</a><ul>
+<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.3.0.dev (development stage/unreleased/unstable)</a></li>
+<li><a class="reference internal" href="#id1">0.3.0</a><ul>
 <li><a class="reference internal" href="#added">Added</a></li>
 <li><a class="reference internal" href="#changed">Changed</a></li>
 <li><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">0.1.1</a><ul>
+<li><a class="reference internal" href="#id2">0.2.0</a><ul>
 <li><a class="reference internal" href="#id3">Added</a></li>
+<li><a class="reference internal" href="#id4">Changed</a></li>
+<li><a class="reference internal" href="#id5">Fixed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id6">0.1.1</a><ul>
+<li><a class="reference internal" href="#id7">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -460,7 +516,7 @@ prints a clickable OSC-8 terminal hyperlink. Flags: <code class="docutils litera
     <a href="https://github.com/oliver-zehentleitner/unicorn-binance-suite#documentation">Index of all docs</a><br />
     &copy; <a href="/license.html">Copyright</a> 2026, Oliver Zehentleitner.
     See <a href="/license.html">License</a> for more information.<br />
-    Last updated on Apr 24 2026 at 19:59 (CET).
+    Last updated on Apr 26 2026 at 16:52 (CET).
     <a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues/new/choose">Found a bug</a>?
     <br />
     Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.

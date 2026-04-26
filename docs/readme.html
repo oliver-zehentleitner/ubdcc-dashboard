@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>UBDCC Dashboard &#8212; ubdcc-dashboard 0.2.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBDCC Dashboard &#8212; ubdcc-dashboard 0.3.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css?v=fdf8e9ae" />
@@ -231,9 +231,12 @@ confirm.</p></li>
 <li><p><strong>API Builder</strong> — onboarding helper for developers. Pick a task
 (create DepthCache, get asks/bids, add credentials, …), fill in
 the form, copy a ready-to-paste snippet in <strong>curl, HTTPie, Python
-(using the official UBLDC <code class="docutils literal notranslate"><span class="pre">Cluster</span></code> client), JavaScript, Go, C#,
-Java or Rust</strong>. “Try it” runs GET-safe tasks through the dashboard’s
-CORS proxy and shows the pretty-printed JSON response.</p></li>
+(using the <a class="reference external" href="https://github.com/oliver-zehentleitner/unicorn-binance-local-depth-cache#connect-to-a-unicorn-binance-depthcache-cluster">official UBLDC <code class="docutils literal notranslate"><span class="pre">Cluster</span></code> client</a>),
+JavaScript, Go, C#, Java, Rust, PHP or C/C++</strong>. “Try it” runs
+GET-safe tasks through the dashboard’s CORS proxy and shows the
+pretty-printed JSON response. Modal footer links to the cluster’s
+OpenAPI reference at <code class="docutils literal notranslate"><span class="pre">/docs</span></code> and to the dashboard’s issue tracker
+for snippet bug reports.</p></li>
 <li><p><strong>Version badge</strong> next to the title. On load, the dashboard asks
 PyPI for the latest release of <code class="docutils literal notranslate"><span class="pre">ubdcc-dashboard</span></code>. Up to date →
 badge stays in the accent colour. Outdated → animated rainbow
@@ -276,10 +279,12 @@ no subscription, no commercial tier.</p>
 </div>
 <p>Requires Python 3.9+. No external dependencies — uses only the standard
 library.</p>
-<p><strong>Cluster target:</strong> UBDCC ≥ 0.7.0 (with UBLDC ≥ 2.14.0 for margin /
-isolated-margin support). Older clusters work for the orderbook view
-but reject the renamed credential endpoints used by the Credentials
-manager and the API Builder.</p>
+<blockquote>
+<div><p><strong>Already running the cluster?</strong> <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">ubdcc</span></code> bundles
+<code class="docutils literal notranslate"><span class="pre">ubdcc-dashboard</span></code> automatically — no separate install step needed.
+Standalone install is still useful when you want the dashboard on a
+different machine than the cluster, or pinned to a specific version.</p>
+</div></blockquote>
 </section>
 <hr class="docutils" />
 <section id="quick-start">
@@ -594,7 +599,7 @@ give a 👍 if you need one of them, or suggest a new feature!</p>
     <a href="https://github.com/oliver-zehentleitner/unicorn-binance-suite#documentation">Index of all docs</a><br />
     &copy; <a href="/license.html">Copyright</a> 2026, Oliver Zehentleitner.
     See <a href="/license.html">License</a> for more information.<br />
-    Last updated on Apr 24 2026 at 19:59 (CET).
+    Last updated on Apr 26 2026 at 16:52 (CET).
     <a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues/new/choose">Found a bug</a>?
     <br />
     Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
