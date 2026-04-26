@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ubdcc-dashboard"
-version = "0.2.0"
+version = "0.3.0"
 description = "Browser-based live dashboard for the UNICORN Binance DepthCache Cluster (UBDCC) — monitor and manage depth caches in real time."
 authors = ["Oliver Zehentleitner"]
 license = "MIT"

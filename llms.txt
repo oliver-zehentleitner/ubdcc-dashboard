@@ -7,7 +7,7 @@
 > Generate REST-API snippets for curl, HTTPie, Python (UBLDC client), JavaScript, Go, C#, Java, Rust, PHP, C/C++ — the API Builder.
 > Part of [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unicorn-binance-suite).
 
-Version: 0.2.0. Python 3.9 – 3.14.
+Version: 0.3.0. Python 3.9 – 3.14.
 
 ## Authorship & License
 
