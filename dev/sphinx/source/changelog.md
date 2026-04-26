@@ -9,7 +9,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 [How to upgrade to the latest version!](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#installation-and-upgrade)
 
-## 0.3.0.dev (development stage/unreleased/unstable)
+## 0.3.1.dev (development stage/unreleased/unstable)
+
+## 0.3.1
+### Fixed
+- Main grid empty-state message ("No DepthCaches configured yet —
+  click `DepthCaches` to add one.") was set only once in `connect()`
+  and never re-evaluated. After creating the first DepthCache the
+  hint stayed visible behind the new tiles until the user hit F5;
+  removing the last DepthCache left the area blank without the
+  hint. Moved the toggle into `reloadDcs()` so the message reflects
+  the current `state.dcs.length` after every add / remove / initial
+  reload.
 
 ## 0.3.0
 ### Added

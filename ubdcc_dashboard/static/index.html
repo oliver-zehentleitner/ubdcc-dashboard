@@ -1074,6 +1074,13 @@ async function reloadDcs() {
   }
   rebuildExchangeFilter();
   applyFilter();
+  const emptyEl = document.getElementById("empty");
+  if (state.dcs.length) {
+    emptyEl.style.display = "none";
+  } else {
+    emptyEl.innerHTML = 'No DepthCaches configured yet — click <code>DepthCaches</code> to add one.';
+    emptyEl.style.display = "";
+  }
 }
 
 function renderBook(body, asks, bids) {
@@ -1188,13 +1195,6 @@ async function connect() {
   }, { rootMargin: "200px" });
 
   await reloadDcs();
-  const emptyEl = document.getElementById("empty");
-  if (state.dcs.length) {
-    emptyEl.style.display = "none";
-  } else {
-    emptyEl.innerHTML = 'No DepthCaches configured yet — click <code>DepthCaches</code> to add one.';
-    emptyEl.style.display = "";
-  }
   document.getElementById("addBtn").disabled = false;
   document.getElementById("disconnectBtn").disabled = false;
   document.getElementById("clusterStatusBtn").disabled = false;

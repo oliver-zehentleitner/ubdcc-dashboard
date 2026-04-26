@@ -24,7 +24,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="ubdcc-dashboard",
-    version="0.3.0",
+    version="0.3.1",
     author="Oliver Zehentleitner",
     author_email="",
     url="https://github.com/oliver-zehentleitner/ubdcc-dashboard",
