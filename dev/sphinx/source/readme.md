@@ -47,9 +47,12 @@ Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unic
 - **API Builder** — onboarding helper for developers. Pick a task
   (create DepthCache, get asks/bids, add credentials, ...), fill in
   the form, copy a ready-to-paste snippet in **curl, HTTPie, Python
-  (using the official UBLDC `Cluster` client), JavaScript, Go, C#,
-  Java or Rust**. "Try it" runs GET-safe tasks through the dashboard's
-  CORS proxy and shows the pretty-printed JSON response.
+  (using the [official UBLDC `Cluster` client](https://github.com/oliver-zehentleitner/unicorn-binance-local-depth-cache#connect-to-a-unicorn-binance-depthcache-cluster)),
+  JavaScript, Go, C#, Java, Rust, PHP or C/C++**. "Try it" runs
+  GET-safe tasks through the dashboard's CORS proxy and shows the
+  pretty-printed JSON response. Modal footer links to the cluster's
+  OpenAPI reference at `/docs` and to the dashboard's issue tracker
+  for snippet bug reports.
 - **Version badge** next to the title. On load, the dashboard asks
   PyPI for the latest release of `ubdcc-dashboard`. Up to date →
   badge stays in the accent colour. Outdated → animated rainbow

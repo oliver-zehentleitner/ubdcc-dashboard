@@ -4,7 +4,7 @@
 > Monitor every depth cache in your cluster at a glance, spot out-of-sync caches, add or remove caches on the fly.
 > Inspect cluster health (pods, nodes, replica donuts) at a glance.
 > Manage Binance API credentials with a two-click-confirm UI.
-> Generate REST-API snippets for curl, HTTPie, Python (UBLDC client), JavaScript, Go, C#, Java, Rust — the API Builder.
+> Generate REST-API snippets for curl, HTTPie, Python (UBLDC client), JavaScript, Go, C#, Java, Rust, PHP, C/C++ — the API Builder.
 > Part of [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unicorn-binance-suite).
 
 Version: 0.2.0. Python 3.9 – 3.14.
@@ -64,7 +64,7 @@ The header has four connect-gated buttons besides `Disconnect`:
 - **Cluster ●** — live health dot (green = ok, yellow = degraded, red = unreachable / missing pods / DC slot shortfall). Backed by a 30 s `/get_cluster_info` poll. Modal shows pod-by-role groups, per-node topology, per-DC replica donut + sync state, credentials summary, mgmt version and DB-sync age. Manual `Refresh` button inside the modal.
 - **Credentials** — add / list / remove Binance API key pairs. `api_secret` input is masked; listed keys show only a preview. Remove is two-click confirm with 3 s auto-disarm.
 - **DepthCaches** — opens the Add-DepthCaches modal with live `exchangeInfo` symbol picker (spot, cross / isolated margin, futures, options — mainnet + testnets).
-- **API Builder** — 11 pre-built tasks (credentials, depthcaches, order book, cluster info) rendered as ready-to-paste REST-API calls in 8 languages. Python tab uses the official UBLDC `Cluster` client idiom (`BinanceLocalDepthCacheManager` context manager + `ubldc.cluster.<method>()`). Editable Base URL, `Try it →` for GET-safe tasks via the dashboard's CORS proxy, Copy button with secure-context + `execCommand` fallback.
+- **API Builder** — 11 pre-built tasks (credentials, depthcaches, order book, cluster info) rendered as ready-to-paste REST-API calls in 10 languages: curl, HTTPie, Python, JavaScript, Go, C#, Java, Rust, PHP, C/C++. Python tab uses the official UBLDC `Cluster` client idiom (`BinanceLocalDepthCacheManager` context manager + `ubldc.cluster.<method>()`). PHP uses the built-in cURL extension; C/C++ uses libcurl (`gcc … -lcurl` / `g++ … -lcurl`). Editable Base URL, `Try it →` for GET-safe tasks via the dashboard's CORS proxy, Copy button with secure-context + `execCommand` fallback. Modal footer links to the cluster's OpenAPI reference and to the dashboard's GitHub issue tracker for snippet bug reports.
 
 The header title also carries a **version badge** that queries PyPI once on load. Up to date → accent colour. Outdated → animated rainbow gradient with a `pip install -U ubdcc-dashboard` hint in the hover tooltip.
 
