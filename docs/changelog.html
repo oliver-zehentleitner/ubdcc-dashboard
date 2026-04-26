@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ubdcc-dashboard Change Log &#8212; ubdcc-dashboard 0.3.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ubdcc-dashboard Change Log &#8212; ubdcc-dashboard 0.3.1 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css?v=fdf8e9ae" />
@@ -52,21 +52,25 @@
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">ubdcc-dashboard Change Log</a><ul>
-<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.3.0.dev (development stage/unreleased/unstable)</a></li>
-<li><a class="reference internal" href="#id1">0.3.0</a><ul>
-<li><a class="reference internal" href="#added">Added</a></li>
-<li><a class="reference internal" href="#changed">Changed</a></li>
+<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.3.1.dev (development stage/unreleased/unstable)</a></li>
+<li><a class="reference internal" href="#id1">0.3.1</a><ul>
 <li><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">0.2.0</a><ul>
-<li><a class="reference internal" href="#id3">Added</a></li>
-<li><a class="reference internal" href="#id4">Changed</a></li>
-<li><a class="reference internal" href="#id5">Fixed</a></li>
+<li><a class="reference internal" href="#id2">0.3.0</a><ul>
+<li><a class="reference internal" href="#added">Added</a></li>
+<li><a class="reference internal" href="#changed">Changed</a></li>
+<li><a class="reference internal" href="#id3">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">0.1.1</a><ul>
-<li><a class="reference internal" href="#id7">Added</a></li>
+<li><a class="reference internal" href="#id4">0.2.0</a><ul>
+<li><a class="reference internal" href="#id5">Added</a></li>
+<li><a class="reference internal" href="#id6">Changed</a></li>
+<li><a class="reference internal" href="#id7">Fixed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id8">0.1.1</a><ul>
+<li><a class="reference internal" href="#id9">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -182,10 +186,26 @@
 <p><a class="reference external" href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions/categories/releases">Discussions about ubdcc-dashboard releases!</a></p>
 <p><a class="reference external" href="https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#installation-and-upgrade">How to upgrade to the latest version!</a></p>
 <section id="dev-development-stage-unreleased-unstable">
-<h2>0.3.0.dev (development stage/unreleased/unstable)<a class="headerlink" href="#dev-development-stage-unreleased-unstable" title="Link to this heading">¶</a></h2>
+<h2>0.3.1.dev (development stage/unreleased/unstable)<a class="headerlink" href="#dev-development-stage-unreleased-unstable" title="Link to this heading">¶</a></h2>
 </section>
 <section id="id1">
-<h2>0.3.0<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>0.3.1<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Main grid empty-state message (“No DepthCaches configured yet —
+click <code class="docutils literal notranslate"><span class="pre">DepthCaches</span></code> to add one.”) was set only once in <code class="docutils literal notranslate"><span class="pre">connect()</span></code>
+and never re-evaluated. After creating the first DepthCache the
+hint stayed visible behind the new tiles until the user hit F5;
+removing the last DepthCache left the area blank without the
+hint. Moved the toggle into <code class="docutils literal notranslate"><span class="pre">reloadDcs()</span></code> so the message reflects
+the current <code class="docutils literal notranslate"><span class="pre">state.dcs.length</span></code> after every add / remove / initial
+reload.</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>0.3.0<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <section id="added">
 <h3>Added<a class="headerlink" href="#added" title="Link to this heading">¶</a></h3>
 <ul class="simple">
@@ -217,8 +237,8 @@ with <code class="docutils literal notranslate"><span class="pre">var(--accent)<
 background.</p></li>
 </ul>
 </section>
-<section id="fixed">
-<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">¶</a></h3>
+<section id="id3">
+<h3>Fixed<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>API Builder: the <strong>Markets</strong> textarea on
 <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/create_depthcaches</span></code> (bulk) rendered with the browser-default
@@ -228,10 +248,10 @@ only covered <code class="docutils literal notranslate"><span class="pre">input,
 </ul>
 </section>
 </section>
-<section id="id2">
-<h2>0.2.0<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<section id="id3">
-<h3>Added<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<section id="id4">
+<h2>0.2.0<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h3>Added<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
 <ul>
 <li><p><strong>Version badge</strong> next to the header title: shows the installed
 dashboard version, queries PyPI once on load, turns into an animated
@@ -290,8 +310,8 @@ the Add-DC exchange dropdown and the <code class="docutils literal notranslate">
 Requires UBLDC ≥ 2.14.0 + UBDCC ≥ 0.7.0.</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Changed<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h3>Changed<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Header title: <code class="docutils literal notranslate"><span class="pre">UBDCC</span> <span class="pre">LIVE</span></code> → <code class="docutils literal notranslate"><span class="pre">UBDCC</span> <span class="pre">DASHBOARD</span></code> (full caps, matches
 the other header buttons).</p></li>
@@ -318,8 +338,8 @@ shown as a separate <code class="docutils literal notranslate"><span class="pre"
 main grid has already polled that DC.</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>Fixed<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<section id="id7">
+<h3>Fixed<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Main polling loop no longer blocks the first data fetch behind the
 min-gap wait. With the new 5 s / 10 s options the viewport-visibility
@@ -351,10 +371,10 @@ scroller from shrinking below content size).</p></li>
 </ul>
 </section>
 </section>
-<section id="id6">
-<h2>0.1.1<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
-<section id="id7">
-<h3>Added<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<section id="id8">
+<h2>0.1.1<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h3>Added<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Initial release.</p></li>
 <li><p>Single-file vanilla-JS dashboard with compact mini-orderbook tiles per DepthCache,
@@ -396,21 +416,25 @@ prints a clickable OSC-8 terminal hyperlink. Flags: <code class="docutils litera
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">ubdcc-dashboard Change Log</a><ul>
-<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.3.0.dev (development stage/unreleased/unstable)</a></li>
-<li><a class="reference internal" href="#id1">0.3.0</a><ul>
-<li><a class="reference internal" href="#added">Added</a></li>
-<li><a class="reference internal" href="#changed">Changed</a></li>
+<li><a class="reference internal" href="#dev-development-stage-unreleased-unstable">0.3.1.dev (development stage/unreleased/unstable)</a></li>
+<li><a class="reference internal" href="#id1">0.3.1</a><ul>
 <li><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">0.2.0</a><ul>
-<li><a class="reference internal" href="#id3">Added</a></li>
-<li><a class="reference internal" href="#id4">Changed</a></li>
-<li><a class="reference internal" href="#id5">Fixed</a></li>
+<li><a class="reference internal" href="#id2">0.3.0</a><ul>
+<li><a class="reference internal" href="#added">Added</a></li>
+<li><a class="reference internal" href="#changed">Changed</a></li>
+<li><a class="reference internal" href="#id3">Fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">0.1.1</a><ul>
-<li><a class="reference internal" href="#id7">Added</a></li>
+<li><a class="reference internal" href="#id4">0.2.0</a><ul>
+<li><a class="reference internal" href="#id5">Added</a></li>
+<li><a class="reference internal" href="#id6">Changed</a></li>
+<li><a class="reference internal" href="#id7">Fixed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id8">0.1.1</a><ul>
+<li><a class="reference internal" href="#id9">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -516,7 +540,7 @@ prints a clickable OSC-8 terminal hyperlink. Flags: <code class="docutils litera
     <a href="https://github.com/oliver-zehentleitner/unicorn-binance-suite#documentation">Index of all docs</a><br />
     &copy; <a href="/license.html">Copyright</a> 2026, Oliver Zehentleitner.
     See <a href="/license.html">License</a> for more information.<br />
-    Last updated on Apr 26 2026 at 16:52 (CET).
+    Last updated on Apr 26 2026 at 18:02 (CET).
     <a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues/new/choose">Found a bug</a>?
     <br />
     Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
