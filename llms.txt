@@ -55,8 +55,6 @@ Proxy endpoints (for agents wanting to script against the launcher):
 
 The dashboard is a client, not part of the cluster. It talks to a running UBDCC cluster via its public REST API (typical URL: `http://<cluster-host>:42081`). See https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster for the cluster itself.
 
-**Cluster target:** UBDCC >= 0.7.0 (and UBLDC >= 2.14.0 for margin / isolated-margin support). Older clusters render the orderbook view fine but reject the renamed credential endpoints used by the Credentials manager and the API Builder.
-
 ## Feature modals
 
 The header has four connect-gated buttons besides `Disconnect`:
