@@ -96,6 +96,11 @@ pip install -U ubdcc-dashboard
 Requires Python 3.9+. No external dependencies — uses only the standard
 library.
 
+> **Already running the cluster?** Since UBDCC `0.7.1`, `pip install ubdcc`
+> bundles `ubdcc-dashboard` automatically — no separate install step needed.
+> Standalone install is still useful when you want the dashboard on a
+> different machine than the cluster, or pinned to a specific version.
+
 **Cluster target:** UBDCC ≥ 0.7.0 (with UBLDC ≥ 2.14.0 for margin /
 isolated-margin support). Older clusters work for the orderbook view
 but reject the renamed credential endpoints used by the Credentials
