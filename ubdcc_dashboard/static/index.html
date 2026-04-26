@@ -56,13 +56,13 @@
   }
   header .sep { width: 1px; height: 22px; background: var(--border); }
   .hint { color: var(--muted); font-size: 10px; font-style: italic; }
-  input, button, select {
+  input, textarea, button, select {
     background: var(--panel-2); color: var(--text);
     border: 1px solid var(--border); border-radius: 5px;
     padding: 5px 9px; font-size: 12px; font-family: inherit;
     outline: none;
   }
-  input:focus, select:focus { border-color: var(--accent); }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
   button { cursor: pointer; background: var(--panel-2); }
   button.primary { background: #1e40af; border-color: #1e40af; color: #fff; }
   button.primary:hover { background: #1d4ed8; }
@@ -326,6 +326,60 @@
 
   .ci-empty { color: var(--muted); font-size: 11px; font-style: italic; padding: 6px 0; }
 
+  /* cluster info tabs */
+  .ci-tabs {
+    display: flex; gap: 4px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    margin: 8px 0 12px 0;
+  }
+  .ci-tab {
+    padding: 6px 12px; border: 1px solid var(--border); background: var(--panel-2);
+    color: var(--muted); border-radius: 4px 4px 0 0; cursor: pointer;
+    font-size: 12px; font-family: inherit; margin-bottom: -1px;
+    border-bottom: 2px solid transparent;
+  }
+  .ci-tab:hover { color: var(--text); }
+  .ci-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg); }
+  .ci-tab .badge { color: var(--muted); font-weight: 400; font-size: 11px; margin-left: 6px; }
+  .ci-tab.active .badge { color: var(--text); }
+
+  /* DCN-centric view */
+  .ci-dcns { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
+  .ci-dcn-card {
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .ci-dcn-card[data-health="warn"] { border-color: #a16207; }
+  .ci-dcn-card[data-health="err"] { border-color: var(--red); }
+  .ci-dcn-hdr {
+    display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border); padding-bottom: 6px;
+  }
+  .ci-dcn-name {
+    color: var(--text); font-weight: 600; font-size: 12px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  .ci-dcn-meta { color: var(--muted); font-size: 11px; }
+  .ci-dcn-load { margin-left: auto; color: var(--accent); font-size: 11px; font-weight: 600; }
+  .ci-dcn-dcs { display: flex; flex-direction: column; gap: 3px; }
+  .ci-dcn-dc {
+    display: flex; gap: 8px; align-items: baseline;
+    padding: 4px 7px; background: var(--bg); border-radius: 3px;
+    font-size: 11px; font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  .ci-dcn-dc .ex { color: var(--muted); }
+  .ci-dcn-dc .mk { color: var(--text); font-weight: 500; }
+  .ci-dcn-dc .st { margin-left: auto; font-size: 10px; padding: 1px 6px; border-radius: 3px; }
+  .ci-dcn-dc .st.running { background: var(--green-dim); color: var(--green); }
+  .ci-dcn-dc .st.starting { background: #78350f; color: var(--yellow); }
+  .ci-dcn-dc .st.other { background: var(--panel-2); color: var(--muted); }
+  .ci-dcn-dc .restart { color: var(--muted); font-size: 10px; }
+  .ci-dcn-empty {
+    color: var(--muted); font-style: italic; font-size: 11px;
+    padding: 6px 4px;
+  }
+
   /* api builder modal */
   .modal.builder { width: 960px; max-width: 98vw; }
   .modal.builder h2 .sub { color: var(--muted); font-weight: 400; font-size: 11px; letter-spacing: 0; }
@@ -394,6 +448,10 @@
   .bd-field textarea { min-height: 52px; resize: vertical; }
   .bd-field .fld-hint { color: var(--muted); font-size: 10px; font-style: italic; }
   .bd-field .fld-secret-warn { color: var(--yellow); font-size: 10px; }
+
+  .bd-footer-info { color: var(--text); font-size: 12px; line-height: 1.6; }
+  .bd-footer-info a { color: var(--accent); text-decoration: underline; }
+  .bd-footer-info a:hover { color: #bae6fd; }
 
   .bd-lang-tabs { display: flex; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
   .bd-lang-tab {
@@ -706,7 +764,7 @@
       </section>
     </div>
     <footer>
-      <div class="hint" style="flex:1; line-height:1.6">
+      <div class="bd-footer-info" style="flex:1">
         Full reference: <a id="bd_swagger_link" href="#" target="_blank">OpenAPI at <code>/docs</code></a><br>
         Found a wrong snippet? <a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues" target="_blank" rel="noopener">Open an issue</a> so we can fix it.
       </div>
@@ -1466,6 +1524,7 @@ const clusterState = {
   tickTimer: null,
   health: "unknown",
   fetching: false,
+  activeTab: "pods",
 };
 
 function setHealth(h) {
@@ -1631,6 +1690,7 @@ function renderClusterModal() {
   const depthcaches = db.depthcaches || {};
   const creds = db.credentials || [];
   const now = Number(db.timestamp) || (Date.now() / 1000);
+  const dcnPods = pods.filter(p => p.ROLE === "ubdcc-dcn");
 
   const dcEntries = [];
   for (const [ex, mkts] of Object.entries(depthcaches)) {
@@ -1639,7 +1699,7 @@ function renderClusterModal() {
     }
   }
 
-  // Top strip
+  // Top strip — always visible above the tabs
   const health = clusterState.health;
   const healthLabel = health === "ok" ? "HEALTHY" : health === "warn" ? "DEGRADED" : health === "err" ? "ERROR" : "UNKNOWN";
   const top = el("div", { class: "ci-top", "data-health": health }, []);
@@ -1650,7 +1710,48 @@ function renderClusterModal() {
   if (db.timestamp) top.appendChild(el("div", { class: "ci-stat" }, [`db sync: `, el("b", {}, [ago(db.timestamp)])]));
   body.appendChild(top);
 
-  // Pods by role
+  // Tab nav
+  const tabs = [
+    { id: "pods",         label: "Pods",         count: pods.length },
+    { id: "depthcaches",  label: "DepthCaches",  count: dcEntries.length },
+    { id: "dcns",         label: "DCNs",         count: dcnPods.length },
+    { id: "credentials",  label: "Credentials",  count: creds.length },
+  ];
+  if (!tabs.find(t => t.id === clusterState.activeTab)) clusterState.activeTab = "pods";
+  const tabBar = el("div", { class: "ci-tabs" });
+  for (const t of tabs) {
+    const btn = el("button", {
+      class: `ci-tab${clusterState.activeTab === t.id ? " active" : ""}`,
+      type: "button",
+      "data-tab": t.id,
+    }, [t.label, el("span", { class: "badge" }, [String(t.count)])]);
+    btn.addEventListener("click", () => {
+      if (clusterState.activeTab !== t.id) {
+        clusterState.activeTab = t.id;
+        renderClusterModal();
+      }
+    });
+    tabBar.appendChild(btn);
+  }
+  body.appendChild(tabBar);
+
+  // Dispatch active tab body
+  const panel = el("div", { class: "ci-tab-panel" });
+  if (clusterState.activeTab === "pods") {
+    renderClusterPodsTab(panel, pods, db, now);
+  } else if (clusterState.activeTab === "depthcaches") {
+    renderClusterDepthCachesTab(panel, dcEntries);
+  } else if (clusterState.activeTab === "dcns") {
+    renderClusterDcnsTab(panel, dcnPods, depthcaches, now);
+  } else if (clusterState.activeTab === "credentials") {
+    renderClusterCredentialsTab(panel, creds);
+  }
+  body.appendChild(panel);
+
+  updated.textContent = `updated ${ago(clusterState.lastFetchTs / 1000)}`;
+}
+
+function renderClusterPodsTab(parent, pods, db, now) {
   const roleOrder = ["ubdcc-mgmt", "ubdcc-restapi", "ubdcc-dcn"];
   const roleLabel = { "ubdcc-mgmt": "MGMT", "ubdcc-restapi": "REST API", "ubdcc-dcn": "DCN" };
   const byRole = {};
@@ -1690,9 +1791,8 @@ function renderClusterModal() {
       podsSec.appendChild(grp);
     }
   }
-  body.appendChild(podsSec);
+  parent.appendChild(podsSec);
 
-  // Node topology
   if (db.nodes && Object.keys(db.nodes).length > 0) {
     const nodesSec = el("div", { class: "ci-section" }, [el("h3", {}, ["Nodes"])]);
     const nodeRows = el("div", { class: "ci-nodes" });
@@ -1715,75 +1815,136 @@ function renderClusterModal() {
       ]));
     }
     nodesSec.appendChild(nodeRows);
-    body.appendChild(nodesSec);
+    parent.appendChild(nodesSec);
   }
+}
 
-  // DepthCaches
-  const dcsSec = el("div", { class: "ci-section" }, [el("h3", {}, [`DepthCaches (${dcEntries.length})`])]);
+function renderClusterDepthCachesTab(parent, dcEntries) {
   if (dcEntries.length === 0) {
-    dcsSec.appendChild(el("div", { class: "ci-empty" }, ["no depthcaches configured"]));
-  } else {
-    const grid = el("div", { class: "ci-dcs" });
-    dcEntries.sort((a, b) => a.ex.localeCompare(b.ex) || a.mk.localeCompare(b.mk));
-    for (const { ex, mk, dc } of dcEntries) {
-      const desired = Number(dc.DESIRED_QUANTITY) || 0;
-      const dist = Object.values(dc.DISTRIBUTION || {});
-      const running = dist.filter(d => d.STATUS === "running").length;
-      const starting = dist.filter(d => d.STATUS === "starting").length;
-      const restartsTotal = dist.reduce((s, d) => s + (Number(d.RESTARTS) || 0), 0);
-      // sync state from main grid tile (if we've polled it at least once)
-      const tile = state.tiles.get(dcKey(ex, mk));
-      let syncLabel = null, syncCls = null;
-      if (tile) {
-        if (tile.classList.contains("desync")) { syncLabel = "out of sync"; syncCls = "err"; }
-        else if (tile.classList.contains("err")) { syncLabel = "error"; syncCls = "warn"; }
-        else if (tile.classList.contains("ok"))  { syncLabel = "in sync"; syncCls = "ok"; }
+    parent.appendChild(el("div", { class: "ci-empty" }, ["no depthcaches configured"]));
+    return;
+  }
+  const grid = el("div", { class: "ci-dcs" });
+  dcEntries.sort((a, b) => a.ex.localeCompare(b.ex) || a.mk.localeCompare(b.mk));
+  for (const { ex, mk, dc } of dcEntries) {
+    const desired = Number(dc.DESIRED_QUANTITY) || 0;
+    const dist = Object.values(dc.DISTRIBUTION || {});
+    const running = dist.filter(d => d.STATUS === "running").length;
+    const starting = dist.filter(d => d.STATUS === "starting").length;
+    const restartsTotal = dist.reduce((s, d) => s + (Number(d.RESTARTS) || 0), 0);
+    const tile = state.tiles.get(dcKey(ex, mk));
+    let syncLabel = null, syncCls = null;
+    if (tile) {
+      if (tile.classList.contains("desync")) { syncLabel = "out of sync"; syncCls = "err"; }
+      else if (tile.classList.contains("err")) { syncLabel = "error"; syncCls = "warn"; }
+      else if (tile.classList.contains("ok"))  { syncLabel = "in sync"; syncCls = "ok"; }
+    }
+    let hstate = "ok";
+    if (running < desired || dist.some(d => d.STATUS && d.STATUS !== "running")) hstate = "warn";
+    if (desired > 0 && dist.length === 0) hstate = "err";
+    if (syncCls === "err") hstate = "err";
+    else if (syncCls === "warn" && hstate === "ok") hstate = "warn";
+    const metaParts = [el("span", { class: "k" }, [`${running}/${desired} replicas`])];
+    if (starting > 0) metaParts.push(el("span", {}, [`${starting} starting`]));
+    if (syncLabel) metaParts.push(el("span", { class: `sync ${syncCls}` }, [syncLabel]));
+    if (restartsTotal > 0) metaParts.push(el("span", { class: "restart" }, [`⟳ ${restartsTotal} restarts`]));
+    if (dc.LAST_DISTRIBUTION_CHANGE) metaParts.push(el("span", {}, [`changed ${ago(dc.LAST_DISTRIBUTION_CHANGE)}`]));
+    const card = el("div", { class: "ci-dc", "data-health": hstate }, [
+      donut(running, desired),
+      el("div", { class: "dc-body" }, [
+        el("div", { class: "dc-market" }, [mk]),
+        el("div", { class: "dc-exch" }, [ex]),
+        el("div", { class: "dc-meta" }, metaParts),
+      ]),
+    ]);
+    grid.appendChild(card);
+  }
+  parent.appendChild(grid);
+}
+
+function renderClusterDcnsTab(parent, dcnPods, depthcaches, now) {
+  if (dcnPods.length === 0) {
+    parent.appendChild(el("div", { class: "ci-empty" }, ["no DCN pods registered"]));
+    return;
+  }
+  // Build pod_uid -> [{ ex, mk, dist }] index
+  const hostedByUid = {};
+  for (const [ex, mkts] of Object.entries(depthcaches)) {
+    for (const [mk, dc] of Object.entries(mkts || {})) {
+      const dist = dc.DISTRIBUTION || {};
+      for (const [uid, d] of Object.entries(dist)) {
+        (hostedByUid[uid] = hostedByUid[uid] || []).push({ ex, mk, dist: d });
       }
-      let hstate = "ok";
-      if (running < desired || dist.some(d => d.STATUS && d.STATUS !== "running")) hstate = "warn";
-      if (desired > 0 && dist.length === 0) hstate = "err";
-      if (syncCls === "err") hstate = "err";
-      else if (syncCls === "warn" && hstate === "ok") hstate = "warn";
-      const metaParts = [el("span", { class: "k" }, [`${running}/${desired} replicas`])];
-      if (starting > 0) metaParts.push(el("span", {}, [`${starting} starting`]));
-      if (syncLabel) metaParts.push(el("span", { class: `sync ${syncCls}` }, [syncLabel]));
-      if (restartsTotal > 0) metaParts.push(el("span", { class: "restart" }, [`⟳ ${restartsTotal} restarts`]));
-      if (dc.LAST_DISTRIBUTION_CHANGE) metaParts.push(el("span", {}, [`changed ${ago(dc.LAST_DISTRIBUTION_CHANGE)}`]));
-      const card = el("div", { class: "ci-dc", "data-health": hstate }, [
-        donut(running, desired),
-        el("div", { class: "dc-body" }, [
-          el("div", { class: "dc-market" }, [mk]),
-          el("div", { class: "dc-exch" }, [ex]),
-          el("div", { class: "dc-meta" }, metaParts),
-        ]),
-      ]);
-      grid.appendChild(card);
     }
-    dcsSec.appendChild(grid);
   }
-  body.appendChild(dcsSec);
-
-  // Credentials
-  if (creds && creds.length > 0) {
-    const credsSec = el("div", { class: "ci-section" }, [el("h3", {}, [`Credentials (${creds.length})`])]);
-    const byGrp = {};
-    for (const c of creds) {
-      (byGrp[c.account_group] = byGrp[c.account_group] || []).push(c);
+  // Sort DCNs: most-loaded first, then by name
+  const ranked = dcnPods.slice().sort((a, b) => {
+    const la = (hostedByUid[a.UID] || []).length;
+    const lb = (hostedByUid[b.UID] || []).length;
+    if (lb !== la) return lb - la;
+    return (a.NAME || "").localeCompare(b.NAME || "");
+  });
+  const grid = el("div", { class: "ci-dcns" });
+  for (const p of ranked) {
+    const hosted = (hostedByUid[p.UID] || []).slice().sort((a, b) =>
+      a.ex.localeCompare(b.ex) || a.mk.localeCompare(b.mk));
+    const age = now - (Number(p.LAST_SEEN) || 0);
+    const podPill = podPillClass(p.STATUS, age);
+    let hstate = "ok";
+    if (podPill === "stale" || podPill === "err") hstate = "err";
+    else if (hosted.some(h => h.dist.STATUS && h.dist.STATUS !== "running")) hstate = "warn";
+    const hdr = el("div", { class: "ci-dcn-hdr" }, [
+      el("span", { class: "ci-dcn-name" }, [p.NAME || p.UID || "?"]),
+      el("span", { class: `p-pill ${podPill}` }, [podPill === "stale" ? "stale" : (p.STATUS || "—")]),
+      el("span", { class: "ci-dcn-meta" }, [
+        `node: ${p.NODE || "—"}`,
+        ` · v${p.VERSION || "?"}`,
+        ...(p.UBLDC_VERSION ? [` · ubldc ${p.UBLDC_VERSION}`] : []),
+      ]),
+      el("span", { class: "ci-dcn-load" }, [`${hosted.length} DC${hosted.length === 1 ? "" : "s"}`]),
+    ]);
+    let body;
+    if (hosted.length === 0) {
+      body = el("div", { class: "ci-dcn-empty" }, ["no depthcaches assigned — DCN is idle"]);
+    } else {
+      body = el("div", { class: "ci-dcn-dcs" });
+      for (const { ex, mk, dist } of hosted) {
+        const status = dist.STATUS || "—";
+        const stCls = status === "running" ? "running" : status === "starting" ? "starting" : "other";
+        const restarts = Number(dist.RESTARTS) || 0;
+        const row = el("div", { class: "ci-dcn-dc" }, [
+          el("span", { class: "ex" }, [ex]),
+          el("span", { class: "mk" }, [mk]),
+          ...(restarts > 0 ? [el("span", { class: "restart" }, [`⟳ ${restarts}`])] : []),
+          el("span", { class: `st ${stCls}` }, [status]),
+        ]);
+        body.appendChild(row);
+      }
     }
-    const grid = el("div", { class: "ci-creds" });
-    for (const g of Object.keys(byGrp).sort()) {
-      const list = byGrp[g];
-      const dcnsTotal = list.reduce((s, c) => s + (c.assigned_dcns ? c.assigned_dcns.length : 0), 0);
-      grid.appendChild(el("div", { class: "ci-cred" }, [
-        el("div", { class: "cr-grp" }, [g]),
-        el("div", { class: "cr-meta" }, [`${list.length} key${list.length === 1 ? "" : "s"} · ${dcnsTotal} DCN assignment${dcnsTotal === 1 ? "" : "s"}`]),
-      ]));
-    }
-    credsSec.appendChild(grid);
-    body.appendChild(credsSec);
+    grid.appendChild(el("div", { class: "ci-dcn-card", "data-health": hstate }, [hdr, body]));
   }
+  parent.appendChild(grid);
+}
 
-  updated.textContent = `updated ${ago(clusterState.lastFetchTs / 1000)}`;
+function renderClusterCredentialsTab(parent, creds) {
+  if (!creds || creds.length === 0) {
+    parent.appendChild(el("div", { class: "ci-empty" }, ["no credentials configured"]));
+    return;
+  }
+  const byGrp = {};
+  for (const c of creds) {
+    (byGrp[c.account_group] = byGrp[c.account_group] || []).push(c);
+  }
+  const grid = el("div", { class: "ci-creds" });
+  for (const g of Object.keys(byGrp).sort()) {
+    const list = byGrp[g];
+    const dcnsTotal = list.reduce((s, c) => s + (c.assigned_dcns ? c.assigned_dcns.length : 0), 0);
+    grid.appendChild(el("div", { class: "ci-cred" }, [
+      el("div", { class: "cr-grp" }, [g]),
+      el("div", { class: "cr-meta" }, [`${list.length} key${list.length === 1 ? "" : "s"} · ${dcnsTotal} DCN assignment${dcnsTotal === 1 ? "" : "s"}`]),
+    ]));
+  }
+  parent.appendChild(grid);
 }
 
 // ------- API Builder -------

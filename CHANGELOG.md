@@ -9,8 +9,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 [How to upgrade to the latest version!](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#installation-and-upgrade)
 
-## 0.2.1.dev (development stage/unreleased/unstable)
+## 0.3.0.dev (development stage/unreleased/unstable)
+
+## 0.3.0
 ### Added
+- **Cluster Status modal: tabbed layout** — split into **Pods**,
+  **DepthCaches**, **DCNs** and **Credentials** tabs with live counts.
+  Top strip (health + counts + mgmt version + db sync age) stays
+  pinned above the tabs so the at-a-glance view is preserved.
+- **Cluster Status: new DCNs tab** — DCN-centric view. Each DCN pod
+  shown as a card with status pill, node, version, and the list of
+  DepthCaches it hosts (exchange / market / restarts / per-replica
+  status). Sorted by load (most-loaded DCNs first), idle DCNs
+  flagged with "no depthcaches assigned — DCN is idle". Useful for
+  spotting unbalanced distribution and idle capacity at a glance.
 - API Builder: two more languages — **PHP** (built-in cURL extension,
   no Composer required) and **C/C++** (libcurl, single template that
   compiles with both `gcc` and `g++`). Brings the total to ten.
@@ -18,6 +30,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   [Open an issue](https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues)
   next to the OpenAPI reference, so users can flag wrong snippets and
   we can fix the generators.
+### Changed
+- API Builder modal footer: text bumped from `10px italic muted` to
+  `12px text-color` and the OpenAPI / Open-an-issue links recoloured
+  with `var(--accent)` + underline so they're readable on the dark
+  background.
+### Fixed
+- API Builder: the **Markets** textarea on
+  `POST /create_depthcaches` (bulk) rendered with the browser-default
+  white background. The global form-input rule in `static/index.html`
+  only covered `input, button, select`; extended to include
+  `textarea` so it picks up the dark theme like every other field.
 
 ## 0.2.0
 ### Added

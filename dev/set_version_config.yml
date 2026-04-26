@@ -8,4 +8,4 @@ files:
 - ubdcc_dashboard/__init__.py
 - AGENTS.md
 - README.md
-version: 0.2.0
+version: 0.3.0
