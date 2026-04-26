@@ -706,8 +706,9 @@
       </section>
     </div>
     <footer>
-      <div class="hint" style="flex:1">
-        Full reference: <a id="bd_swagger_link" href="#" target="_blank">OpenAPI at <code>/docs</code></a>
+      <div class="hint" style="flex:1; line-height:1.6">
+        Full reference: <a id="bd_swagger_link" href="#" target="_blank">OpenAPI at <code>/docs</code></a><br>
+        Found a wrong snippet? <a href="https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues" target="_blank" rel="noopener">Open an issue</a> so we can fix it.
       </div>
       <div><button id="bd_close" class="primary">Close</button></div>
     </footer>
@@ -1926,7 +1927,7 @@ const BUILDER_TASKS = [
   },
 ];
 
-const BUILDER_LANGS = ["curl", "HTTPie", "Python", "JavaScript", "Go", "C#", "Java", "Rust"];
+const BUILDER_LANGS = ["curl", "HTTPie", "Python", "JavaScript", "Go", "C#", "Java", "Rust", "PHP", "C/C++"];
 const builderState = {
   taskId: BUILDER_TASKS[0].id,
   lang: "curl",
@@ -2234,6 +2235,79 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }`;
 }
 
+function phpSingleQuote(s) {
+  // PHP single-quoted strings only escape \' and \\.
+  return "'" + String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'") + "'";
+}
+
+function snippetPHP(task, baseUrl, values) {
+  // Uses PHP's built-in cURL extension — no Composer required.
+  const url = baseUrl + task.path;
+  if (task.body) {
+    const json = JSON.stringify(values);
+    return `<?php
+$body = ${phpSingleQuote(json)};
+$ch = curl_init(${phpSingleQuote(url)});
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+    CURLOPT_POSTFIELDS => $body,
+]);
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;`;
+  }
+  const full = url + buildQueryString(values);
+  return `<?php
+$ch = curl_init(${phpSingleQuote(full)});
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;`;
+}
+
+function snippetC(task, baseUrl, values) {
+  // libcurl works for both C and C++ (and is the standard way to do HTTP in C).
+  const url = baseUrl + task.path;
+  if (task.body) {
+    const json = JSON.stringify(values);
+    return `// gcc main.c -lcurl    (or g++ main.cpp -lcurl)
+#include <stdio.h>
+#include <curl/curl.h>
+
+int main(void) {
+    CURL *curl = curl_easy_init();
+    if (!curl) return 1;
+    const char *body = "${escStrBackslash(json)}";
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+    curl_easy_setopt(curl, CURLOPT_URL, "${escStrBackslash(url)}");
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
+    CURLcode rc = curl_easy_perform(curl);
+    if (rc != CURLE_OK) fprintf(stderr, "curl: %s\\n", curl_easy_strerror(rc));
+    curl_slist_free_all(headers);
+    curl_easy_cleanup(curl);
+    return 0;
+}`;
+  }
+  const full = url + buildQueryString(values);
+  return `// gcc main.c -lcurl    (or g++ main.cpp -lcurl)
+#include <stdio.h>
+#include <curl/curl.h>
+
+int main(void) {
+    CURL *curl = curl_easy_init();
+    if (!curl) return 1;
+    curl_easy_setopt(curl, CURLOPT_URL, "${escStrBackslash(full)}");
+    CURLcode rc = curl_easy_perform(curl);
+    if (rc != CURLE_OK) fprintf(stderr, "curl: %s\\n", curl_easy_strerror(rc));
+    curl_easy_cleanup(curl);
+    return 0;
+}`;
+}
+
 const SNIPPET_GEN = {
   "curl": snippetCurl,
   "HTTPie": snippetHTTPie,
@@ -2243,6 +2317,8 @@ const SNIPPET_GEN = {
   "C#": snippetCSharp,
   "Java": snippetJava,
   "Rust": snippetRust,
+  "PHP": snippetPHP,
+  "C/C++": snippetC,
 };
 
 function renderBuilderTaskList() {
