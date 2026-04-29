@@ -74,3 +74,8 @@ The header title also carries a **version badge** that queries PyPI once on load
 - Issues:        https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues
 - Changelog:     https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/CHANGELOG.md
 - Telegram:      https://t.me/unicorndevs
+
+## Related Articles
+
+- [Your Binance DepthCache Is Rotting — Here's the Proof in 25 Hours](https://blog.technopathy.club/your-binance-depthcache-is-rotting-here-s-the-proof-in-25-hours) — 25-hour experiment that motivates UBDCC's freshness model (the dashboard visualizes the resulting health/sync state).
+- [UBDCC Deep Dive: Building a Trust Layer for Binance Order Books](https://blog.technopathy.club/ubdcc-deep-dive-building-a-trust-layer-for-binance-order-books) — architecture write-up of the trust-layer that the dashboard surfaces.
