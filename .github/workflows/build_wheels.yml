@@ -45,7 +45,7 @@ jobs:
           path: dist
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           body: |
             Please read the [CHANGELOG](https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/CHANGELOG.md) for further information.
