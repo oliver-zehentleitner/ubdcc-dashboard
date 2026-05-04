@@ -23,6 +23,8 @@ Browser-based live dashboard for the [UNICORN Binance DepthCache Cluster (UBDCC)
 monitor every depth cache in your cluster at a glance, spot out-of-sync caches
 instantly, and add or remove caches on the fly.
 
+![UBDCC Dashboard Screenshot](https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.png)
+
 Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unicorn-binance-suite).
 
 ---
@@ -71,13 +73,6 @@ Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unic
   down to `5 s` / `10 s` for gentler polling on lightly-used clusters.
 - **Dark theme**, tabular-numeric fonts, no framework, no tracking — a single
   HTML file served by a minimal stdlib HTTP server.
-
----
-
-## Screenshot
-The dashboard provides a compact live view of your UBDCC cluster in the browser: mini-orderbook tiles, sync/error state 
-visibility, and quick DepthCache management in one place.
-![UBDCC Dashboard Screenshot](https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.png)
 
 ---
 
