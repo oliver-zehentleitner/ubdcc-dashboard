@@ -20,8 +20,10 @@
 # UBDCC Dashboard
 
 Browser-based live dashboard for the [UNICORN Binance DepthCache Cluster (UBDCC)](https://github.com/oliver-zehentleitner/unicorn-binance-depth-cache-cluster) —
-monitor every depth cache in your cluster at a glance, spot out-of-sync caches
-instantly, and add or remove caches on the fly.
+your whole cluster at a glance, with mini-orderbook tiles per cache, instant sync/error
+visibility, and add or remove caches on the fly.
+
+![UBDCC Dashboard Screenshot](https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.png)
 
 Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unicorn-binance-suite).
 
@@ -71,13 +73,6 @@ Part of the [UNICORN Binance Suite](https://github.com/oliver-zehentleitner/unic
   down to `5 s` / `10 s` for gentler polling on lightly-used clusters.
 - **Dark theme**, tabular-numeric fonts, no framework, no tracking — a single
   HTML file served by a minimal stdlib HTTP server.
-
----
-
-## Screenshot
-The dashboard provides a compact live view of your UBDCC cluster in the browser: mini-orderbook tiles, sync/error state 
-visibility, and quick DepthCache management in one place.
-![UBDCC Dashboard Screenshot](https://raw.githubusercontent.com/oliver-zehentleitner/ubdcc-dashboard/refs/heads/master/images/misc/ubdcc-dashboard.png)
 
 ---
 
@@ -172,6 +167,7 @@ REST API.
 - [CLI Reference](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#cli-options)
 
 ## Related Articles
+- [The Complete Binance Python API Guide 2026](https://blog.technopathy.club/the-complete-binance-python-api-guide-2026)
 - [From `pip install` to a Redundant Binance Order Book Cluster — UBDCC + Dashboard Quickstart](https://blog.technopathy.club/from-pip-install-to-a-redundant-binance-order-book-cluster-ubdcc-dashboard-quickstart)
 - [Your Binance DepthCache Is Rotting — Here's the Proof in 25 Hours](https://blog.technopathy.club/your-binance-depthcache-is-rotting-here-s-the-proof-in-25-hours)
 - [UBDCC Deep Dive: Building a Trust Layer for Binance Order Books](https://blog.technopathy.club/ubdcc-deep-dive-building-a-trust-layer-for-binance-order-books)
