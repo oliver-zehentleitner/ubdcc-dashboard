@@ -180,7 +180,8 @@ REST API.
 
 ## Social
 - [Discussions](https://github.com/oliver-zehentleitner/ubdcc-dashboard/discussions)
-- [https://t.me/unicorndevs](https://t.me/unicorndevs)
+- [Telegram](https://t.me/unicorndevs) 
+- [Reddit Community](https://www.reddit.com/r/UNICORNBinanceSuite/) 
 - [https://dev.binance.vision](https://dev.binance.vision)
 
 ## Receive Notifications
