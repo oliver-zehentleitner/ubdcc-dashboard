@@ -166,10 +166,12 @@ REST API.
 - [CLI Reference](https://oliver-zehentleitner.github.io/ubdcc-dashboard/readme.html#cli-options)
 
 ## Related Articles
-- [The Complete Binance Python API Guide 2026](https://blog.technopathy.club/the-complete-binance-python-api-guide-2026)
 - [From `pip install` to a Redundant Binance Order Book Cluster — UBDCC + Dashboard Quickstart](https://blog.technopathy.club/from-pip-install-to-a-redundant-binance-order-book-cluster-ubdcc-dashboard-quickstart)
+- [Install UBDCC on Kubernetes with Helm: A Redundant Binance Order Book Cluster in 20 Minutes](https://blog.technopathy.club/install-ubdcc-on-kubernetes-with-helm-a-redundant-binance-order-book-cluster-in-20-minutes)
+- [I Created 2013 Binance Order Books on Kubernetes with 2 Replicas in 25 Minutes — Then Stress-Tested the REST API](https://blog.technopathy.club/i-created-2013-binance-order-books-on-kubernetes-with-2-replicas-in-25-minutes-then-stress-tested-the-rest-api)
 - [Your Binance DepthCache Is Rotting — Here's the Proof in 25 Hours](https://blog.technopathy.club/your-binance-depthcache-is-rotting-here-s-the-proof-in-25-hours)
 - [UBDCC Deep Dive: Building a Trust Layer for Binance Order Books](https://blog.technopathy.club/ubdcc-deep-dive-building-a-trust-layer-for-binance-order-books)
+- [The Complete Binance Python API Guide 2026](https://blog.technopathy.club/the-complete-binance-python-api-guide-2026)
 - [UNICORN Binance Suite Article Series](https://blog.technopathy.club/series/unicorn-binance-suite)
 
 ## Project Homepage
