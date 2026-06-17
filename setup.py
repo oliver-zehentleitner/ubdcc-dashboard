@@ -43,14 +43,15 @@ setup(
         ],
     },
     project_urls={
-        "Howto": "https://github.com/oliver-zehentleitner/ubdcc-dashboard#howto",
+        "Howto": "https://github.com/oliver-zehentleitner/ubdcc-dashboard#related-articles",
         "Documentation": "https://oliver-zehentleitner.github.io/ubdcc-dashboard",
         "Wiki": "https://github.com/oliver-zehentleitner/ubdcc-dashboard/wiki",
         "Author": "https://www.linkedin.com/in/oliver-zehentleitner",
         "Changes": "https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/CHANGELOG.md",
         "License": "https://github.com/oliver-zehentleitner/ubdcc-dashboard/blob/master/LICENSE",
         "Issue Tracker": "https://github.com/oliver-zehentleitner/ubdcc-dashboard/issues",
-        "Telegram": "https://t.me/unicorndevs",
+        'Telegram': 'https://t.me/unicorndevs',
+        'Umbrella Project': 'https://github.com/oliver-zehentleitner/unicorn-binance-suite',
     },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
